@@ -35,6 +35,7 @@ world.afterEvents.entityHitBlock.subscribe(event => {
     }
 });
 
+// 多分これ常時視線先のブロック監視したほうがいいです(); // not a function
 ```
 
 書き途中ｪ
