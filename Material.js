@@ -1,17 +1,13 @@
 import { ItemType, BlockType, ItemTypes, BlockTypes } from "@minecraft/server";
 
+const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
+
+/**
+ * @type {MaterialTag[]}
+ */
+const tags = [];
+
 export class MaterialTag {
-    /**
-     * @readonly
-     * @type {symbol}
-     */
-    static #PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
-
-    /**
-     * @type {MaterialTag[]}
-     */
-    static #tags = [];
-
     /**
      * @readonly
      * @private
@@ -21,139 +17,149 @@ export class MaterialTag {
 
     /**
      * @private
+     * @type {string}
      */
-    constructor(key, keyName) {
-        if (key !== MaterialTag.#PRIVATE_CONSTRUCTOR_SYMBOL) {
+    #name;
+
+    /**
+     * @private
+     */
+    constructor(key, keyName, name) {
+        if (key !== PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
 
         this.keyName = keyName;
-        MaterialTag.#tags.push(this);
+        this.#name = name;
+        tags.push(this);
+    }
+
+    toString() {
+        return this.#name;
     }
 
     /**
      * コンポスターに入れられるアイテム
      * @readonly
      */
-    static COMPOSTABLE = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "compostables");
+    static COMPOSTABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "compostables", "compostable");
 
     /**
      * 食べることができるアイテム
      * @readonly
      */
-    static FOODS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "foods");
+    static FOODS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "foods", "foods");
 
     /**
      * 固体のブロック
      * @readonly
      */
-    static SOLID_BLOCKS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "solids");
+    static SOLID_BLOCKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "solids", "solid_blocks");
 
     /**
      * レコード
      * @readonly
      */
-    static RECORDS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "records");
+    static RECORDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "records", "records");
 
     /**
      * エンチャント可能なアイテム
      * @readonly
      */
-    static ENCHANTABLE = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "enchantable");
+    static ENCHANTABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "enchantables", "enchantable");
 
     /**
      * 可燃性を持つブロック
      * @readonly
      */
-    static BURNABLE_BLOCKS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "burnableBlocks");
+    static BURNABLE_BLOCKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "burnableBlocks", "burnable_blocks");
 
     /**
      * 燃料になれるアイテム
      * @readonly
      */
-    static FUELS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "fuels");
+    static FUELS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fuels", "fuels");
 
     /**
      * 光を通すブロック
      * @readonly
      */
-    static LIGHT_PASSABLE_BLOCKS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "lightPassables");
+    static LIGHT_PASSABLE_BLOCKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lightPassables", "light_passable_blocks");
 
     /**
      * 装備
      * @readonly
      */
-    static ARMORS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "armors");
+    static ARMORS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "armors", "armors");
 
     /**
      * ツール
      * @readonly
      */
-    static TOOLS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "tools");
+    static TOOLS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tools", "tools");
 
     /**
      * 武器
      * @readonly
      */
-    static WEAPONS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "weapons");
+    static WEAPONS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weapons", "weapons");
 
     /**
      * ピッケルが適正ツールのブロック
      * @readonly
      */
-    static MINEABLE_BY_PICKAXE = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.pickaxe");
+    static MINEABLE_BY_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.pickaxe", "mineable_by_pickaxe");
 
     /**
      * 斧が適正ツールのブロック
      * @readonly
      */
-    static MINEABLE_BY_AXE = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.axe");
+    static MINEABLE_BY_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.axe", "mineable_by_axe");
 
     /**
      * シャベルが適正ツールのブロック
      * @readonly
      */
-    static MINEABLE_BY_SHOVEL = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.shovel");
+    static MINEABLE_BY_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.shovel", "mineable_by_shovel");
 
     /**
      * クワが適正ツールのブロック
      * @readonly
      */
-    static MINEABLE_BY_HOE = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.hoe");
+    static MINEABLE_BY_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mineable.hoe", "mineable_by_hoe");
 
     /**
      * 木材
      * @readonly
      */
-    static PLANKS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "planks");
+    static PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "planks", "planks");
 
     /**
      * 原木・丸太
      * @readonly
      */
-    static LOGS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "logs");
+    static LOGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "logs", "logs");
 
     /**
      * ハーフブロック
      * @readonly
      */
-    static SLABS = new this(this.#PRIVATE_CONSTRUCTOR_SYMBOL, "slabs");
+    static SLABS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "slabs", "slabs");
 
     /**
      * @returns {MaterialTag[]}
      */
     static values() {
-        return [...this.#tags];
+        return [...tags];
     }
 }
 
-export class Material {
-    /**
-     * @readonly
-     * @type {symbol}
-     */
-    static #PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
+/**
+ * @type {Material[]}
+ */
+const materials = [];
 
+export class Material {
     /**
      * @type {string}
      */
@@ -177,18 +183,13 @@ export class Material {
     /**
      * @type {string[]}
      */
-     #blockPropertyNames;
-
-    /**
-     * @type {Material[]}
-     */
-    static #materials = [];
+    #blockPropertyNames;
 
     /**
      * @private
      */
-    constructor(key) {
-        if (key != PRIVATE_CONSTRUCTOR_SYMBOL, blockId, itemId, isBlock, isItem, blockPropertyNames) {
+    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames) {
+        if (key != PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
 
@@ -196,8 +197,8 @@ export class Material {
         this.#itemId = itemId;
         this.#isBlock = isBlock;
         this.#isItem = isItem;
-        this.#blockPropertyNames = blockPropertyNames.split(/\s+/g);
-        Material.#materials.push(this);
+        this.#blockPropertyNames = blockPropertyNames;
+        materials.push(this);
     }
 
     /**
@@ -271,9 +272,9 @@ export class Material {
      * @returns {boolean}
      */
     hasTag(tag) {
-       if (tag instanceof MaterialTag) {
-           return bukkitOut[tag.keyName].includes(this.#itemId) || bukkitOut[tag.keyName].includes(this.#blockId);
-       }
+        if (tag instanceof MaterialTag) {
+            return bukkitOut[tag.keyName].includes(this.#itemId) || bukkitOut[tag.keyName].includes(this.#blockId);
+        }
        else throw new TypeError("引数はMaterialTag型です");
     }
 
@@ -282,7 +283,7 @@ export class Material {
      * @returns {MaterialTag[]}
      */
     getTags() {
-        return MaterialTag.values().filter(this.hasTag);
+        return MaterialTag.values().filter(e => this.hasTag(e));
     }
 
     /**
@@ -292,10 +293,11 @@ export class Material {
      * @returns {Material | undefined}
      */
     static getMaterial(id) {
-        for (const material of Material.#materials) {
-           if (material.#blockId == id || material.#itemId == id || material.#blockId == "minecraft:" + id || material.#itemId == "minecraft:" + id) {
+        const simpleId = id.replace("minecraft:", "");
+        for (const material of materials) {
+            if (material.#blockId === id || material.#itemId === id || material.#blockId === simpleId || material.#itemId === simpleId) {
                return material;
-           }
+            }
         }
     }
 
@@ -303,7794 +305,7793 @@ export class Material {
      * @returns {Material[]}
      */
     static values() {
-        return [...this.#materials];
+        return [...materials];
     }
 
-
     /**
      * @readonly
      */
-     static ACACIA_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_boat", false, true, []);
+     static ACACIA_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_button", "acacia_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static ACACIA_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_button", "acacia_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static ACACIA_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_chest_boat", false, true, []);
+     static ACACIA_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_door", "acacia_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static ACACIA_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_door", "acacia_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static ACACIA_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_fence", "acacia_fence", true, true, []);
+     static ACACIA_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_fence", "acacia_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_fence_gate", "acacia_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static ACACIA_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_fence_gate", "acacia_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static ACACIA_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_hanging_sign", "acacia_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static ACACIA_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_hanging_sign", "acacia_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static ACACIA_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_leaves", "acacia_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static ACACIA_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_leaves", "acacia_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static ACACIA_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_log", "acacia_log", true, true, ["pillar_axis"]);
+     static ACACIA_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_log", "acacia_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static ACACIA_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_planks", "acacia_planks", true, true, []);
+     static ACACIA_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_planks", "acacia_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_pressure_plate", "acacia_pressure_plate", true, true, ["redstone_signal"]);
+     static ACACIA_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_pressure_plate", "acacia_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static ACACIA_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_sapling", "acacia_sapling", true, true, ["age_bit"]);
+     static ACACIA_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_sapling", "acacia_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static ACACIA_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_sign", false, true, []);
+     static ACACIA_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "acacia_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_slab", "acacia_slab", true, true, ["minecraft:vertical_half"]);
+     static ACACIA_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_slab", "acacia_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static ACACIA_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_stairs", "acacia_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static ACACIA_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_stairs", "acacia_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static ACACIA_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_trapdoor", "acacia_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static ACACIA_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_trapdoor", "acacia_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static ACACIA_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_wood", "acacia_wood", true, true, ["pillar_axis"]);
+     static ACACIA_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_wood", "acacia_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static ACTIVATOR_RAIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "activator_rail", "activator_rail", true, true, ["rail_data_bit", "rail_direction"]);
+     static ACTIVATOR_RAIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "activator_rail", "activator_rail", true, true, ["rail_data_bit", "rail_direction"]);
 
     /**
      * @readonly
      */
-     static AIR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "air", "air", true, true, []);
+     static AIR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "air", "air", true, true, []);
 
     /**
      * @readonly
      */
-     static ALLAY_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "allay_spawn_egg", false, true, []);
+     static ALLAY_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "allay_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ALLIUM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "allium", "allium", true, true, []);
+     static ALLIUM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "allium", "allium", true, true, []);
 
     /**
      * @readonly
      */
-     static ALLOW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "allow", "allow", true, true, []);
+     static ALLOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "allow", "allow", true, true, []);
 
     /**
      * @readonly
      */
-     static AMETHYST_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "amethyst_block", "amethyst_block", true, true, []);
+     static AMETHYST_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "amethyst_block", "amethyst_block", true, true, []);
 
     /**
      * @readonly
      */
-     static AMETHYST_CLUSTER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "amethyst_cluster", "amethyst_cluster", true, true, ["minecraft:block_face"]);
+     static AMETHYST_CLUSTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "amethyst_cluster", "amethyst_cluster", true, true, ["minecraft:block_face"]);
 
     /**
      * @readonly
      */
-     static AMETHYST_SHARD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "amethyst_shard", false, true, []);
+     static AMETHYST_SHARD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "amethyst_shard", false, true, []);
 
     /**
      * @readonly
      */
-     static ANCIENT_DEBRIS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "ancient_debris", "ancient_debris", true, true, []);
+     static ANCIENT_DEBRIS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "ancient_debris", "ancient_debris", true, true, []);
 
     /**
      * @readonly
      */
-     static ANDESITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "andesite", "andesite", true, true, []);
+     static ANDESITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "andesite", "andesite", true, true, []);
 
     /**
      * @readonly
      */
-     static ANDESITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "andesite_stairs", "andesite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static ANDESITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "andesite_stairs", "andesite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static ANGLER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "angler_pottery_sherd", false, true, []);
+     static ANGLER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "angler_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static ANVIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "anvil", "anvil", true, true, ["damage", "minecraft:cardinal_direction"]);
+     static ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "anvil", "anvil", true, true, ["damage", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static APPLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "apple", false, true, []);
+     static APPLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "apple", false, true, []);
 
     /**
      * @readonly
      */
-     static ARCHER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "archer_pottery_sherd", false, true, []);
+     static ARCHER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "archer_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static ARMADILLO_SCUTE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "armadillo_scute", false, true, []);
+     static ARMADILLO_SCUTE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "armadillo_scute", false, true, []);
 
     /**
      * @readonly
      */
-     static ARMADILLO_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "armadillo_spawn_egg", false, true, []);
+     static ARMADILLO_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "armadillo_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ARMOR_STAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "armor_stand", false, true, []);
+     static ARMOR_STAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "armor_stand", false, true, []);
 
     /**
      * @readonly
      */
-     static ARMS_UP_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "arms_up_pottery_sherd", false, true, []);
+     static ARMS_UP_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "arms_up_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static ARROW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "arrow", false, true, []);
+     static ARROW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "arrow", false, true, []);
 
     /**
      * @readonly
      */
-     static AXOLOTL_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "axolotl_bucket", false, true, []);
+     static AXOLOTL_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "axolotl_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static AXOLOTL_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "axolotl_spawn_egg", false, true, []);
+     static AXOLOTL_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "axolotl_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static AZALEA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "azalea", "azalea", true, true, []);
+     static AZALEA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "azalea", "azalea", true, true, []);
 
     /**
      * @readonly
      */
-     static AZALEA_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "azalea_leaves", "azalea_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static AZALEA_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "azalea_leaves", "azalea_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static AZALEA_LEAVES_FLOWERED = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "azalea_leaves_flowered", "azalea_leaves_flowered", true, true, ["persistent_bit", "update_bit"]);
+     static AZALEA_LEAVES_FLOWERED = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "azalea_leaves_flowered", "azalea_leaves_flowered", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static AZURE_BLUET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "azure_bluet", "azure_bluet", true, true, []);
+     static AZURE_BLUET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "azure_bluet", "azure_bluet", true, true, []);
 
     /**
      * @readonly
      */
-     static BAKED_POTATO = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "baked_potato", false, true, []);
+     static BAKED_POTATO = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "baked_potato", false, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo", "bamboo", true, true, ["age_bit", "bamboo_leaf_size", "bamboo_stalk_thickness"]);
+     static BAMBOO = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo", "bamboo", true, true, ["age_bit", "bamboo_leaf_size", "bamboo_stalk_thickness"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_block", "bamboo_block", true, true, ["pillar_axis"]);
+     static BAMBOO_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_block", "bamboo_block", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_button", "bamboo_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static BAMBOO_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_button", "bamboo_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_CHEST_RAFT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_chest_raft", false, true, []);
+     static BAMBOO_CHEST_RAFT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_chest_raft", false, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_door", "bamboo_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static BAMBOO_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_door", "bamboo_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_fence", "bamboo_fence", true, true, []);
+     static BAMBOO_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_fence", "bamboo_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_fence_gate", "bamboo_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static BAMBOO_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_fence_gate", "bamboo_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_hanging_sign", "bamboo_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static BAMBOO_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_hanging_sign", "bamboo_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_MOSAIC = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic", "bamboo_mosaic", true, true, []);
+     static BAMBOO_MOSAIC = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic", "bamboo_mosaic", true, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_MOSAIC_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_slab", "bamboo_mosaic_slab", true, true, ["minecraft:vertical_half"]);
+     static BAMBOO_MOSAIC_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_slab", "bamboo_mosaic_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_MOSAIC_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_stairs", "bamboo_mosaic_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static BAMBOO_MOSAIC_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_stairs", "bamboo_mosaic_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_planks", "bamboo_planks", true, true, []);
+     static BAMBOO_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_planks", "bamboo_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_pressure_plate", "bamboo_pressure_plate", true, true, ["redstone_signal"]);
+     static BAMBOO_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_pressure_plate", "bamboo_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_RAFT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_raft", false, true, []);
+     static BAMBOO_RAFT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_raft", false, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_sign", false, true, []);
+     static BAMBOO_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bamboo_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static BAMBOO_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_slab", "bamboo_slab", true, true, ["minecraft:vertical_half"]);
+     static BAMBOO_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_slab", "bamboo_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_stairs", "bamboo_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static BAMBOO_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_stairs", "bamboo_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_trapdoor", "bamboo_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static BAMBOO_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_trapdoor", "bamboo_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static BANNER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner", false, true, []);
+     static BANNER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner", false, true, []);
 
     /**
      * @readonly
      */
-     static BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner_pattern", false, true, []);
+     static BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static BARREL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "barrel", "barrel", true, true, ["facing_direction", "open_bit"]);
+     static BARREL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "barrel", "barrel", true, true, ["facing_direction", "open_bit"]);
 
     /**
      * @readonly
      */
-     static BARRIER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "barrier", "barrier", true, true, []);
+     static BARRIER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "barrier", "barrier", true, true, []);
 
     /**
      * @readonly
      */
-     static BASALT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "basalt", "basalt", true, true, ["pillar_axis"]);
+     static BASALT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "basalt", "basalt", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static BAT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bat_spawn_egg", false, true, []);
+     static BAT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bat_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static BEACON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "beacon", "beacon", true, true, []);
+     static BEACON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "beacon", "beacon", true, true, []);
 
     /**
      * @readonly
      */
-     static BED = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bed", "bed", true, true, ["direction", "head_piece_bit", "occupied_bit"]);
+     static BED = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bed", "bed", true, true, ["direction", "head_piece_bit", "occupied_bit"]);
 
     /**
      * @readonly
      */
-     static BEDROCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bedrock", "bedrock", true, true, ["infiniburn_bit"]);
+     static BEDROCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bedrock", "bedrock", true, true, ["infiniburn_bit"]);
 
     /**
      * @readonly
      */
-     static BEE_NEST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bee_nest", "bee_nest", true, true, ["direction", "honey_level"]);
+     static BEE_NEST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bee_nest", "bee_nest", true, true, ["direction", "honey_level"]);
 
     /**
      * @readonly
      */
-     static BEE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bee_spawn_egg", false, true, []);
+     static BEE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bee_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static BEEF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "beef", false, true, []);
+     static BEEF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "beef", false, true, []);
 
     /**
      * @readonly
      */
-     static BEEHIVE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "beehive", "beehive", true, true, ["direction", "honey_level"]);
+     static BEEHIVE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "beehive", "beehive", true, true, ["direction", "honey_level"]);
 
     /**
      * @readonly
      */
-     static BEETROOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "beetroot", "beetroot", true, true, ["growth"]);
+     static BEETROOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "beetroot", "beetroot", true, true, ["growth"]);
 
     /**
      * @readonly
      */
-     static BEETROOT_SEEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "beetroot_seeds", false, true, []);
+     static BEETROOT_SEEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "beetroot_seeds", false, true, []);
 
     /**
      * @readonly
      */
-     static BEETROOT_SOUP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "beetroot_soup", false, true, []);
+     static BEETROOT_SOUP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "beetroot_soup", false, true, []);
 
     /**
      * @readonly
      */
-     static BELL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bell", "bell", true, true, ["attachment", "direction", "toggle_bit"]);
+     static BELL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bell", "bell", true, true, ["attachment", "direction", "toggle_bit"]);
 
     /**
      * @readonly
      */
-     static BIG_DRIPLEAF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "big_dripleaf", "big_dripleaf", true, true, ["big_dripleaf_head", "big_dripleaf_tilt", "minecraft:cardinal_direction"]);
+     static BIG_DRIPLEAF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "big_dripleaf", "big_dripleaf", true, true, ["big_dripleaf_head", "big_dripleaf_tilt", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static BIRCH_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_boat", false, true, []);
+     static BIRCH_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static BIRCH_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_button", "birch_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static BIRCH_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_button", "birch_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static BIRCH_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_chest_boat", false, true, []);
+     static BIRCH_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static BIRCH_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_door", "birch_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static BIRCH_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_door", "birch_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static BIRCH_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_fence", "birch_fence", true, true, []);
+     static BIRCH_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_fence", "birch_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static BIRCH_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_fence_gate", "birch_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static BIRCH_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_fence_gate", "birch_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static BIRCH_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_hanging_sign", "birch_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static BIRCH_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_hanging_sign", "birch_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static BIRCH_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_leaves", "birch_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static BIRCH_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_leaves", "birch_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static BIRCH_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_log", "birch_log", true, true, ["pillar_axis"]);
+     static BIRCH_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_log", "birch_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static BIRCH_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_planks", "birch_planks", true, true, []);
+     static BIRCH_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_planks", "birch_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static BIRCH_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_pressure_plate", "birch_pressure_plate", true, true, ["redstone_signal"]);
+     static BIRCH_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_pressure_plate", "birch_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static BIRCH_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_sapling", "birch_sapling", true, true, ["age_bit"]);
+     static BIRCH_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_sapling", "birch_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static BIRCH_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_sign", false, true, []);
+     static BIRCH_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "birch_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static BIRCH_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_slab", "birch_slab", true, true, ["minecraft:vertical_half"]);
+     static BIRCH_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_slab", "birch_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BIRCH_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_stairs", "birch_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static BIRCH_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_stairs", "birch_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static BIRCH_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_trapdoor", "birch_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static BIRCH_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_trapdoor", "birch_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static BIRCH_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_wood", "birch_wood", true, true, ["pillar_axis"]);
+     static BIRCH_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_wood", "birch_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static BLACK_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_candle", "black_candle", true, true, ["candles", "lit"]);
+     static BLACK_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_candle", "black_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static BLACK_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_carpet", "black_carpet", true, true, []);
+     static BLACK_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_carpet", "black_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_concrete", "black_concrete", true, true, []);
+     static BLACK_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_concrete", "black_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_concrete_powder", "black_concrete_powder", true, true, []);
+     static BLACK_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_concrete_powder", "black_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "black_dye", false, true, []);
+     static BLACK_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "black_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_glazed_terracotta", "black_glazed_terracotta", true, true, ["facing_direction"]);
+     static BLACK_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_glazed_terracotta", "black_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BLACK_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_shulker_box", "black_shulker_box", true, true, []);
+     static BLACK_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_shulker_box", "black_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_stained_glass", "black_stained_glass", true, true, []);
+     static BLACK_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_stained_glass", "black_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_stained_glass_pane", "black_stained_glass_pane", true, true, []);
+     static BLACK_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_stained_glass_pane", "black_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_terracotta", "black_terracotta", true, true, []);
+     static BLACK_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_terracotta", "black_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACK_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_wool", "black_wool", true, true, []);
+     static BLACK_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_wool", "black_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACKSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone", "blackstone", true, true, []);
+     static BLACKSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone", "blackstone", true, true, []);
 
     /**
      * @readonly
      */
-     static BLACKSTONE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_slab", "blackstone_slab", true, true, ["minecraft:vertical_half"]);
+     static BLACKSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_slab", "blackstone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BLACKSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_stairs", "blackstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static BLACKSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_stairs", "blackstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static BLACKSTONE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_wall", "blackstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static BLACKSTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_wall", "blackstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static BLADE_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "blade_pottery_sherd", false, true, []);
+     static BLADE_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "blade_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static BLAST_FURNACE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blast_furnace", "blast_furnace", true, true, ["minecraft:cardinal_direction"]);
+     static BLAST_FURNACE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blast_furnace", "blast_furnace", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static BLAZE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_powder", false, true, []);
+     static BLAZE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_powder", false, true, []);
 
     /**
      * @readonly
      */
-     static BLAZE_ROD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_rod", false, true, []);
+     static BLAZE_ROD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_rod", false, true, []);
 
     /**
      * @readonly
      */
-     static BLAZE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_spawn_egg", false, true, []);
+     static BLAZE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "blaze_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_candle", "blue_candle", true, true, ["candles", "lit"]);
+     static BLUE_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_candle", "blue_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static BLUE_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_carpet", "blue_carpet", true, true, []);
+     static BLUE_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_carpet", "blue_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_concrete", "blue_concrete", true, true, []);
+     static BLUE_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_concrete", "blue_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_concrete_powder", "blue_concrete_powder", true, true, []);
+     static BLUE_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_concrete_powder", "blue_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "blue_dye", false, true, []);
+     static BLUE_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "blue_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_glazed_terracotta", "blue_glazed_terracotta", true, true, ["facing_direction"]);
+     static BLUE_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_glazed_terracotta", "blue_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BLUE_ICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_ice", "blue_ice", true, true, []);
+     static BLUE_ICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_ice", "blue_ice", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_ORCHID = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_orchid", "blue_orchid", true, true, []);
+     static BLUE_ORCHID = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_orchid", "blue_orchid", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_shulker_box", "blue_shulker_box", true, true, []);
+     static BLUE_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_shulker_box", "blue_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_stained_glass", "blue_stained_glass", true, true, []);
+     static BLUE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_stained_glass", "blue_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_stained_glass_pane", "blue_stained_glass_pane", true, true, []);
+     static BLUE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_stained_glass_pane", "blue_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_terracotta", "blue_terracotta", true, true, []);
+     static BLUE_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_terracotta", "blue_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static BLUE_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_wool", "blue_wool", true, true, []);
+     static BLUE_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_wool", "blue_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "boat", false, true, []);
+     static BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "boat", false, true, []);
 
     /**
      * @readonly
      */
-     static BOGGED_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bogged_spawn_egg", false, true, []);
+     static BOGGED_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bogged_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static BOLT_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bolt_armor_trim_smithing_template", false, true, []);
+     static BOLT_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bolt_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static BONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bone", false, true, []);
+     static BONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bone", false, true, []);
 
     /**
      * @readonly
      */
-     static BONE_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bone_block", "bone_block", true, true, ["deprecated", "pillar_axis"]);
+     static BONE_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bone_block", "bone_block", true, true, ["deprecated", "pillar_axis"]);
 
     /**
      * @readonly
      */
-     static BONE_MEAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bone_meal", false, true, []);
+     static BONE_MEAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bone_meal", false, true, []);
 
     /**
      * @readonly
      */
-     static BOOK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "book", false, true, []);
+     static BOOK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "book", false, true, []);
 
     /**
      * @readonly
      */
-     static BOOKSHELF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bookshelf", "bookshelf", true, true, []);
+     static BOOKSHELF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bookshelf", "bookshelf", true, true, []);
 
     /**
      * @readonly
      */
-     static BORDER_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "border_block", "border_block", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static BORDER_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "border_block", "border_block", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static BORDURE_INDENTED_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bordure_indented_banner_pattern", false, true, []);
+     static BORDURE_INDENTED_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bordure_indented_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static BOW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bow", false, true, []);
+     static BOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bow", false, true, []);
 
     /**
      * @readonly
      */
-     static BOWL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bowl", false, true, []);
+     static BOWL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bowl", false, true, []);
 
     /**
      * @readonly
      */
-     static BRAIN_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral", "brain_coral", true, true, []);
+     static BRAIN_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral", "brain_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static BRAIN_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral_block", "brain_coral_block", true, true, []);
+     static BRAIN_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral_block", "brain_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static BRAIN_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral_fan", "brain_coral_fan", true, true, ["coral_fan_direction"]);
+     static BRAIN_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral_fan", "brain_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static BREAD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bread", false, true, []);
+     static BREAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bread", false, true, []);
 
     /**
      * @readonly
      */
-     static BREEZE_ROD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "breeze_rod", false, true, []);
+     static BREEZE_ROD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "breeze_rod", false, true, []);
 
     /**
      * @readonly
      */
-     static BREEZE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "breeze_spawn_egg", false, true, []);
+     static BREEZE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "breeze_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static BREWER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "brewer_pottery_sherd", false, true, []);
+     static BREWER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "brewer_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static BREWING_STAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brewing_stand", "brewing_stand", true, true, ["brewing_stand_slot_a_bit", "brewing_stand_slot_b_bit", "brewing_stand_slot_c_bit"]);
+     static BREWING_STAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brewing_stand", "brewing_stand", true, true, ["brewing_stand_slot_a_bit", "brewing_stand_slot_b_bit", "brewing_stand_slot_c_bit"]);
 
     /**
      * @readonly
      */
-     static BRICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "brick", false, true, []);
+     static BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "brick", false, true, []);
 
     /**
      * @readonly
      */
-     static BRICK_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brick_block", "brick_block", true, true, []);
+     static BRICK_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brick_block", "brick_block", true, true, []);
 
     /**
      * @readonly
      */
-     static BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brick_slab", "brick_slab", true, true, ["minecraft:vertical_half"]);
+     static BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brick_slab", "brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brick_stairs", "brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brick_stairs", "brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static BROWN_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_candle", "brown_candle", true, true, ["candles", "lit"]);
+     static BROWN_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_candle", "brown_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static BROWN_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_carpet", "brown_carpet", true, true, []);
+     static BROWN_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_carpet", "brown_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_concrete", "brown_concrete", true, true, []);
+     static BROWN_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_concrete", "brown_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_concrete_powder", "brown_concrete_powder", true, true, []);
+     static BROWN_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_concrete_powder", "brown_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "brown_dye", false, true, []);
+     static BROWN_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "brown_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_glazed_terracotta", "brown_glazed_terracotta", true, true, ["facing_direction"]);
+     static BROWN_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_glazed_terracotta", "brown_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BROWN_MUSHROOM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_mushroom", "brown_mushroom", true, true, []);
+     static BROWN_MUSHROOM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_mushroom", "brown_mushroom", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_MUSHROOM_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_mushroom_block", "brown_mushroom_block", true, true, ["huge_mushroom_bits"]);
+     static BROWN_MUSHROOM_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_mushroom_block", "brown_mushroom_block", true, true, ["huge_mushroom_bits"]);
 
     /**
      * @readonly
      */
-     static BROWN_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_shulker_box", "brown_shulker_box", true, true, []);
+     static BROWN_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_shulker_box", "brown_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_stained_glass", "brown_stained_glass", true, true, []);
+     static BROWN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_stained_glass", "brown_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_stained_glass_pane", "brown_stained_glass_pane", true, true, []);
+     static BROWN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_stained_glass_pane", "brown_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_terracotta", "brown_terracotta", true, true, []);
+     static BROWN_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_terracotta", "brown_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static BROWN_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_wool", "brown_wool", true, true, []);
+     static BROWN_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_wool", "brown_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static BRUSH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "brush", false, true, []);
+     static BRUSH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "brush", false, true, []);
 
     /**
      * @readonly
      */
-     static BUBBLE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral", "bubble_coral", true, true, []);
+     static BUBBLE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral", "bubble_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static BUBBLE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral_block", "bubble_coral_block", true, true, []);
+     static BUBBLE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral_block", "bubble_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static BUBBLE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral_fan", "bubble_coral_fan", true, true, ["coral_fan_direction"]);
+     static BUBBLE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral_fan", "bubble_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "bucket", false, true, []);
+     static BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static BUDDING_AMETHYST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "budding_amethyst", "budding_amethyst", true, true, []);
+     static BUDDING_AMETHYST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "budding_amethyst", "budding_amethyst", true, true, []);
 
     /**
      * @readonly
      */
-     static BURN_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "burn_pottery_sherd", false, true, []);
+     static BURN_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "burn_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static CACTUS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cactus", "cactus", true, true, ["age"]);
+     static CACTUS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cactus", "cactus", true, true, ["age"]);
 
     /**
      * @readonly
      */
-     static CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cake", "cake", true, true, ["bite_counter"]);
+     static CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cake", "cake", true, true, ["bite_counter"]);
 
     /**
      * @readonly
      */
-     static CALCITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "calcite", "calcite", true, true, []);
+     static CALCITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "calcite", "calcite", true, true, []);
 
     /**
      * @readonly
      */
-     static CALIBRATED_SCULK_SENSOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "calibrated_sculk_sensor", "calibrated_sculk_sensor", true, true, ["minecraft:cardinal_direction", "sculk_sensor_phase"]);
+     static CALIBRATED_SCULK_SENSOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "calibrated_sculk_sensor", "calibrated_sculk_sensor", true, true, ["minecraft:cardinal_direction", "sculk_sensor_phase"]);
 
     /**
      * @readonly
      */
-     static CAMEL_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "camel_spawn_egg", false, true, []);
+     static CAMEL_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "camel_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CAMPFIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "campfire", "campfire", true, true, ["extinguished", "minecraft:cardinal_direction"]);
+     static CAMPFIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "campfire", "campfire", true, true, ["extinguished", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "candle", "candle", true, true, ["candles", "lit"]);
+     static CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "candle", "candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "carpet", false, true, []);
+     static CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "carpet", false, true, []);
 
     /**
      * @readonly
      */
-     static CARROT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "carrots", "carrot", true, true, ["growth"]);
+     static CARROT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "carrots", "carrot", true, true, ["growth"]);
 
     /**
      * @readonly
      */
-     static CARROT_ON_A_STICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "carrot_on_a_stick", false, true, []);
+     static CARROT_ON_A_STICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "carrot_on_a_stick", false, true, []);
 
     /**
      * @readonly
      */
-     static CARTOGRAPHY_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cartography_table", "cartography_table", true, true, []);
+     static CARTOGRAPHY_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cartography_table", "cartography_table", true, true, []);
 
     /**
      * @readonly
      */
-     static CARVED_PUMPKIN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "carved_pumpkin", "carved_pumpkin", true, true, ["minecraft:cardinal_direction"]);
+     static CARVED_PUMPKIN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "carved_pumpkin", "carved_pumpkin", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static CAT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cat_spawn_egg", false, true, []);
+     static CAT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cat_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CAULDRON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cauldron", "cauldron", true, true, ["cauldron_liquid", "fill_level"]);
+     static CAULDRON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cauldron", "cauldron", true, true, ["cauldron_liquid", "fill_level"]);
 
     /**
      * @readonly
      */
-     static CAVE_SPIDER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cave_spider_spawn_egg", false, true, []);
+     static CAVE_SPIDER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cave_spider_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CHAIN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chain", "chain", true, true, ["pillar_axis"]);
+     static CHAIN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chain", "chain", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static CHAIN_COMMAND_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chain_command_block", "chain_command_block", true, true, ["conditional_bit", "facing_direction"]);
+     static CHAIN_COMMAND_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chain_command_block", "chain_command_block", true, true, ["conditional_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static CHAINMAIL_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_boots", false, true, []);
+     static CHAINMAIL_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static CHAINMAIL_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_chestplate", false, true, []);
+     static CHAINMAIL_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static CHAINMAIL_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_helmet", false, true, []);
+     static CHAINMAIL_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static CHAINMAIL_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_leggings", false, true, []);
+     static CHAINMAIL_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chainmail_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static CHARCOAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "charcoal", false, true, []);
+     static CHARCOAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "charcoal", false, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_boat", false, true, []);
+     static CHERRY_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_button", "cherry_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static CHERRY_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_button", "cherry_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static CHERRY_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_chest_boat", false, true, []);
+     static CHERRY_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_door", "cherry_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static CHERRY_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_door", "cherry_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static CHERRY_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_fence", "cherry_fence", true, true, []);
+     static CHERRY_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_fence", "cherry_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_fence_gate", "cherry_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static CHERRY_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_fence_gate", "cherry_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static CHERRY_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_hanging_sign", "cherry_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static CHERRY_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_hanging_sign", "cherry_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static CHERRY_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_leaves", "cherry_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static CHERRY_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_leaves", "cherry_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static CHERRY_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_log", "cherry_log", true, true, ["pillar_axis"]);
+     static CHERRY_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_log", "cherry_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static CHERRY_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_planks", "cherry_planks", true, true, []);
+     static CHERRY_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_planks", "cherry_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_pressure_plate", "cherry_pressure_plate", true, true, ["redstone_signal"]);
+     static CHERRY_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_pressure_plate", "cherry_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static CHERRY_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_sapling", "cherry_sapling", true, true, ["age_bit"]);
+     static CHERRY_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_sapling", "cherry_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static CHERRY_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_sign", false, true, []);
+     static CHERRY_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cherry_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static CHERRY_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_slab", "cherry_slab", true, true, ["minecraft:vertical_half"]);
+     static CHERRY_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_slab", "cherry_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static CHERRY_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_stairs", "cherry_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static CHERRY_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_stairs", "cherry_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static CHERRY_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_trapdoor", "cherry_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static CHERRY_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_trapdoor", "cherry_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static CHERRY_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_wood", "cherry_wood", true, true, ["pillar_axis", "stripped_bit"]);
+     static CHERRY_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_wood", "cherry_wood", true, true, ["pillar_axis", "stripped_bit"]);
 
     /**
      * @readonly
      */
-     static CHEST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chest", "chest", true, true, ["minecraft:cardinal_direction"]);
+     static CHEST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chest", "chest", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_boat", false, true, []);
+     static CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static CHEST_MINECART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_minecart", false, true, []);
+     static CHEST_MINECART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_minecart", false, true, []);
 
     /**
      * @readonly
      */
-     static CHICKEN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chicken", false, true, []);
+     static CHICKEN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chicken", false, true, []);
 
     /**
      * @readonly
      */
-     static CHICKEN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "chicken_spawn_egg", false, true, []);
+     static CHICKEN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chicken_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_BOOKSHELF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_bookshelf", "chiseled_bookshelf", true, true, ["books_stored", "direction"]);
+     static CHISELED_BOOKSHELF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_bookshelf", "chiseled_bookshelf", true, true, ["books_stored", "direction"]);
 
     /**
      * @readonly
      */
-     static CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_copper", "chiseled_copper", true, true, []);
+     static CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_copper", "chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_deepslate", "chiseled_deepslate", true, true, []);
+     static CHISELED_DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_deepslate", "chiseled_deepslate", true, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_NETHER_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_nether_bricks", "chiseled_nether_bricks", true, true, []);
+     static CHISELED_NETHER_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_nether_bricks", "chiseled_nether_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_POLISHED_BLACKSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_polished_blackstone", "chiseled_polished_blackstone", true, true, []);
+     static CHISELED_POLISHED_BLACKSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_polished_blackstone", "chiseled_polished_blackstone", true, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_TUFF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_tuff", "chiseled_tuff", true, true, []);
+     static CHISELED_TUFF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_tuff", "chiseled_tuff", true, true, []);
 
     /**
      * @readonly
      */
-     static CHISELED_TUFF_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_tuff_bricks", "chiseled_tuff_bricks", true, true, []);
+     static CHISELED_TUFF_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_tuff_bricks", "chiseled_tuff_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static CHORUS_FLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_flower", "chorus_flower", true, true, ["age"]);
+     static CHORUS_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_flower", "chorus_flower", true, true, ["age"]);
 
     /**
      * @readonly
      */
-     static CHORUS_FRUIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_plant", "chorus_fruit", true, true, []);
+     static CHORUS_FRUIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_plant", "chorus_fruit", true, true, []);
 
     /**
      * @readonly
      */
-     static CHORUS_PLANT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_plant", "chorus_plant", true, true, []);
+     static CHORUS_PLANT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chorus_plant", "chorus_plant", true, true, []);
 
     /**
      * @readonly
      */
-     static CLAY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "clay", "clay", true, true, []);
+     static CLAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "clay", "clay", true, true, []);
 
     /**
      * @readonly
      */
-     static CLAY_BALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "clay_ball", false, true, []);
+     static CLAY_BALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "clay_ball", false, true, []);
 
     /**
      * @readonly
      */
-     static CLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "clock", false, true, []);
+     static CLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "clock", false, true, []);
 
     /**
      * @readonly
      */
-     static COAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coal", false, true, []);
+     static COAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coal", false, true, []);
 
     /**
      * @readonly
      */
-     static COAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "coal_block", "coal_block", true, true, []);
+     static COAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coal_block", "coal_block", true, true, []);
 
     /**
      * @readonly
      */
-     static COAL_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "coal_ore", "coal_ore", true, true, []);
+     static COAL_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coal_ore", "coal_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static COAST_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coast_armor_trim_smithing_template", false, true, []);
+     static COAST_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coast_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static COBBLED_DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate", "cobbled_deepslate", true, true, []);
+     static COBBLED_DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate", "cobbled_deepslate", true, true, []);
 
     /**
      * @readonly
      */
-     static COBBLED_DEEPSLATE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_slab", "cobbled_deepslate_slab", true, true, ["minecraft:vertical_half"]);
+     static COBBLED_DEEPSLATE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_slab", "cobbled_deepslate_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static COBBLED_DEEPSLATE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_stairs", "cobbled_deepslate_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static COBBLED_DEEPSLATE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_stairs", "cobbled_deepslate_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static COBBLED_DEEPSLATE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_wall", "cobbled_deepslate_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static COBBLED_DEEPSLATE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_wall", "cobbled_deepslate_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static COBBLESTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone", "cobblestone", true, true, []);
+     static COBBLESTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone", "cobblestone", true, true, []);
 
     /**
      * @readonly
      */
-     static COBBLESTONE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone_slab", "cobblestone_slab", true, true, ["minecraft:vertical_half"]);
+     static COBBLESTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone_slab", "cobblestone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static COBBLESTONE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone_wall", "cobblestone_wall", true, true, ["wall_block_type", "wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static COBBLESTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone_wall", "cobblestone_wall", true, true, ["wall_block_type", "wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static COCOA_BEANS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cocoa_beans", false, true, []);
+     static COCOA_BEANS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cocoa_beans", false, true, []);
 
     /**
      * @readonly
      */
-     static COD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod", false, true, []);
+     static COD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod", false, true, []);
 
     /**
      * @readonly
      */
-     static COD_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod_bucket", false, true, []);
+     static COD_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static COD_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod_spawn_egg", false, true, []);
+     static COD_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static COMMAND_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "command_block", "command_block", true, true, ["conditional_bit", "facing_direction"]);
+     static COMMAND_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "command_block", "command_block", true, true, ["conditional_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static COMMAND_BLOCK_MINECART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "command_block_minecart", false, true, []);
+     static COMMAND_BLOCK_MINECART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "command_block_minecart", false, true, []);
 
     /**
      * @readonly
      */
-     static COMPARATOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "comparator", false, true, []);
+     static COMPARATOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "comparator", false, true, []);
 
     /**
      * @readonly
      */
-     static COMPASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "compass", false, true, []);
+     static COMPASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "compass", false, true, []);
 
     /**
      * @readonly
      */
-     static COMPOSTER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "composter", "composter", true, true, ["composter_fill_level"]);
+     static COMPOSTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "composter", "composter", true, true, ["composter_fill_level"]);
 
     /**
      * @readonly
      */
-     static CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete", false, true, []);
+     static CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete", false, true, []);
 
     /**
      * @readonly
      */
-     static CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete_powder", false, true, []);
+     static CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete_powder", false, true, []);
 
     /**
      * @readonly
      */
-     static CONDUIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "conduit", "conduit", true, true, []);
+     static CONDUIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "conduit", "conduit", true, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_BEEF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_beef", false, true, []);
+     static COOKED_BEEF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_beef", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_CHICKEN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_chicken", false, true, []);
+     static COOKED_CHICKEN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_chicken", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_COD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_cod", false, true, []);
+     static COOKED_COD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_cod", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_MUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_mutton", false, true, []);
+     static COOKED_MUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_mutton", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_PORKCHOP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_porkchop", false, true, []);
+     static COOKED_PORKCHOP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_porkchop", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_RABBIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_rabbit", false, true, []);
+     static COOKED_RABBIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_rabbit", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKED_SALMON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_salmon", false, true, []);
+     static COOKED_SALMON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cooked_salmon", false, true, []);
 
     /**
      * @readonly
      */
-     static COOKIE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cookie", false, true, []);
+     static COOKIE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cookie", false, true, []);
 
     /**
      * @readonly
      */
-     static COPPER_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_block", "copper_block", true, true, []);
+     static COPPER_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_block", "copper_block", true, true, []);
 
     /**
      * @readonly
      */
-     static COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_bulb", "copper_bulb", true, true, ["lit", "powered_bit"]);
+     static COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_bulb", "copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_door", "copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_door", "copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_grate", "copper_grate", true, true, []);
+     static COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_grate", "copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static COPPER_INGOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "copper_ingot", false, true, []);
+     static COPPER_INGOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "copper_ingot", false, true, []);
 
     /**
      * @readonly
      */
-     static COPPER_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_ore", "copper_ore", true, true, []);
+     static COPPER_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_ore", "copper_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "copper_trapdoor", "copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "copper_trapdoor", "copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral", false, true, []);
+     static CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral", false, true, []);
 
     /**
      * @readonly
      */
-     static CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_block", false, true, []);
+     static CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_block", false, true, []);
 
     /**
      * @readonly
      */
-     static CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan", false, true, []);
+     static CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan", false, true, []);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_DEAD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan_dead", false, true, []);
+     static CORAL_FAN_DEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan_dead", false, true, []);
 
     /**
      * @readonly
      */
-     static CORNFLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cornflower", "cornflower", true, true, []);
+     static CORNFLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cornflower", "cornflower", true, true, []);
 
     /**
      * @readonly
      */
-     static COW_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cow_spawn_egg", false, true, []);
+     static COW_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cow_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CRACKED_DEEPSLATE_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_deepslate_bricks", "cracked_deepslate_bricks", true, true, []);
+     static CRACKED_DEEPSLATE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_deepslate_bricks", "cracked_deepslate_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static CRACKED_DEEPSLATE_TILES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_deepslate_tiles", "cracked_deepslate_tiles", true, true, []);
+     static CRACKED_DEEPSLATE_TILES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_deepslate_tiles", "cracked_deepslate_tiles", true, true, []);
 
     /**
      * @readonly
      */
-     static CRACKED_NETHER_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_nether_bricks", "cracked_nether_bricks", true, true, []);
+     static CRACKED_NETHER_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_nether_bricks", "cracked_nether_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static CRACKED_POLISHED_BLACKSTONE_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_polished_blackstone_bricks", "cracked_polished_blackstone_bricks", true, true, []);
+     static CRACKED_POLISHED_BLACKSTONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_polished_blackstone_bricks", "cracked_polished_blackstone_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static CRAFTER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crafter", "crafter", true, true, ["crafting", "orientation", "triggered_bit"]);
+     static CRAFTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crafter", "crafter", true, true, ["crafting", "orientation", "triggered_bit"]);
 
     /**
      * @readonly
      */
-     static CRAFTING_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crafting_table", "crafting_table", true, true, []);
+     static CRAFTING_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crafting_table", "crafting_table", true, true, []);
 
     /**
      * @readonly
      */
-     static CREEPER_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "creeper_banner_pattern", false, true, []);
+     static CREEPER_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "creeper_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static CREEPER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "creeper_spawn_egg", false, true, []);
+     static CREEPER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "creeper_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_button", "crimson_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static CRIMSON_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_button", "crimson_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_door", "crimson_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static CRIMSON_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_door", "crimson_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fence", "crimson_fence", true, true, []);
+     static CRIMSON_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fence", "crimson_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fence_gate", "crimson_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static CRIMSON_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fence_gate", "crimson_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_FUNGUS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fungus", "crimson_fungus", true, true, []);
+     static CRIMSON_FUNGUS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_fungus", "crimson_fungus", true, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_hanging_sign", "crimson_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static CRIMSON_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_hanging_sign", "crimson_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_HYPHAE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_hyphae", "crimson_hyphae", true, true, ["pillar_axis"]);
+     static CRIMSON_HYPHAE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_hyphae", "crimson_hyphae", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_NYLIUM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_nylium", "crimson_nylium", true, true, []);
+     static CRIMSON_NYLIUM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_nylium", "crimson_nylium", true, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_planks", "crimson_planks", true, true, []);
+     static CRIMSON_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_planks", "crimson_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_pressure_plate", "crimson_pressure_plate", true, true, ["redstone_signal"]);
+     static CRIMSON_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_pressure_plate", "crimson_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_roots", "crimson_roots", true, true, []);
+     static CRIMSON_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_roots", "crimson_roots", true, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "crimson_sign", false, true, []);
+     static CRIMSON_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "crimson_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static CRIMSON_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_slab", "crimson_slab", true, true, ["minecraft:vertical_half"]);
+     static CRIMSON_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_slab", "crimson_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_stairs", "crimson_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static CRIMSON_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_stairs", "crimson_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_stem", "crimson_stem", true, true, ["pillar_axis"]);
+     static CRIMSON_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_stem", "crimson_stem", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_trapdoor", "crimson_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static CRIMSON_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_trapdoor", "crimson_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static CROSSBOW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "crossbow", false, true, []);
+     static CROSSBOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "crossbow", false, true, []);
 
     /**
      * @readonly
      */
-     static CRYING_OBSIDIAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crying_obsidian", "crying_obsidian", true, true, []);
+     static CRYING_OBSIDIAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crying_obsidian", "crying_obsidian", true, true, []);
 
     /**
      * @readonly
      */
-     static CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper", "cut_copper", true, true, []);
+     static CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper", "cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper_slab", "cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper_slab", "cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper_stairs", "cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_copper_stairs", "cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static CYAN_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_candle", "cyan_candle", true, true, ["candles", "lit"]);
+     static CYAN_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_candle", "cyan_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static CYAN_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_carpet", "cyan_carpet", true, true, []);
+     static CYAN_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_carpet", "cyan_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_concrete", "cyan_concrete", true, true, []);
+     static CYAN_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_concrete", "cyan_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_concrete_powder", "cyan_concrete_powder", true, true, []);
+     static CYAN_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_concrete_powder", "cyan_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "cyan_dye", false, true, []);
+     static CYAN_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cyan_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_glazed_terracotta", "cyan_glazed_terracotta", true, true, ["facing_direction"]);
+     static CYAN_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_glazed_terracotta", "cyan_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static CYAN_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_shulker_box", "cyan_shulker_box", true, true, []);
+     static CYAN_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_shulker_box", "cyan_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_stained_glass", "cyan_stained_glass", true, true, []);
+     static CYAN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_stained_glass", "cyan_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_stained_glass_pane", "cyan_stained_glass_pane", true, true, []);
+     static CYAN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_stained_glass_pane", "cyan_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_terracotta", "cyan_terracotta", true, true, []);
+     static CYAN_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_terracotta", "cyan_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static CYAN_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_wool", "cyan_wool", true, true, []);
+     static CYAN_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_wool", "cyan_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static DANGER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "danger_pottery_sherd", false, true, []);
+     static DANGER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "danger_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_boat", false, true, []);
+     static DARK_OAK_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_button", "dark_oak_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static DARK_OAK_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_button", "dark_oak_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_chest_boat", false, true, []);
+     static DARK_OAK_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_door", "dark_oak_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static DARK_OAK_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_door", "dark_oak_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_fence", "dark_oak_fence", true, true, []);
+     static DARK_OAK_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_fence", "dark_oak_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_fence_gate", "dark_oak_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static DARK_OAK_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_fence_gate", "dark_oak_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_hanging_sign", "dark_oak_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static DARK_OAK_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_hanging_sign", "dark_oak_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_leaves", "dark_oak_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static DARK_OAK_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_leaves", "dark_oak_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_log", "dark_oak_log", true, true, ["pillar_axis"]);
+     static DARK_OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_log", "dark_oak_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_planks", "dark_oak_planks", true, true, []);
+     static DARK_OAK_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_planks", "dark_oak_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_pressure_plate", "dark_oak_pressure_plate", true, true, ["redstone_signal"]);
+     static DARK_OAK_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_pressure_plate", "dark_oak_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_sapling", "dark_oak_sapling", true, true, ["age_bit"]);
+     static DARK_OAK_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_sapling", "dark_oak_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_sign", false, true, []);
+     static DARK_OAK_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dark_oak_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static DARK_OAK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_slab", "dark_oak_slab", true, true, ["minecraft:vertical_half"]);
+     static DARK_OAK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_slab", "dark_oak_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_stairs", "dark_oak_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static DARK_OAK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_stairs", "dark_oak_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_trapdoor", "dark_oak_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static DARK_OAK_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_trapdoor", "dark_oak_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_wood", "dark_oak_wood", true, true, ["pillar_axis"]);
+     static DARK_OAK_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_wood", "dark_oak_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static DARK_PRISMARINE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_prismarine_stairs", "dark_prismarine_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static DARK_PRISMARINE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_prismarine_stairs", "dark_prismarine_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static DAYLIGHT_DETECTOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "daylight_detector", "daylight_detector", true, true, ["redstone_signal"]);
+     static DAYLIGHT_DETECTOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "daylight_detector", "daylight_detector", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static DEAD_BRAIN_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral", "dead_brain_coral", true, true, []);
+     static DEAD_BRAIN_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral", "dead_brain_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_BRAIN_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral_block", "dead_brain_coral_block", true, true, []);
+     static DEAD_BRAIN_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral_block", "dead_brain_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_BRAIN_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral_fan", "dead_brain_coral_fan", true, true, ["coral_fan_direction"]);
+     static DEAD_BRAIN_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral_fan", "dead_brain_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static DEAD_BUBBLE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral", "dead_bubble_coral", true, true, []);
+     static DEAD_BUBBLE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral", "dead_bubble_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_BUBBLE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral_block", "dead_bubble_coral_block", true, true, []);
+     static DEAD_BUBBLE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral_block", "dead_bubble_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_BUBBLE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral_fan", "dead_bubble_coral_fan", true, true, ["coral_fan_direction"]);
+     static DEAD_BUBBLE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral_fan", "dead_bubble_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static DEAD_FIRE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral", "dead_fire_coral", true, true, []);
+     static DEAD_FIRE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral", "dead_fire_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_FIRE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral_block", "dead_fire_coral_block", true, true, []);
+     static DEAD_FIRE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral_block", "dead_fire_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_FIRE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral_fan", "dead_fire_coral_fan", true, true, ["coral_fan_direction"]);
+     static DEAD_FIRE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral_fan", "dead_fire_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static DEAD_HORN_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral", "dead_horn_coral", true, true, []);
+     static DEAD_HORN_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral", "dead_horn_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_HORN_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral_block", "dead_horn_coral_block", true, true, []);
+     static DEAD_HORN_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral_block", "dead_horn_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_HORN_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral_fan", "dead_horn_coral_fan", true, true, ["coral_fan_direction"]);
+     static DEAD_HORN_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral_fan", "dead_horn_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static DEAD_TUBE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral", "dead_tube_coral", true, true, []);
+     static DEAD_TUBE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral", "dead_tube_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_TUBE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral_block", "dead_tube_coral_block", true, true, []);
+     static DEAD_TUBE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral_block", "dead_tube_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DEAD_TUBE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral_fan", "dead_tube_coral_fan", true, true, ["coral_fan_direction"]);
+     static DEAD_TUBE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral_fan", "dead_tube_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static DEADBUSH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deadbush", "deadbush", true, true, []);
+     static DEADBUSH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deadbush", "deadbush", true, true, []);
 
     /**
      * @readonly
      */
-     static DECORATED_POT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "decorated_pot", "decorated_pot", true, true, ["direction"]);
+     static DECORATED_POT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "decorated_pot", "decorated_pot", true, true, ["direction"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate", "deepslate", true, true, ["pillar_axis"]);
+     static DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate", "deepslate", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_slab", "deepslate_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static DEEPSLATE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_slab", "deepslate_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_stairs", "deepslate_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static DEEPSLATE_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_stairs", "deepslate_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_BRICK_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_wall", "deepslate_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static DEEPSLATE_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_wall", "deepslate_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_bricks", "deepslate_bricks", true, true, []);
+     static DEEPSLATE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_bricks", "deepslate_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_COAL_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_coal_ore", "deepslate_coal_ore", true, true, []);
+     static DEEPSLATE_COAL_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_coal_ore", "deepslate_coal_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_COPPER_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_copper_ore", "deepslate_copper_ore", true, true, []);
+     static DEEPSLATE_COPPER_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_copper_ore", "deepslate_copper_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_DIAMOND_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_diamond_ore", "deepslate_diamond_ore", true, true, []);
+     static DEEPSLATE_DIAMOND_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_diamond_ore", "deepslate_diamond_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_EMERALD_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_emerald_ore", "deepslate_emerald_ore", true, true, []);
+     static DEEPSLATE_EMERALD_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_emerald_ore", "deepslate_emerald_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_GOLD_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_gold_ore", "deepslate_gold_ore", true, true, []);
+     static DEEPSLATE_GOLD_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_gold_ore", "deepslate_gold_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_IRON_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_iron_ore", "deepslate_iron_ore", true, true, []);
+     static DEEPSLATE_IRON_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_iron_ore", "deepslate_iron_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_LAPIS_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_lapis_ore", "deepslate_lapis_ore", true, true, []);
+     static DEEPSLATE_LAPIS_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_lapis_ore", "deepslate_lapis_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_REDSTONE_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_redstone_ore", "deepslate_redstone_ore", true, true, []);
+     static DEEPSLATE_REDSTONE_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_redstone_ore", "deepslate_redstone_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_TILE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_slab", "deepslate_tile_slab", true, true, ["minecraft:vertical_half"]);
+     static DEEPSLATE_TILE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_slab", "deepslate_tile_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_TILE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_stairs", "deepslate_tile_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static DEEPSLATE_TILE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_stairs", "deepslate_tile_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_TILE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_wall", "deepslate_tile_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static DEEPSLATE_TILE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_wall", "deepslate_tile_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_TILES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tiles", "deepslate_tiles", true, true, []);
+     static DEEPSLATE_TILES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tiles", "deepslate_tiles", true, true, []);
 
     /**
      * @readonly
      */
-     static DENY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deny", "deny", true, true, []);
+     static DENY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deny", "deny", true, true, []);
 
     /**
      * @readonly
      */
-     static DETECTOR_RAIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "detector_rail", "detector_rail", true, true, ["rail_data_bit", "rail_direction"]);
+     static DETECTOR_RAIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "detector_rail", "detector_rail", true, true, ["rail_data_bit", "rail_direction"]);
 
     /**
      * @readonly
      */
-     static DIAMOND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond", false, true, []);
+     static DIAMOND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_axe", false, true, []);
+     static DIAMOND_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "diamond_block", "diamond_block", true, true, []);
+     static DIAMOND_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diamond_block", "diamond_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_boots", false, true, []);
+     static DIAMOND_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_chestplate", false, true, []);
+     static DIAMOND_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_helmet", false, true, []);
+     static DIAMOND_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_hoe", false, true, []);
+     static DIAMOND_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_HORSE_ARMOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_horse_armor", false, true, []);
+     static DIAMOND_HORSE_ARMOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_horse_armor", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_leggings", false, true, []);
+     static DIAMOND_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "diamond_ore", "diamond_ore", true, true, []);
+     static DIAMOND_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diamond_ore", "diamond_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_pickaxe", false, true, []);
+     static DIAMOND_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_shovel", false, true, []);
+     static DIAMOND_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static DIAMOND_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_sword", false, true, []);
+     static DIAMOND_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "diamond_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static DIORITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "diorite", "diorite", true, true, []);
+     static DIORITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diorite", "diorite", true, true, []);
 
     /**
      * @readonly
      */
-     static DIORITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "diorite_stairs", "diorite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static DIORITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diorite_stairs", "diorite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static DIRT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dirt", "dirt", true, true, ["dirt_type"]);
+     static DIRT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dirt", "dirt", true, true, ["dirt_type"]);
 
     /**
      * @readonly
      */
-     static DIRT_WITH_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dirt_with_roots", "dirt_with_roots", true, true, []);
+     static DIRT_WITH_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dirt_with_roots", "dirt_with_roots", true, true, []);
 
     /**
      * @readonly
      */
-     static DISC_FRAGMENT_5 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "disc_fragment_5", false, true, []);
+     static DISC_FRAGMENT_5 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "disc_fragment_5", false, true, []);
 
     /**
      * @readonly
      */
-     static DISPENSER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dispenser", "dispenser", true, true, ["facing_direction", "triggered_bit"]);
+     static DISPENSER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dispenser", "dispenser", true, true, ["facing_direction", "triggered_bit"]);
 
     /**
      * @readonly
      */
-     static DOLPHIN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dolphin_spawn_egg", false, true, []);
+     static DOLPHIN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dolphin_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static DONKEY_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "donkey_spawn_egg", false, true, []);
+     static DONKEY_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "donkey_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static DOUBLE_PLANT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "double_plant", false, true, []);
+     static DOUBLE_PLANT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "double_plant", false, true, []);
 
     /**
      * @readonly
      */
-     static DRAGON_BREATH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dragon_breath", false, true, []);
+     static DRAGON_BREATH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dragon_breath", false, true, []);
 
     /**
      * @readonly
      */
-     static DRAGON_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dragon_egg", "dragon_egg", true, true, []);
+     static DRAGON_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dragon_egg", "dragon_egg", true, true, []);
 
     /**
      * @readonly
      */
-     static DRIED_KELP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dried_kelp", false, true, []);
+     static DRIED_KELP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dried_kelp", false, true, []);
 
     /**
      * @readonly
      */
-     static DRIED_KELP_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dried_kelp_block", "dried_kelp_block", true, true, []);
+     static DRIED_KELP_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dried_kelp_block", "dried_kelp_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DRIPSTONE_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dripstone_block", "dripstone_block", true, true, []);
+     static DRIPSTONE_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dripstone_block", "dripstone_block", true, true, []);
 
     /**
      * @readonly
      */
-     static DROPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dropper", "dropper", true, true, ["facing_direction", "triggered_bit"]);
+     static DROPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dropper", "dropper", true, true, ["facing_direction", "triggered_bit"]);
 
     /**
      * @readonly
      */
-     static DROWNED_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "drowned_spawn_egg", false, true, []);
+     static DROWNED_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "drowned_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static DUNE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dune_armor_trim_smithing_template", false, true, []);
+     static DUNE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dune_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "dye", false, true, []);
+     static DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dye", false, true, []);
 
     /**
      * @readonly
      */
-     static ECHO_SHARD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "echo_shard", false, true, []);
+     static ECHO_SHARD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "echo_shard", false, true, []);
 
     /**
      * @readonly
      */
-     static EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "egg", false, true, []);
+     static EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ELDER_GUARDIAN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "elder_guardian_spawn_egg", false, true, []);
+     static ELDER_GUARDIAN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "elder_guardian_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ELYTRA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "elytra", false, true, []);
+     static ELYTRA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "elytra", false, true, []);
 
     /**
      * @readonly
      */
-     static EMERALD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "emerald", false, true, []);
+     static EMERALD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "emerald", false, true, []);
 
     /**
      * @readonly
      */
-     static EMERALD_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "emerald_block", "emerald_block", true, true, []);
+     static EMERALD_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "emerald_block", "emerald_block", true, true, []);
 
     /**
      * @readonly
      */
-     static EMERALD_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "emerald_ore", "emerald_ore", true, true, []);
+     static EMERALD_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "emerald_ore", "emerald_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static EMPTY_MAP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "empty_map", false, true, []);
+     static EMPTY_MAP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "empty_map", false, true, []);
 
     /**
      * @readonly
      */
-     static ENCHANTED_BOOK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "enchanted_book", false, true, []);
+     static ENCHANTED_BOOK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "enchanted_book", false, true, []);
 
     /**
      * @readonly
      */
-     static ENCHANTED_GOLDEN_APPLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "enchanted_golden_apple", false, true, []);
+     static ENCHANTED_GOLDEN_APPLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "enchanted_golden_apple", false, true, []);
 
     /**
      * @readonly
      */
-     static ENCHANTING_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "enchanting_table", "enchanting_table", true, true, []);
+     static ENCHANTING_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "enchanting_table", "enchanting_table", true, true, []);
 
     /**
      * @readonly
      */
-     static END_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_brick_stairs", "end_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static END_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_brick_stairs", "end_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static END_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_bricks", "end_bricks", true, true, []);
+     static END_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_bricks", "end_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static END_CRYSTAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "end_crystal", false, true, []);
+     static END_CRYSTAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "end_crystal", false, true, []);
 
     /**
      * @readonly
      */
-     static END_PORTAL_FRAME = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_portal_frame", "end_portal_frame", true, true, ["end_portal_eye_bit", "minecraft:cardinal_direction"]);
+     static END_PORTAL_FRAME = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_portal_frame", "end_portal_frame", true, true, ["end_portal_eye_bit", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static END_ROD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_rod", "end_rod", true, true, ["facing_direction"]);
+     static END_ROD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_rod", "end_rod", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static END_STONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_stone", "end_stone", true, true, []);
+     static END_STONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_stone", "end_stone", true, true, []);
 
     /**
      * @readonly
      */
-     static ENDER_CHEST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "ender_chest", "ender_chest", true, true, ["minecraft:cardinal_direction"]);
+     static ENDER_CHEST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "ender_chest", "ender_chest", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static ENDER_DRAGON_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_dragon_spawn_egg", false, true, []);
+     static ENDER_DRAGON_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_dragon_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ENDER_EYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_eye", false, true, []);
+     static ENDER_EYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_eye", false, true, []);
 
     /**
      * @readonly
      */
-     static ENDER_PEARL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_pearl", false, true, []);
+     static ENDER_PEARL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ender_pearl", false, true, []);
 
     /**
      * @readonly
      */
-     static ENDERMAN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "enderman_spawn_egg", false, true, []);
+     static ENDERMAN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "enderman_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ENDERMITE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "endermite_spawn_egg", false, true, []);
+     static ENDERMITE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "endermite_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static EVOKER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "evoker_spawn_egg", false, true, []);
+     static EVOKER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "evoker_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static EXPERIENCE_BOTTLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "experience_bottle", false, true, []);
+     static EXPERIENCE_BOTTLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "experience_bottle", false, true, []);
 
     /**
      * @readonly
      */
-     static EXPLORER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "explorer_pottery_sherd", false, true, []);
+     static EXPLORER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "explorer_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_chiseled_copper", "exposed_chiseled_copper", true, true, []);
+     static EXPOSED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_chiseled_copper", "exposed_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper", "exposed_copper", true, true, []);
+     static EXPOSED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper", "exposed_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_bulb", "exposed_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static EXPOSED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_bulb", "exposed_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static EXPOSED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_door", "exposed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static EXPOSED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_door", "exposed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static EXPOSED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_grate", "exposed_copper_grate", true, true, []);
+     static EXPOSED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_grate", "exposed_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_trapdoor", "exposed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static EXPOSED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_copper_trapdoor", "exposed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static EXPOSED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper", "exposed_cut_copper", true, true, []);
+     static EXPOSED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper", "exposed_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper_slab", "exposed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static EXPOSED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper_slab", "exposed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static EXPOSED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper_stairs", "exposed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static EXPOSED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_cut_copper_stairs", "exposed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static EYE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "eye_armor_trim_smithing_template", false, true, []);
+     static EYE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "eye_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static FARMLAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "farmland", "farmland", true, true, ["moisturized_amount"]);
+     static FARMLAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "farmland", "farmland", true, true, ["moisturized_amount"]);
 
     /**
      * @readonly
      */
-     static FEATHER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "feather", false, true, []);
+     static FEATHER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "feather", false, true, []);
 
     /**
      * @readonly
      */
-     static FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "fence", false, true, []);
+     static FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fence", false, true, []);
 
     /**
      * @readonly
      */
-     static FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fence_gate", "fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fence_gate", "fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static FERMENTED_SPIDER_EYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "fermented_spider_eye", false, true, []);
+     static FERMENTED_SPIDER_EYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fermented_spider_eye", false, true, []);
 
     /**
      * @readonly
      */
-     static FERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fern", "fern", true, true, []);
+     static FERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fern", "fern", true, true, []);
 
     /**
      * @readonly
      */
-     static FIELD_MASONED_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "field_masoned_banner_pattern", false, true, []);
+     static FIELD_MASONED_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "field_masoned_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static FILLED_MAP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "filled_map", false, true, []);
+     static FILLED_MAP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "filled_map", false, true, []);
 
     /**
      * @readonly
      */
-     static FIRE_CHARGE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "fire_charge", false, true, []);
+     static FIRE_CHARGE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fire_charge", false, true, []);
 
     /**
      * @readonly
      */
-     static FIRE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral", "fire_coral", true, true, []);
+     static FIRE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral", "fire_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static FIRE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral_block", "fire_coral_block", true, true, []);
+     static FIRE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral_block", "fire_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static FIRE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral_fan", "fire_coral_fan", true, true, ["coral_fan_direction"]);
+     static FIRE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral_fan", "fire_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static FIREWORK_ROCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "firework_rocket", false, true, []);
+     static FIREWORK_ROCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "firework_rocket", false, true, []);
 
     /**
      * @readonly
      */
-     static FIREWORK_STAR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "firework_star", false, true, []);
+     static FIREWORK_STAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "firework_star", false, true, []);
 
     /**
      * @readonly
      */
-     static FISHING_ROD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "fishing_rod", false, true, []);
+     static FISHING_ROD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fishing_rod", false, true, []);
 
     /**
      * @readonly
      */
-     static FLETCHING_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fletching_table", "fletching_table", true, true, []);
+     static FLETCHING_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fletching_table", "fletching_table", true, true, []);
 
     /**
      * @readonly
      */
-     static FLINT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flint", false, true, []);
+     static FLINT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flint", false, true, []);
 
     /**
      * @readonly
      */
-     static FLINT_AND_STEEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flint_and_steel", false, true, []);
+     static FLINT_AND_STEEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flint_and_steel", false, true, []);
 
     /**
      * @readonly
      */
-     static FLOW_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_armor_trim_smithing_template", false, true, []);
+     static FLOW_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static FLOW_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_banner_pattern", false, true, []);
+     static FLOW_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static FLOW_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_pottery_sherd", false, true, []);
+     static FLOW_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flow_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static FLOWER_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "flower_banner_pattern", false, true, []);
+     static FLOWER_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flower_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static FLOWER_POT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "flower_pot", "flower_pot", true, true, ["update_bit"]);
+     static FLOWER_POT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flower_pot", "flower_pot", true, true, ["update_bit"]);
 
     /**
      * @readonly
      */
-     static FLOWERING_AZALEA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "flowering_azalea", "flowering_azalea", true, true, []);
+     static FLOWERING_AZALEA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowering_azalea", "flowering_azalea", true, true, []);
 
     /**
      * @readonly
      */
-     static FOX_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "fox_spawn_egg", false, true, []);
+     static FOX_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fox_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static FRAME = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "frame", "frame", true, true, ["facing_direction", "item_frame_map_bit", "item_frame_photo_bit"]);
+     static FRAME = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "frame", "frame", true, true, ["facing_direction", "item_frame_map_bit", "item_frame_photo_bit"]);
 
     /**
      * @readonly
      */
-     static FRIEND_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "friend_pottery_sherd", false, true, []);
+     static FRIEND_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "friend_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static FROG_SPAWN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "frog_spawn", "frog_spawn", true, true, []);
+     static FROG_SPAWN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "frog_spawn", "frog_spawn", true, true, []);
 
     /**
      * @readonly
      */
-     static FROG_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "frog_spawn_egg", false, true, []);
+     static FROG_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "frog_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static FROSTED_ICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "frosted_ice", "frosted_ice", true, true, ["age"]);
+     static FROSTED_ICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "frosted_ice", "frosted_ice", true, true, ["age"]);
 
     /**
      * @readonly
      */
-     static FURNACE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "furnace", "furnace", true, true, ["minecraft:cardinal_direction"]);
+     static FURNACE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "furnace", "furnace", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static GHAST_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ghast_spawn_egg", false, true, []);
+     static GHAST_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ghast_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static GHAST_TEAR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ghast_tear", false, true, []);
+     static GHAST_TEAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ghast_tear", false, true, []);
 
     /**
      * @readonly
      */
-     static GILDED_BLACKSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gilded_blackstone", "gilded_blackstone", true, true, []);
+     static GILDED_BLACKSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gilded_blackstone", "gilded_blackstone", true, true, []);
 
     /**
      * @readonly
      */
-     static GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glass", "glass", true, true, []);
+     static GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glass", "glass", true, true, []);
 
     /**
      * @readonly
      */
-     static GLASS_BOTTLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glass_bottle", false, true, []);
+     static GLASS_BOTTLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glass_bottle", false, true, []);
 
     /**
      * @readonly
      */
-     static GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glass_pane", "glass_pane", true, true, []);
+     static GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glass_pane", "glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static GLISTERING_MELON_SLICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glistering_melon_slice", false, true, []);
+     static GLISTERING_MELON_SLICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glistering_melon_slice", false, true, []);
 
     /**
      * @readonly
      */
-     static GLOBE_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "globe_banner_pattern", false, true, []);
+     static GLOBE_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "globe_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static GLOW_BERRIES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_berries", false, true, []);
+     static GLOW_BERRIES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_berries", false, true, []);
 
     /**
      * @readonly
      */
-     static GLOW_FRAME = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glow_frame", "glow_frame", true, true, ["facing_direction", "item_frame_map_bit", "item_frame_photo_bit"]);
+     static GLOW_FRAME = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glow_frame", "glow_frame", true, true, ["facing_direction", "item_frame_map_bit", "item_frame_photo_bit"]);
 
     /**
      * @readonly
      */
-     static GLOW_INK_SAC = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_ink_sac", false, true, []);
+     static GLOW_INK_SAC = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_ink_sac", false, true, []);
 
     /**
      * @readonly
      */
-     static GLOW_LICHEN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glow_lichen", "glow_lichen", true, true, ["multi_face_direction_bits"]);
+     static GLOW_LICHEN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glow_lichen", "glow_lichen", true, true, ["multi_face_direction_bits"]);
 
     /**
      * @readonly
      */
-     static GLOW_SQUID_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_squid_spawn_egg", false, true, []);
+     static GLOW_SQUID_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glow_squid_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static GLOWSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glowstone", "glowstone", true, true, []);
+     static GLOWSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glowstone", "glowstone", true, true, []);
 
     /**
      * @readonly
      */
-     static GLOWSTONE_DUST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "glowstone_dust", false, true, []);
+     static GLOWSTONE_DUST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "glowstone_dust", false, true, []);
 
     /**
      * @readonly
      */
-     static GOAT_HORN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "goat_horn", false, true, []);
+     static GOAT_HORN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "goat_horn", false, true, []);
 
     /**
      * @readonly
      */
-     static GOAT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "goat_spawn_egg", false, true, []);
+     static GOAT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "goat_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLD_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gold_block", "gold_block", true, true, []);
+     static GOLD_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gold_block", "gold_block", true, true, []);
 
     /**
      * @readonly
      */
-     static GOLD_INGOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "gold_ingot", false, true, []);
+     static GOLD_INGOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "gold_ingot", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLD_NUGGET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "gold_nugget", false, true, []);
+     static GOLD_NUGGET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "gold_nugget", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLD_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gold_ore", "gold_ore", true, true, []);
+     static GOLD_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gold_ore", "gold_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_APPLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_apple", false, true, []);
+     static GOLDEN_APPLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_apple", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_axe", false, true, []);
+     static GOLDEN_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_boots", false, true, []);
+     static GOLDEN_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_CARROT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_carrot", false, true, []);
+     static GOLDEN_CARROT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_carrot", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_chestplate", false, true, []);
+     static GOLDEN_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_helmet", false, true, []);
+     static GOLDEN_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_hoe", false, true, []);
+     static GOLDEN_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_HORSE_ARMOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_horse_armor", false, true, []);
+     static GOLDEN_HORSE_ARMOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_horse_armor", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_leggings", false, true, []);
+     static GOLDEN_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_pickaxe", false, true, []);
+     static GOLDEN_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_RAIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "golden_rail", "golden_rail", true, true, ["rail_data_bit", "rail_direction"]);
+     static GOLDEN_RAIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "golden_rail", "golden_rail", true, true, ["rail_data_bit", "rail_direction"]);
 
     /**
      * @readonly
      */
-     static GOLDEN_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_shovel", false, true, []);
+     static GOLDEN_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static GOLDEN_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_sword", false, true, []);
+     static GOLDEN_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "golden_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static GRANITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "granite", "granite", true, true, []);
+     static GRANITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "granite", "granite", true, true, []);
 
     /**
      * @readonly
      */
-     static GRANITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "granite_stairs", "granite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static GRANITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "granite_stairs", "granite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static GRASS_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "grass_block", "grass_block", true, true, []);
+     static GRASS_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "grass_block", "grass_block", true, true, []);
 
     /**
      * @readonly
      */
-     static GRASS_PATH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "grass_path", "grass_path", true, true, []);
+     static GRASS_PATH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "grass_path", "grass_path", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gravel", "gravel", true, true, []);
+     static GRAVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gravel", "gravel", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_candle", "gray_candle", true, true, ["candles", "lit"]);
+     static GRAY_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_candle", "gray_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static GRAY_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_carpet", "gray_carpet", true, true, []);
+     static GRAY_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_carpet", "gray_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_concrete", "gray_concrete", true, true, []);
+     static GRAY_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_concrete", "gray_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_concrete_powder", "gray_concrete_powder", true, true, []);
+     static GRAY_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_concrete_powder", "gray_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "gray_dye", false, true, []);
+     static GRAY_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "gray_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_glazed_terracotta", "gray_glazed_terracotta", true, true, ["facing_direction"]);
+     static GRAY_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_glazed_terracotta", "gray_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static GRAY_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_shulker_box", "gray_shulker_box", true, true, []);
+     static GRAY_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_shulker_box", "gray_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_stained_glass", "gray_stained_glass", true, true, []);
+     static GRAY_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_stained_glass", "gray_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_stained_glass_pane", "gray_stained_glass_pane", true, true, []);
+     static GRAY_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_stained_glass_pane", "gray_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_terracotta", "gray_terracotta", true, true, []);
+     static GRAY_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_terracotta", "gray_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static GRAY_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_wool", "gray_wool", true, true, []);
+     static GRAY_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_wool", "gray_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_candle", "green_candle", true, true, ["candles", "lit"]);
+     static GREEN_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_candle", "green_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static GREEN_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_carpet", "green_carpet", true, true, []);
+     static GREEN_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_carpet", "green_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_concrete", "green_concrete", true, true, []);
+     static GREEN_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_concrete", "green_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_concrete_powder", "green_concrete_powder", true, true, []);
+     static GREEN_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_concrete_powder", "green_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "green_dye", false, true, []);
+     static GREEN_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "green_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_glazed_terracotta", "green_glazed_terracotta", true, true, ["facing_direction"]);
+     static GREEN_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_glazed_terracotta", "green_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static GREEN_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_shulker_box", "green_shulker_box", true, true, []);
+     static GREEN_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_shulker_box", "green_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_stained_glass", "green_stained_glass", true, true, []);
+     static GREEN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_stained_glass", "green_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_stained_glass_pane", "green_stained_glass_pane", true, true, []);
+     static GREEN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_stained_glass_pane", "green_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_terracotta", "green_terracotta", true, true, []);
+     static GREEN_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_terracotta", "green_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static GREEN_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_wool", "green_wool", true, true, []);
+     static GREEN_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_wool", "green_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static GRINDSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "grindstone", "grindstone", true, true, ["attachment", "direction"]);
+     static GRINDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "grindstone", "grindstone", true, true, ["attachment", "direction"]);
 
     /**
      * @readonly
      */
-     static GUARDIAN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "guardian_spawn_egg", false, true, []);
+     static GUARDIAN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "guardian_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static GUNPOWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "gunpowder", false, true, []);
+     static GUNPOWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "gunpowder", false, true, []);
 
     /**
      * @readonly
      */
-     static GUSTER_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "guster_banner_pattern", false, true, []);
+     static GUSTER_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "guster_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static GUSTER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "guster_pottery_sherd", false, true, []);
+     static GUSTER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "guster_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static HANGING_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hanging_roots", "hanging_roots", true, true, []);
+     static HANGING_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hanging_roots", "hanging_roots", true, true, []);
 
     /**
      * @readonly
      */
-     static HARD_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, []);
+     static HARD_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, []);
 
     /**
      * @readonly
      */
-     static HARD_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, []);
+     static HARD_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, []);
 
     /**
      * @readonly
      */
-     static HARDENED_CLAY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hardened_clay", "hardened_clay", true, true, []);
+     static HARDENED_CLAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hardened_clay", "hardened_clay", true, true, []);
 
     /**
      * @readonly
      */
-     static HAY_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hay_block", "hay_block", true, true, ["deprecated", "pillar_axis"]);
+     static HAY_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hay_block", "hay_block", true, true, ["deprecated", "pillar_axis"]);
 
     /**
      * @readonly
      */
-     static HEART_OF_THE_SEA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "heart_of_the_sea", false, true, []);
+     static HEART_OF_THE_SEA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "heart_of_the_sea", false, true, []);
 
     /**
      * @readonly
      */
-     static HEART_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "heart_pottery_sherd", false, true, []);
+     static HEART_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "heart_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static HEARTBREAK_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "heartbreak_pottery_sherd", false, true, []);
+     static HEARTBREAK_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "heartbreak_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static HEAVY_CORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "heavy_core", "heavy_core", true, true, []);
+     static HEAVY_CORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "heavy_core", "heavy_core", true, true, []);
 
     /**
      * @readonly
      */
-     static HEAVY_WEIGHTED_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "heavy_weighted_pressure_plate", "heavy_weighted_pressure_plate", true, true, ["redstone_signal"]);
+     static HEAVY_WEIGHTED_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "heavy_weighted_pressure_plate", "heavy_weighted_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static HOGLIN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "hoglin_spawn_egg", false, true, []);
+     static HOGLIN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hoglin_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static HONEY_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "honey_block", "honey_block", true, true, []);
+     static HONEY_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "honey_block", "honey_block", true, true, []);
 
     /**
      * @readonly
      */
-     static HONEY_BOTTLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "honey_bottle", false, true, []);
+     static HONEY_BOTTLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "honey_bottle", false, true, []);
 
     /**
      * @readonly
      */
-     static HONEYCOMB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "honeycomb", false, true, []);
+     static HONEYCOMB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "honeycomb", false, true, []);
 
     /**
      * @readonly
      */
-     static HONEYCOMB_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "honeycomb_block", "honeycomb_block", true, true, []);
+     static HONEYCOMB_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "honeycomb_block", "honeycomb_block", true, true, []);
 
     /**
      * @readonly
      */
-     static HOPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hopper", "hopper", true, true, ["facing_direction", "toggle_bit"]);
+     static HOPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hopper", "hopper", true, true, ["facing_direction", "toggle_bit"]);
 
     /**
      * @readonly
      */
-     static HOPPER_MINECART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "hopper_minecart", false, true, []);
+     static HOPPER_MINECART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hopper_minecart", false, true, []);
 
     /**
      * @readonly
      */
-     static HORN_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral", "horn_coral", true, true, []);
+     static HORN_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral", "horn_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static HORN_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral_block", "horn_coral_block", true, true, []);
+     static HORN_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral_block", "horn_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static HORN_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral_fan", "horn_coral_fan", true, true, ["coral_fan_direction"]);
+     static HORN_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral_fan", "horn_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static HORSE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "horse_spawn_egg", false, true, []);
+     static HORSE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "horse_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static HOST_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "host_armor_trim_smithing_template", false, true, []);
+     static HOST_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "host_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static HOWL_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "howl_pottery_sherd", false, true, []);
+     static HOWL_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "howl_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static HUSK_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "husk_spawn_egg", false, true, []);
+     static HUSK_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "husk_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "ice", "ice", true, true, []);
+     static ICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "ice", "ice", true, true, []);
 
     /**
      * @readonly
      */
-     static INFESTED_DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "infested_deepslate", "infested_deepslate", true, true, ["pillar_axis"]);
+     static INFESTED_DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_deepslate", "infested_deepslate", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static INK_SAC = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ink_sac", false, true, []);
+     static INK_SAC = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ink_sac", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_axe", false, true, []);
+     static IRON_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_BARS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "iron_bars", "iron_bars", true, true, []);
+     static IRON_BARS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "iron_bars", "iron_bars", true, true, []);
 
     /**
      * @readonly
      */
-     static IRON_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "iron_block", "iron_block", true, true, []);
+     static IRON_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "iron_block", "iron_block", true, true, []);
 
     /**
      * @readonly
      */
-     static IRON_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_boots", false, true, []);
+     static IRON_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_chestplate", false, true, []);
+     static IRON_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "iron_door", "iron_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static IRON_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "iron_door", "iron_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static IRON_GOLEM_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_golem_spawn_egg", false, true, []);
+     static IRON_GOLEM_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_golem_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_helmet", false, true, []);
+     static IRON_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_hoe", false, true, []);
+     static IRON_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_HORSE_ARMOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_horse_armor", false, true, []);
+     static IRON_HORSE_ARMOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_horse_armor", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_INGOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_ingot", false, true, []);
+     static IRON_INGOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_ingot", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_leggings", false, true, []);
+     static IRON_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_NUGGET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_nugget", false, true, []);
+     static IRON_NUGGET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_nugget", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "iron_ore", "iron_ore", true, true, []);
+     static IRON_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "iron_ore", "iron_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static IRON_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_pickaxe", false, true, []);
+     static IRON_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_shovel", false, true, []);
+     static IRON_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_sword", false, true, []);
+     static IRON_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "iron_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static IRON_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "iron_trapdoor", "iron_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static IRON_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "iron_trapdoor", "iron_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static JIGSAW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jigsaw", "jigsaw", true, true, ["facing_direction", "rotation"]);
+     static JIGSAW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jigsaw", "jigsaw", true, true, ["facing_direction", "rotation"]);
 
     /**
      * @readonly
      */
-     static JUKEBOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jukebox", "jukebox", true, true, []);
+     static JUKEBOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jukebox", "jukebox", true, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_boat", false, true, []);
+     static JUNGLE_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_button", "jungle_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static JUNGLE_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_button", "jungle_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_chest_boat", false, true, []);
+     static JUNGLE_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_door", "jungle_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static JUNGLE_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_door", "jungle_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_fence", "jungle_fence", true, true, []);
+     static JUNGLE_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_fence", "jungle_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_fence_gate", "jungle_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static JUNGLE_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_fence_gate", "jungle_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_hanging_sign", "jungle_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static JUNGLE_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_hanging_sign", "jungle_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_leaves", "jungle_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static JUNGLE_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_leaves", "jungle_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_log", "jungle_log", true, true, ["pillar_axis"]);
+     static JUNGLE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_log", "jungle_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_planks", "jungle_planks", true, true, []);
+     static JUNGLE_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_planks", "jungle_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_pressure_plate", "jungle_pressure_plate", true, true, ["redstone_signal"]);
+     static JUNGLE_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_pressure_plate", "jungle_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_sapling", "jungle_sapling", true, true, ["age_bit"]);
+     static JUNGLE_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_sapling", "jungle_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_sign", false, true, []);
+     static JUNGLE_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "jungle_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_slab", "jungle_slab", true, true, ["minecraft:vertical_half"]);
+     static JUNGLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_slab", "jungle_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_stairs", "jungle_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static JUNGLE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_stairs", "jungle_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_trapdoor", "jungle_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static JUNGLE_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_trapdoor", "jungle_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_wood", "jungle_wood", true, true, ["pillar_axis"]);
+     static JUNGLE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_wood", "jungle_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static KELP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "kelp", "kelp", true, true, ["kelp_age"]);
+     static KELP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "kelp", "kelp", true, true, ["kelp_age"]);
 
     /**
      * @readonly
      */
-     static LADDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "ladder", "ladder", true, true, ["facing_direction"]);
+     static LADDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "ladder", "ladder", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static LANTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lantern", "lantern", true, true, ["hanging"]);
+     static LANTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lantern", "lantern", true, true, ["hanging"]);
 
     /**
      * @readonly
      */
-     static LAPIS_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lapis_block", "lapis_block", true, true, []);
+     static LAPIS_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lapis_block", "lapis_block", true, true, []);
 
     /**
      * @readonly
      */
-     static LAPIS_LAZULI = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lapis_lazuli", false, true, []);
+     static LAPIS_LAZULI = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lapis_lazuli", false, true, []);
 
     /**
      * @readonly
      */
-     static LAPIS_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lapis_ore", "lapis_ore", true, true, []);
+     static LAPIS_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lapis_ore", "lapis_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static LARGE_AMETHYST_BUD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "large_amethyst_bud", "large_amethyst_bud", true, true, ["minecraft:block_face"]);
+     static LARGE_AMETHYST_BUD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "large_amethyst_bud", "large_amethyst_bud", true, true, ["minecraft:block_face"]);
 
     /**
      * @readonly
      */
-     static LARGE_FERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "large_fern", "large_fern", true, true, ["upper_block_bit"]);
+     static LARGE_FERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "large_fern", "large_fern", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static LAVA_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lava_bucket", false, true, []);
+     static LAVA_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lava_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static LEAD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lead", false, true, []);
+     static LEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lead", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather", false, true, []);
+     static LEATHER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_boots", false, true, []);
+     static LEATHER_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_chestplate", false, true, []);
+     static LEATHER_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_helmet", false, true, []);
+     static LEATHER_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER_HORSE_ARMOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_horse_armor", false, true, []);
+     static LEATHER_HORSE_ARMOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_horse_armor", false, true, []);
 
     /**
      * @readonly
      */
-     static LEATHER_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_leggings", false, true, []);
+     static LEATHER_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leather_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves", false, true, []);
+     static LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves", false, true, []);
 
     /**
      * @readonly
      */
-     static LEAVES2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves2", false, true, []);
+     static LEAVES2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves2", false, true, []);
 
     /**
      * @readonly
      */
-     static LECTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lectern", "lectern", true, true, ["minecraft:cardinal_direction", "powered_bit"]);
+     static LECTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lectern", "lectern", true, true, ["minecraft:cardinal_direction", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static LEVER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lever", "lever", true, true, ["lever_direction", "open_bit"]);
+     static LEVER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lever", "lever", true, true, ["lever_direction", "open_bit"]);
 
     /**
      * @readonly
      */
-     static LIGHT_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_block", "light_block", true, true, ["block_light_level"]);
+     static LIGHT_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block", "light_block", true, true, ["block_light_level"]);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_candle", "light_blue_candle", true, true, ["candles", "lit"]);
+     static LIGHT_BLUE_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_candle", "light_blue_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_carpet", "light_blue_carpet", true, true, []);
+     static LIGHT_BLUE_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_carpet", "light_blue_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_concrete", "light_blue_concrete", true, true, []);
+     static LIGHT_BLUE_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_concrete", "light_blue_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_concrete_powder", "light_blue_concrete_powder", true, true, []);
+     static LIGHT_BLUE_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_concrete_powder", "light_blue_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "light_blue_dye", false, true, []);
+     static LIGHT_BLUE_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "light_blue_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_glazed_terracotta", "light_blue_glazed_terracotta", true, true, ["facing_direction"]);
+     static LIGHT_BLUE_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_glazed_terracotta", "light_blue_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_shulker_box", "light_blue_shulker_box", true, true, []);
+     static LIGHT_BLUE_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_shulker_box", "light_blue_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_stained_glass", "light_blue_stained_glass", true, true, []);
+     static LIGHT_BLUE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_stained_glass", "light_blue_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_stained_glass_pane", "light_blue_stained_glass_pane", true, true, []);
+     static LIGHT_BLUE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_stained_glass_pane", "light_blue_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_terracotta", "light_blue_terracotta", true, true, []);
+     static LIGHT_BLUE_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_terracotta", "light_blue_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_wool", "light_blue_wool", true, true, []);
+     static LIGHT_BLUE_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_wool", "light_blue_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_candle", "light_gray_candle", true, true, ["candles", "lit"]);
+     static LIGHT_GRAY_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_candle", "light_gray_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_carpet", "light_gray_carpet", true, true, []);
+     static LIGHT_GRAY_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_carpet", "light_gray_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_concrete", "light_gray_concrete", true, true, []);
+     static LIGHT_GRAY_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_concrete", "light_gray_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_concrete_powder", "light_gray_concrete_powder", true, true, []);
+     static LIGHT_GRAY_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_concrete_powder", "light_gray_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "light_gray_dye", false, true, []);
+     static LIGHT_GRAY_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "light_gray_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_shulker_box", "light_gray_shulker_box", true, true, []);
+     static LIGHT_GRAY_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_shulker_box", "light_gray_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_stained_glass", "light_gray_stained_glass", true, true, []);
+     static LIGHT_GRAY_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_stained_glass", "light_gray_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_stained_glass_pane", "light_gray_stained_glass_pane", true, true, []);
+     static LIGHT_GRAY_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_stained_glass_pane", "light_gray_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_terracotta", "light_gray_terracotta", true, true, []);
+     static LIGHT_GRAY_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_terracotta", "light_gray_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_wool", "light_gray_wool", true, true, []);
+     static LIGHT_GRAY_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_wool", "light_gray_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static LIGHT_WEIGHTED_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_weighted_pressure_plate", "light_weighted_pressure_plate", true, true, ["redstone_signal"]);
+     static LIGHT_WEIGHTED_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_weighted_pressure_plate", "light_weighted_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static LIGHTNING_ROD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lightning_rod", "lightning_rod", true, true, ["facing_direction"]);
+     static LIGHTNING_ROD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lightning_rod", "lightning_rod", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static LILAC = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lilac", "lilac", true, true, ["upper_block_bit"]);
+     static LILAC = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lilac", "lilac", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static LILY_OF_THE_VALLEY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lily_of_the_valley", "lily_of_the_valley", true, true, []);
+     static LILY_OF_THE_VALLEY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lily_of_the_valley", "lily_of_the_valley", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_candle", "lime_candle", true, true, ["candles", "lit"]);
+     static LIME_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_candle", "lime_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static LIME_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_carpet", "lime_carpet", true, true, []);
+     static LIME_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_carpet", "lime_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_concrete", "lime_concrete", true, true, []);
+     static LIME_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_concrete", "lime_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_concrete_powder", "lime_concrete_powder", true, true, []);
+     static LIME_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_concrete_powder", "lime_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lime_dye", false, true, []);
+     static LIME_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lime_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static LIME_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_glazed_terracotta", "lime_glazed_terracotta", true, true, ["facing_direction"]);
+     static LIME_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_glazed_terracotta", "lime_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static LIME_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_shulker_box", "lime_shulker_box", true, true, []);
+     static LIME_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_shulker_box", "lime_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_stained_glass", "lime_stained_glass", true, true, []);
+     static LIME_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_stained_glass", "lime_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_stained_glass_pane", "lime_stained_glass_pane", true, true, []);
+     static LIME_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_stained_glass_pane", "lime_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_terracotta", "lime_terracotta", true, true, []);
+     static LIME_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_terracotta", "lime_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static LIME_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_wool", "lime_wool", true, true, []);
+     static LIME_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_wool", "lime_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static LINGERING_POTION = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lingering_potion", false, true, []);
+     static LINGERING_POTION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lingering_potion", false, true, []);
 
     /**
      * @readonly
      */
-     static LIT_PUMPKIN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_pumpkin", "lit_pumpkin", true, true, ["minecraft:cardinal_direction"]);
+     static LIT_PUMPKIN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_pumpkin", "lit_pumpkin", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static LLAMA_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "llama_spawn_egg", false, true, []);
+     static LLAMA_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "llama_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static LODESTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lodestone", "lodestone", true, true, []);
+     static LODESTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lodestone", "lodestone", true, true, []);
 
     /**
      * @readonly
      */
-     static LODESTONE_COMPASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "lodestone_compass", false, true, []);
+     static LODESTONE_COMPASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lodestone_compass", false, true, []);
 
     /**
      * @readonly
      */
-     static LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "log", false, true, []);
+     static LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log", false, true, []);
 
     /**
      * @readonly
      */
-     static LOG2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "log2", false, true, []);
+     static LOG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log2", false, true, []);
 
     /**
      * @readonly
      */
-     static LOOM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "loom", "loom", true, true, ["direction"]);
+     static LOOM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "loom", "loom", true, true, ["direction"]);
 
     /**
      * @readonly
      */
-     static MACE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mace", false, true, []);
+     static MACE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mace", false, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_candle", "magenta_candle", true, true, ["candles", "lit"]);
+     static MAGENTA_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_candle", "magenta_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static MAGENTA_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_carpet", "magenta_carpet", true, true, []);
+     static MAGENTA_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_carpet", "magenta_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_concrete", "magenta_concrete", true, true, []);
+     static MAGENTA_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_concrete", "magenta_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_concrete_powder", "magenta_concrete_powder", true, true, []);
+     static MAGENTA_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_concrete_powder", "magenta_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "magenta_dye", false, true, []);
+     static MAGENTA_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "magenta_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_glazed_terracotta", "magenta_glazed_terracotta", true, true, ["facing_direction"]);
+     static MAGENTA_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_glazed_terracotta", "magenta_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static MAGENTA_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_shulker_box", "magenta_shulker_box", true, true, []);
+     static MAGENTA_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_shulker_box", "magenta_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_stained_glass", "magenta_stained_glass", true, true, []);
+     static MAGENTA_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_stained_glass", "magenta_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_stained_glass_pane", "magenta_stained_glass_pane", true, true, []);
+     static MAGENTA_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_stained_glass_pane", "magenta_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_terracotta", "magenta_terracotta", true, true, []);
+     static MAGENTA_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_terracotta", "magenta_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGENTA_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_wool", "magenta_wool", true, true, []);
+     static MAGENTA_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_wool", "magenta_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGMA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magma", "magma", true, true, []);
+     static MAGMA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magma", "magma", true, true, []);
 
     /**
      * @readonly
      */
-     static MAGMA_CREAM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "magma_cream", false, true, []);
+     static MAGMA_CREAM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "magma_cream", false, true, []);
 
     /**
      * @readonly
      */
-     static MAGMA_CUBE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "magma_cube_spawn_egg", false, true, []);
+     static MAGMA_CUBE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "magma_cube_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_boat", false, true, []);
+     static MANGROVE_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_button", "mangrove_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static MANGROVE_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_button", "mangrove_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_chest_boat", false, true, []);
+     static MANGROVE_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_door", "mangrove_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static MANGROVE_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_door", "mangrove_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_fence", "mangrove_fence", true, true, []);
+     static MANGROVE_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_fence", "mangrove_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_fence_gate", "mangrove_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static MANGROVE_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_fence_gate", "mangrove_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_hanging_sign", "mangrove_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static MANGROVE_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_hanging_sign", "mangrove_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_leaves", "mangrove_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static MANGROVE_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_leaves", "mangrove_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_log", "mangrove_log", true, true, ["pillar_axis"]);
+     static MANGROVE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_log", "mangrove_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_planks", "mangrove_planks", true, true, []);
+     static MANGROVE_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_planks", "mangrove_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_pressure_plate", "mangrove_pressure_plate", true, true, ["redstone_signal"]);
+     static MANGROVE_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_pressure_plate", "mangrove_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_PROPAGULE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_propagule", "mangrove_propagule", true, true, ["hanging", "propagule_stage"]);
+     static MANGROVE_PROPAGULE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_propagule", "mangrove_propagule", true, true, ["hanging", "propagule_stage"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_roots", "mangrove_roots", true, true, []);
+     static MANGROVE_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_roots", "mangrove_roots", true, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_sign", false, true, []);
+     static MANGROVE_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mangrove_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static MANGROVE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_slab", "mangrove_slab", true, true, ["minecraft:vertical_half"]);
+     static MANGROVE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_slab", "mangrove_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_stairs", "mangrove_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static MANGROVE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_stairs", "mangrove_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_trapdoor", "mangrove_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static MANGROVE_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_trapdoor", "mangrove_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_wood", "mangrove_wood", true, true, ["pillar_axis", "stripped_bit"]);
+     static MANGROVE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_wood", "mangrove_wood", true, true, ["pillar_axis", "stripped_bit"]);
 
     /**
      * @readonly
      */
-     static MEDIUM_AMETHYST_BUD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "medium_amethyst_bud", "medium_amethyst_bud", true, true, ["minecraft:block_face"]);
+     static MEDIUM_AMETHYST_BUD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "medium_amethyst_bud", "medium_amethyst_bud", true, true, ["minecraft:block_face"]);
 
     /**
      * @readonly
      */
-     static MELON_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "melon_block", "melon_block", true, true, []);
+     static MELON_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "melon_block", "melon_block", true, true, []);
 
     /**
      * @readonly
      */
-     static MELON_SEEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "melon_seeds", false, true, []);
+     static MELON_SEEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "melon_seeds", false, true, []);
 
     /**
      * @readonly
      */
-     static MELON_SLICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "melon_slice", false, true, []);
+     static MELON_SLICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "melon_slice", false, true, []);
 
     /**
      * @readonly
      */
-     static MILK_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "milk_bucket", false, true, []);
+     static MILK_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "milk_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static MINECART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "minecart", false, true, []);
+     static MINECART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "minecart", false, true, []);
 
     /**
      * @readonly
      */
-     static MINER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "miner_pottery_sherd", false, true, []);
+     static MINER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "miner_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static MOB_SPAWNER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mob_spawner", "mob_spawner", true, true, []);
+     static MOB_SPAWNER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mob_spawner", "mob_spawner", true, true, []);
 
     /**
      * @readonly
      */
-     static MOJANG_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mojang_banner_pattern", false, true, []);
+     static MOJANG_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mojang_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static MONSTER_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "monster_egg", "monster_egg", true, true, ["monster_egg_stone_type"]);
+     static MONSTER_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "monster_egg", "monster_egg", true, true, ["monster_egg_stone_type"]);
 
     /**
      * @readonly
      */
-     static MOOSHROOM_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mooshroom_spawn_egg", false, true, []);
+     static MOOSHROOM_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mooshroom_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static MOSS_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "moss_block", "moss_block", true, true, []);
+     static MOSS_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "moss_block", "moss_block", true, true, []);
 
     /**
      * @readonly
      */
-     static MOSS_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "moss_carpet", "moss_carpet", true, true, []);
+     static MOSS_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "moss_carpet", "moss_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static MOSSY_COBBLESTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone", "mossy_cobblestone", true, true, []);
+     static MOSSY_COBBLESTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone", "mossy_cobblestone", true, true, []);
 
     /**
      * @readonly
      */
-     static MOSSY_COBBLESTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone_stairs", "mossy_cobblestone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static MOSSY_COBBLESTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone_stairs", "mossy_cobblestone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static MOSSY_STONE_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_brick_stairs", "mossy_stone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static MOSSY_STONE_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_brick_stairs", "mossy_stone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static MOURNER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mourner_pottery_sherd", false, true, []);
+     static MOURNER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mourner_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static MUD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud", "mud", true, true, []);
+     static MUD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud", "mud", true, true, []);
 
     /**
      * @readonly
      */
-     static MUD_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_slab", "mud_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static MUD_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_slab", "mud_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static MUD_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_stairs", "mud_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static MUD_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_stairs", "mud_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static MUD_BRICK_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_wall", "mud_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static MUD_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_wall", "mud_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static MUD_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud_bricks", "mud_bricks", true, true, []);
+     static MUD_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud_bricks", "mud_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static MUDDY_MANGROVE_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "muddy_mangrove_roots", "muddy_mangrove_roots", true, true, ["pillar_axis"]);
+     static MUDDY_MANGROVE_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "muddy_mangrove_roots", "muddy_mangrove_roots", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static MULE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mule_spawn_egg", false, true, []);
+     static MULE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mule_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSHROOM_STEW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mushroom_stew", false, true, []);
+     static MUSHROOM_STEW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mushroom_stew", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_11 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_11", false, true, []);
+     static MUSIC_DISC_11 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_11", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_13 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_13", false, true, []);
+     static MUSIC_DISC_13 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_13", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_5 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_5", false, true, []);
+     static MUSIC_DISC_5 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_5", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_BLOCKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_blocks", false, true, []);
+     static MUSIC_DISC_BLOCKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_blocks", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_CAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_cat", false, true, []);
+     static MUSIC_DISC_CAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_cat", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_CHIRP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_chirp", false, true, []);
+     static MUSIC_DISC_CHIRP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_chirp", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_CREATOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_creator", false, true, []);
+     static MUSIC_DISC_CREATOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_creator", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_CREATOR_MUSIC_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_creator_music_box", false, true, []);
+     static MUSIC_DISC_CREATOR_MUSIC_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_creator_music_box", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_FAR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_far", false, true, []);
+     static MUSIC_DISC_FAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_far", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_MALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_mall", false, true, []);
+     static MUSIC_DISC_MALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_mall", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_MELLOHI = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_mellohi", false, true, []);
+     static MUSIC_DISC_MELLOHI = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_mellohi", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_OTHERSIDE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_otherside", false, true, []);
+     static MUSIC_DISC_OTHERSIDE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_otherside", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_PIGSTEP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_pigstep", false, true, []);
+     static MUSIC_DISC_PIGSTEP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_pigstep", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_PRECIPICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_precipice", false, true, []);
+     static MUSIC_DISC_PRECIPICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_precipice", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_RELIC = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_relic", false, true, []);
+     static MUSIC_DISC_RELIC = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_relic", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_STAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_stal", false, true, []);
+     static MUSIC_DISC_STAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_stal", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_STRAD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_strad", false, true, []);
+     static MUSIC_DISC_STRAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_strad", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_WAIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_wait", false, true, []);
+     static MUSIC_DISC_WAIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_wait", false, true, []);
 
     /**
      * @readonly
      */
-     static MUSIC_DISC_WARD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_ward", false, true, []);
+     static MUSIC_DISC_WARD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "music_disc_ward", false, true, []);
 
     /**
      * @readonly
      */
-     static MUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "mutton", false, true, []);
+     static MUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "mutton", false, true, []);
 
     /**
      * @readonly
      */
-     static MYCELIUM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mycelium", "mycelium", true, true, []);
+     static MYCELIUM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mycelium", "mycelium", true, true, []);
 
     /**
      * @readonly
      */
-     static NAME_TAG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "name_tag", false, true, []);
+     static NAME_TAG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "name_tag", false, true, []);
 
     /**
      * @readonly
      */
-     static NAUTILUS_SHELL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "nautilus_shell", false, true, []);
+     static NAUTILUS_SHELL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "nautilus_shell", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_BRICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick", "nether_brick", true, true, []);
+     static NETHER_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick", "nether_brick", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_BRICK_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_fence", "nether_brick_fence", true, true, []);
+     static NETHER_BRICK_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_fence", "nether_brick_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_slab", "nether_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static NETHER_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_slab", "nether_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static NETHER_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_stairs", "nether_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static NETHER_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_stairs", "nether_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static NETHER_GOLD_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_gold_ore", "nether_gold_ore", true, true, []);
+     static NETHER_GOLD_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_gold_ore", "nether_gold_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_SPROUTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_sprouts", "nether_sprouts", true, true, []);
+     static NETHER_SPROUTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_sprouts", "nether_sprouts", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_STAR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "nether_star", false, true, []);
+     static NETHER_STAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "nether_star", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHER_WART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_wart", "nether_wart", true, true, ["age"]);
+     static NETHER_WART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_wart", "nether_wart", true, true, ["age"]);
 
     /**
      * @readonly
      */
-     static NETHER_WART_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "nether_wart_block", "nether_wart_block", true, true, []);
+     static NETHER_WART_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_wart_block", "nether_wart_block", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHERBRICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherbrick", false, true, []);
+     static NETHERBRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherbrick", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_axe", false, true, []);
+     static NETHERITE_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "netherite_block", "netherite_block", true, true, []);
+     static NETHERITE_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "netherite_block", "netherite_block", true, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_BOOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_boots", false, true, []);
+     static NETHERITE_BOOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_boots", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_CHESTPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_chestplate", false, true, []);
+     static NETHERITE_CHESTPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_chestplate", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_helmet", false, true, []);
+     static NETHERITE_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_hoe", false, true, []);
+     static NETHERITE_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_INGOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_ingot", false, true, []);
+     static NETHERITE_INGOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_ingot", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_LEGGINGS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_leggings", false, true, []);
+     static NETHERITE_LEGGINGS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_leggings", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_pickaxe", false, true, []);
+     static NETHERITE_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_SCRAP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_scrap", false, true, []);
+     static NETHERITE_SCRAP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_scrap", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_shovel", false, true, []);
+     static NETHERITE_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_sword", false, true, []);
+     static NETHERITE_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERITE_UPGRADE_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_upgrade_smithing_template", false, true, []);
+     static NETHERITE_UPGRADE_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "netherite_upgrade_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static NETHERRACK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "netherrack", "netherrack", true, true, []);
+     static NETHERRACK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "netherrack", "netherrack", true, true, []);
 
     /**
      * @readonly
      */
-     static NORMAL_STONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "normal_stone_stairs", "normal_stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static NORMAL_STONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "normal_stone_stairs", "normal_stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static NOTEBLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "noteblock", "noteblock", true, true, []);
+     static NOTEBLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "noteblock", "noteblock", true, true, []);
 
     /**
      * @readonly
      */
-     static OAK_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_boat", false, true, []);
+     static OAK_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static OAK_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_chest_boat", false, true, []);
+     static OAK_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static OAK_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_fence", "oak_fence", true, true, []);
+     static OAK_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_fence", "oak_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static OAK_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_hanging_sign", "oak_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static OAK_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_hanging_sign", "oak_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static OAK_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_leaves", "oak_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static OAK_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_leaves", "oak_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static OAK_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_log", "oak_log", true, true, ["pillar_axis"]);
+     static OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_log", "oak_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static OAK_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_planks", "oak_planks", true, true, []);
+     static OAK_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_planks", "oak_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static OAK_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_sapling", "oak_sapling", true, true, ["age_bit"]);
+     static OAK_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_sapling", "oak_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static OAK_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_sign", false, true, []);
+     static OAK_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "oak_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static OAK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_slab", "oak_slab", true, true, ["minecraft:vertical_half"]);
+     static OAK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_slab", "oak_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static OAK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_stairs", "oak_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static OAK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_stairs", "oak_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static OAK_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_wood", "oak_wood", true, true, ["pillar_axis"]);
+     static OAK_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_wood", "oak_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static OBSERVER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "observer", "observer", true, true, ["minecraft:facing_direction", "powered_bit"]);
+     static OBSERVER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "observer", "observer", true, true, ["minecraft:facing_direction", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static OBSIDIAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "obsidian", "obsidian", true, true, []);
+     static OBSIDIAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "obsidian", "obsidian", true, true, []);
 
     /**
      * @readonly
      */
-     static OCELOT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ocelot_spawn_egg", false, true, []);
+     static OCELOT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ocelot_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static OCHRE_FROGLIGHT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "ochre_froglight", "ochre_froglight", true, true, ["pillar_axis"]);
+     static OCHRE_FROGLIGHT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "ochre_froglight", "ochre_froglight", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static OMINOUS_BOTTLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ominous_bottle", false, true, []);
+     static OMINOUS_BOTTLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ominous_bottle", false, true, []);
 
     /**
      * @readonly
      */
-     static OMINOUS_TRIAL_KEY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ominous_trial_key", false, true, []);
+     static OMINOUS_TRIAL_KEY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ominous_trial_key", false, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_candle", "orange_candle", true, true, ["candles", "lit"]);
+     static ORANGE_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_candle", "orange_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static ORANGE_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_carpet", "orange_carpet", true, true, []);
+     static ORANGE_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_carpet", "orange_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_concrete", "orange_concrete", true, true, []);
+     static ORANGE_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_concrete", "orange_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_concrete_powder", "orange_concrete_powder", true, true, []);
+     static ORANGE_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_concrete_powder", "orange_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "orange_dye", false, true, []);
+     static ORANGE_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "orange_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_glazed_terracotta", "orange_glazed_terracotta", true, true, ["facing_direction"]);
+     static ORANGE_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_glazed_terracotta", "orange_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static ORANGE_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_shulker_box", "orange_shulker_box", true, true, []);
+     static ORANGE_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_shulker_box", "orange_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_stained_glass", "orange_stained_glass", true, true, []);
+     static ORANGE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_stained_glass", "orange_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_stained_glass_pane", "orange_stained_glass_pane", true, true, []);
+     static ORANGE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_stained_glass_pane", "orange_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_terracotta", "orange_terracotta", true, true, []);
+     static ORANGE_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_terracotta", "orange_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_TULIP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_tulip", "orange_tulip", true, true, []);
+     static ORANGE_TULIP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_tulip", "orange_tulip", true, true, []);
 
     /**
      * @readonly
      */
-     static ORANGE_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_wool", "orange_wool", true, true, []);
+     static ORANGE_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_wool", "orange_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static OXEYE_DAISY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxeye_daisy", "oxeye_daisy", true, true, []);
+     static OXEYE_DAISY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxeye_daisy", "oxeye_daisy", true, true, []);
 
     /**
      * @readonly
      */
-     static OXIDIZED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_chiseled_copper", "oxidized_chiseled_copper", true, true, []);
+     static OXIDIZED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_chiseled_copper", "oxidized_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static OXIDIZED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper", "oxidized_copper", true, true, []);
+     static OXIDIZED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper", "oxidized_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static OXIDIZED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_bulb", "oxidized_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static OXIDIZED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_bulb", "oxidized_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static OXIDIZED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_door", "oxidized_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static OXIDIZED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_door", "oxidized_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static OXIDIZED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_grate", "oxidized_copper_grate", true, true, []);
+     static OXIDIZED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_grate", "oxidized_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static OXIDIZED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_trapdoor", "oxidized_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static OXIDIZED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_copper_trapdoor", "oxidized_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static OXIDIZED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper", "oxidized_cut_copper", true, true, []);
+     static OXIDIZED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper", "oxidized_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static OXIDIZED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper_slab", "oxidized_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static OXIDIZED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper_slab", "oxidized_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static OXIDIZED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper_stairs", "oxidized_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static OXIDIZED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_cut_copper_stairs", "oxidized_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static PACKED_ICE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "packed_ice", "packed_ice", true, true, []);
+     static PACKED_ICE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "packed_ice", "packed_ice", true, true, []);
 
     /**
      * @readonly
      */
-     static PACKED_MUD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "packed_mud", "packed_mud", true, true, []);
+     static PACKED_MUD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "packed_mud", "packed_mud", true, true, []);
 
     /**
      * @readonly
      */
-     static PAINTING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "painting", false, true, []);
+     static PAINTING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "painting", false, true, []);
 
     /**
      * @readonly
      */
-     static PANDA_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "panda_spawn_egg", false, true, []);
+     static PANDA_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "panda_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PAPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "paper", false, true, []);
+     static PAPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "paper", false, true, []);
 
     /**
      * @readonly
      */
-     static PARROT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "parrot_spawn_egg", false, true, []);
+     static PARROT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "parrot_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PEARLESCENT_FROGLIGHT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pearlescent_froglight", "pearlescent_froglight", true, true, ["pillar_axis"]);
+     static PEARLESCENT_FROGLIGHT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pearlescent_froglight", "pearlescent_froglight", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static PEONY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "peony", "peony", true, true, ["upper_block_bit"]);
+     static PEONY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "peony", "peony", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static PETRIFIED_OAK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "petrified_oak_slab", "petrified_oak_slab", true, true, ["minecraft:vertical_half"]);
+     static PETRIFIED_OAK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "petrified_oak_slab", "petrified_oak_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static PHANTOM_MEMBRANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "phantom_membrane", false, true, []);
+     static PHANTOM_MEMBRANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "phantom_membrane", false, true, []);
 
     /**
      * @readonly
      */
-     static PHANTOM_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "phantom_spawn_egg", false, true, []);
+     static PHANTOM_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "phantom_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PIG_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pig_spawn_egg", false, true, []);
+     static PIG_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pig_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PIGLIN_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_banner_pattern", false, true, []);
+     static PIGLIN_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static PIGLIN_BRUTE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_brute_spawn_egg", false, true, []);
+     static PIGLIN_BRUTE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_brute_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PIGLIN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_spawn_egg", false, true, []);
+     static PIGLIN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "piglin_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PILLAGER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pillager_spawn_egg", false, true, []);
+     static PILLAGER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pillager_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PINK_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_candle", "pink_candle", true, true, ["candles", "lit"]);
+     static PINK_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_candle", "pink_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static PINK_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_carpet", "pink_carpet", true, true, []);
+     static PINK_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_carpet", "pink_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_concrete", "pink_concrete", true, true, []);
+     static PINK_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_concrete", "pink_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_concrete_powder", "pink_concrete_powder", true, true, []);
+     static PINK_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_concrete_powder", "pink_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pink_dye", false, true, []);
+     static PINK_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pink_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static PINK_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_glazed_terracotta", "pink_glazed_terracotta", true, true, ["facing_direction"]);
+     static PINK_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_glazed_terracotta", "pink_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static PINK_PETALS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_petals", "pink_petals", true, true, ["growth", "minecraft:cardinal_direction"]);
+     static PINK_PETALS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_petals", "pink_petals", true, true, ["growth", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static PINK_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_shulker_box", "pink_shulker_box", true, true, []);
+     static PINK_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_shulker_box", "pink_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_stained_glass", "pink_stained_glass", true, true, []);
+     static PINK_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_stained_glass", "pink_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_stained_glass_pane", "pink_stained_glass_pane", true, true, []);
+     static PINK_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_stained_glass_pane", "pink_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_terracotta", "pink_terracotta", true, true, []);
+     static PINK_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_terracotta", "pink_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_TULIP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_tulip", "pink_tulip", true, true, []);
+     static PINK_TULIP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_tulip", "pink_tulip", true, true, []);
 
     /**
      * @readonly
      */
-     static PINK_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_wool", "pink_wool", true, true, []);
+     static PINK_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_wool", "pink_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static PISTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "piston", "piston", true, true, ["facing_direction"]);
+     static PISTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "piston", "piston", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static PITCHER_PLANT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pitcher_plant", "pitcher_plant", true, true, ["upper_block_bit"]);
+     static PITCHER_PLANT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pitcher_plant", "pitcher_plant", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static PITCHER_POD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pitcher_pod", false, true, []);
+     static PITCHER_POD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pitcher_pod", false, true, []);
 
     /**
      * @readonly
      */
-     static PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "planks", false, true, []);
+     static PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "planks", false, true, []);
 
     /**
      * @readonly
      */
-     static PLENTY_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "plenty_pottery_sherd", false, true, []);
+     static PLENTY_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "plenty_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static PODZOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "podzol", "podzol", true, true, []);
+     static PODZOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "podzol", "podzol", true, true, []);
 
     /**
      * @readonly
      */
-     static POINTED_DRIPSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pointed_dripstone", "pointed_dripstone", true, true, ["dripstone_thickness", "hanging"]);
+     static POINTED_DRIPSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pointed_dripstone", "pointed_dripstone", true, true, ["dripstone_thickness", "hanging"]);
 
     /**
      * @readonly
      */
-     static POISONOUS_POTATO = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "poisonous_potato", false, true, []);
+     static POISONOUS_POTATO = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "poisonous_potato", false, true, []);
 
     /**
      * @readonly
      */
-     static POLAR_BEAR_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "polar_bear_spawn_egg", false, true, []);
+     static POLAR_BEAR_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "polar_bear_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_ANDESITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite", "polished_andesite", true, true, []);
+     static POLISHED_ANDESITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite", "polished_andesite", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_ANDESITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite_stairs", "polished_andesite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_ANDESITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite_stairs", "polished_andesite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BASALT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_basalt", "polished_basalt", true, true, ["pillar_axis"]);
+     static POLISHED_BASALT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_basalt", "polished_basalt", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone", "polished_blackstone", true, true, []);
+     static POLISHED_BLACKSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone", "polished_blackstone", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_slab", "polished_blackstone_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static POLISHED_BLACKSTONE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_slab", "polished_blackstone_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_stairs", "polished_blackstone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_BLACKSTONE_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_stairs", "polished_blackstone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BRICK_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_wall", "polished_blackstone_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static POLISHED_BLACKSTONE_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_wall", "polished_blackstone_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_bricks", "polished_blackstone_bricks", true, true, []);
+     static POLISHED_BLACKSTONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_bricks", "polished_blackstone_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_button", "polished_blackstone_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static POLISHED_BLACKSTONE_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_button", "polished_blackstone_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_pressure_plate", "polished_blackstone_pressure_plate", true, true, ["redstone_signal"]);
+     static POLISHED_BLACKSTONE_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_pressure_plate", "polished_blackstone_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_slab", "polished_blackstone_slab", true, true, ["minecraft:vertical_half"]);
+     static POLISHED_BLACKSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_slab", "polished_blackstone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_stairs", "polished_blackstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_BLACKSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_stairs", "polished_blackstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_wall", "polished_blackstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static POLISHED_BLACKSTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_wall", "polished_blackstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static POLISHED_DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate", "polished_deepslate", true, true, []);
+     static POLISHED_DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate", "polished_deepslate", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_DEEPSLATE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_slab", "polished_deepslate_slab", true, true, ["minecraft:vertical_half"]);
+     static POLISHED_DEEPSLATE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_slab", "polished_deepslate_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_DEEPSLATE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_stairs", "polished_deepslate_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_DEEPSLATE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_stairs", "polished_deepslate_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_DEEPSLATE_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_wall", "polished_deepslate_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static POLISHED_DEEPSLATE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_wall", "polished_deepslate_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static POLISHED_DIORITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite", "polished_diorite", true, true, []);
+     static POLISHED_DIORITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite", "polished_diorite", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_DIORITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite_stairs", "polished_diorite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_DIORITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite_stairs", "polished_diorite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_GRANITE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite", "polished_granite", true, true, []);
+     static POLISHED_GRANITE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite", "polished_granite", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_GRANITE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite_stairs", "polished_granite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_GRANITE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite_stairs", "polished_granite_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_TUFF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff", "polished_tuff", true, true, []);
+     static POLISHED_TUFF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff", "polished_tuff", true, true, []);
 
     /**
      * @readonly
      */
-     static POLISHED_TUFF_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_slab", "polished_tuff_slab", true, true, ["minecraft:vertical_half"]);
+     static POLISHED_TUFF_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_slab", "polished_tuff_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_TUFF_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_stairs", "polished_tuff_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static POLISHED_TUFF_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_stairs", "polished_tuff_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static POLISHED_TUFF_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_wall", "polished_tuff_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static POLISHED_TUFF_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_wall", "polished_tuff_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static POPPED_CHORUS_FRUIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "popped_chorus_fruit", false, true, []);
+     static POPPED_CHORUS_FRUIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "popped_chorus_fruit", false, true, []);
 
     /**
      * @readonly
      */
-     static POPPY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "poppy", "poppy", true, true, []);
+     static POPPY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "poppy", "poppy", true, true, []);
 
     /**
      * @readonly
      */
-     static PORKCHOP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "porkchop", false, true, []);
+     static PORKCHOP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "porkchop", false, true, []);
 
     /**
      * @readonly
      */
-     static POTATO = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "potatoes", "potato", true, true, ["growth"]);
+     static POTATO = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "potatoes", "potato", true, true, ["growth"]);
 
     /**
      * @readonly
      */
-     static POTION = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "potion", false, true, []);
+     static POTION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "potion", false, true, []);
 
     /**
      * @readonly
      */
-     static POWDER_SNOW_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "powder_snow_bucket", false, true, []);
+     static POWDER_SNOW_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "powder_snow_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static PRISMARINE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine", "prismarine", true, true, ["prismarine_block_type"]);
+     static PRISMARINE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine", "prismarine", true, true, ["prismarine_block_type"]);
 
     /**
      * @readonly
      */
-     static PRISMARINE_BRICKS_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_bricks_stairs", "prismarine_bricks_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static PRISMARINE_BRICKS_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_bricks_stairs", "prismarine_bricks_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static PRISMARINE_CRYSTALS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "prismarine_crystals", false, true, []);
+     static PRISMARINE_CRYSTALS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "prismarine_crystals", false, true, []);
 
     /**
      * @readonly
      */
-     static PRISMARINE_SHARD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "prismarine_shard", false, true, []);
+     static PRISMARINE_SHARD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "prismarine_shard", false, true, []);
 
     /**
      * @readonly
      */
-     static PRISMARINE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_stairs", "prismarine_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static PRISMARINE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_stairs", "prismarine_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static PRIZE_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "prize_pottery_sherd", false, true, []);
+     static PRIZE_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "prize_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static PUFFERFISH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish", false, true, []);
+     static PUFFERFISH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish", false, true, []);
 
     /**
      * @readonly
      */
-     static PUFFERFISH_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish_bucket", false, true, []);
+     static PUFFERFISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static PUFFERFISH_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish_spawn_egg", false, true, []);
+     static PUFFERFISH_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static PUMPKIN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pumpkin", "pumpkin", true, true, ["minecraft:cardinal_direction"]);
+     static PUMPKIN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pumpkin", "pumpkin", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static PUMPKIN_PIE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pumpkin_pie", false, true, []);
+     static PUMPKIN_PIE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pumpkin_pie", false, true, []);
 
     /**
      * @readonly
      */
-     static PUMPKIN_SEEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "pumpkin_seeds", false, true, []);
+     static PUMPKIN_SEEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pumpkin_seeds", false, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_candle", "purple_candle", true, true, ["candles", "lit"]);
+     static PURPLE_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_candle", "purple_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static PURPLE_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_carpet", "purple_carpet", true, true, []);
+     static PURPLE_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_carpet", "purple_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_concrete", "purple_concrete", true, true, []);
+     static PURPLE_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_concrete", "purple_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_concrete_powder", "purple_concrete_powder", true, true, []);
+     static PURPLE_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_concrete_powder", "purple_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "purple_dye", false, true, []);
+     static PURPLE_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "purple_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_glazed_terracotta", "purple_glazed_terracotta", true, true, ["facing_direction"]);
+     static PURPLE_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_glazed_terracotta", "purple_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static PURPLE_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_shulker_box", "purple_shulker_box", true, true, []);
+     static PURPLE_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_shulker_box", "purple_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_stained_glass", "purple_stained_glass", true, true, []);
+     static PURPLE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_stained_glass", "purple_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_stained_glass_pane", "purple_stained_glass_pane", true, true, []);
+     static PURPLE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_stained_glass_pane", "purple_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_terracotta", "purple_terracotta", true, true, []);
+     static PURPLE_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_terracotta", "purple_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPLE_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_wool", "purple_wool", true, true, []);
+     static PURPLE_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_wool", "purple_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static PURPUR_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_block", "purpur_block", true, true, ["chisel_type", "pillar_axis"]);
+     static PURPUR_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_block", "purpur_block", true, true, ["chisel_type", "pillar_axis"]);
 
     /**
      * @readonly
      */
-     static PURPUR_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_stairs", "purpur_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static PURPUR_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_stairs", "purpur_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static QUARTZ = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "quartz", false, true, []);
+     static QUARTZ = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "quartz", false, true, []);
 
     /**
      * @readonly
      */
-     static QUARTZ_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_block", "quartz_block", true, true, ["chisel_type", "pillar_axis"]);
+     static QUARTZ_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_block", "quartz_block", true, true, ["chisel_type", "pillar_axis"]);
 
     /**
      * @readonly
      */
-     static QUARTZ_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_bricks", "quartz_bricks", true, true, []);
+     static QUARTZ_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_bricks", "quartz_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static QUARTZ_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_ore", "quartz_ore", true, true, []);
+     static QUARTZ_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_ore", "quartz_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static QUARTZ_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_slab", "quartz_slab", true, true, ["minecraft:vertical_half"]);
+     static QUARTZ_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_slab", "quartz_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static QUARTZ_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_stairs", "quartz_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static QUARTZ_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_stairs", "quartz_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static RABBIT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit", false, true, []);
+     static RABBIT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit", false, true, []);
 
     /**
      * @readonly
      */
-     static RABBIT_FOOT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_foot", false, true, []);
+     static RABBIT_FOOT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_foot", false, true, []);
 
     /**
      * @readonly
      */
-     static RABBIT_HIDE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_hide", false, true, []);
+     static RABBIT_HIDE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_hide", false, true, []);
 
     /**
      * @readonly
      */
-     static RABBIT_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_spawn_egg", false, true, []);
+     static RABBIT_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static RABBIT_STEW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_stew", false, true, []);
+     static RABBIT_STEW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rabbit_stew", false, true, []);
 
     /**
      * @readonly
      */
-     static RAIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "rail", "rail", true, true, ["rail_direction"]);
+     static RAIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "rail", "rail", true, true, ["rail_direction"]);
 
     /**
      * @readonly
      */
-     static RAISER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "raiser_armor_trim_smithing_template", false, true, []);
+     static RAISER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "raiser_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static RAVAGER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ravager_spawn_egg", false, true, []);
+     static RAVAGER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ravager_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static RAW_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_copper", false, true, []);
+     static RAW_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_copper", false, true, []);
 
     /**
      * @readonly
      */
-     static RAW_COPPER_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "raw_copper_block", "raw_copper_block", true, true, []);
+     static RAW_COPPER_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "raw_copper_block", "raw_copper_block", true, true, []);
 
     /**
      * @readonly
      */
-     static RAW_GOLD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_gold", false, true, []);
+     static RAW_GOLD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_gold", false, true, []);
 
     /**
      * @readonly
      */
-     static RAW_GOLD_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "raw_gold_block", "raw_gold_block", true, true, []);
+     static RAW_GOLD_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "raw_gold_block", "raw_gold_block", true, true, []);
 
     /**
      * @readonly
      */
-     static RAW_IRON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_iron", false, true, []);
+     static RAW_IRON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "raw_iron", false, true, []);
 
     /**
      * @readonly
      */
-     static RAW_IRON_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "raw_iron_block", "raw_iron_block", true, true, []);
+     static RAW_IRON_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "raw_iron_block", "raw_iron_block", true, true, []);
 
     /**
      * @readonly
      */
-     static RECOVERY_COMPASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "recovery_compass", false, true, []);
+     static RECOVERY_COMPASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "recovery_compass", false, true, []);
 
     /**
      * @readonly
      */
-     static RED_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_candle", "red_candle", true, true, ["candles", "lit"]);
+     static RED_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_candle", "red_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static RED_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_carpet", "red_carpet", true, true, []);
+     static RED_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_carpet", "red_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_concrete", "red_concrete", true, true, []);
+     static RED_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_concrete", "red_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_concrete_powder", "red_concrete_powder", true, true, []);
+     static RED_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_concrete_powder", "red_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_dye", false, true, []);
+     static RED_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static RED_FLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_flower", false, true, []);
+     static RED_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_flower", false, true, []);
 
     /**
      * @readonly
      */
-     static RED_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_glazed_terracotta", "red_glazed_terracotta", true, true, ["facing_direction"]);
+     static RED_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_glazed_terracotta", "red_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static RED_MUSHROOM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_mushroom", "red_mushroom", true, true, []);
+     static RED_MUSHROOM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_mushroom", "red_mushroom", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_MUSHROOM_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_mushroom_block", "red_mushroom_block", true, true, ["huge_mushroom_bits"]);
+     static RED_MUSHROOM_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_mushroom_block", "red_mushroom_block", true, true, ["huge_mushroom_bits"]);
 
     /**
      * @readonly
      */
-     static RED_NETHER_BRICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick", "red_nether_brick", true, true, []);
+     static RED_NETHER_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick", "red_nether_brick", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_NETHER_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick_stairs", "red_nether_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static RED_NETHER_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick_stairs", "red_nether_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static RED_SANDSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone", "red_sandstone", true, true, ["sand_stone_type"]);
+     static RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone", "red_sandstone", true, true, ["sand_stone_type"]);
 
     /**
      * @readonly
      */
-     static RED_SANDSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone_stairs", "red_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static RED_SANDSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone_stairs", "red_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static RED_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_shulker_box", "red_shulker_box", true, true, []);
+     static RED_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_shulker_box", "red_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_stained_glass", "red_stained_glass", true, true, []);
+     static RED_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_stained_glass", "red_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_stained_glass_pane", "red_stained_glass_pane", true, true, []);
+     static RED_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_stained_glass_pane", "red_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_terracotta", "red_terracotta", true, true, []);
+     static RED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_terracotta", "red_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_TULIP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_tulip", "red_tulip", true, true, []);
+     static RED_TULIP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_tulip", "red_tulip", true, true, []);
 
     /**
      * @readonly
      */
-     static RED_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_wool", "red_wool", true, true, []);
+     static RED_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_wool", "red_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static REDSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "redstone", false, true, []);
+     static REDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "redstone", false, true, []);
 
     /**
      * @readonly
      */
-     static REDSTONE_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_block", "redstone_block", true, true, []);
+     static REDSTONE_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_block", "redstone_block", true, true, []);
 
     /**
      * @readonly
      */
-     static REDSTONE_LAMP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_lamp", "redstone_lamp", true, true, []);
+     static REDSTONE_LAMP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_lamp", "redstone_lamp", true, true, []);
 
     /**
      * @readonly
      */
-     static REDSTONE_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_ore", "redstone_ore", true, true, []);
+     static REDSTONE_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_ore", "redstone_ore", true, true, []);
 
     /**
      * @readonly
      */
-     static REDSTONE_TORCH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_torch", "redstone_torch", true, true, ["torch_facing_direction"]);
+     static REDSTONE_TORCH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_torch", "redstone_torch", true, true, ["torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static REINFORCED_DEEPSLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "reinforced_deepslate", "reinforced_deepslate", true, true, []);
+     static REINFORCED_DEEPSLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "reinforced_deepslate", "reinforced_deepslate", true, true, []);
 
     /**
      * @readonly
      */
-     static REPEATER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "repeater", false, true, []);
+     static REPEATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "repeater", false, true, []);
 
     /**
      * @readonly
      */
-     static REPEATING_COMMAND_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "repeating_command_block", "repeating_command_block", true, true, ["conditional_bit", "facing_direction"]);
+     static REPEATING_COMMAND_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "repeating_command_block", "repeating_command_block", true, true, ["conditional_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static RESPAWN_ANCHOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "respawn_anchor", "respawn_anchor", true, true, ["respawn_anchor_charge"]);
+     static RESPAWN_ANCHOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "respawn_anchor", "respawn_anchor", true, true, ["respawn_anchor_charge"]);
 
     /**
      * @readonly
      */
-     static RIB_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rib_armor_trim_smithing_template", false, true, []);
+     static RIB_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rib_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static ROSE_BUSH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "rose_bush", "rose_bush", true, true, ["upper_block_bit"]);
+     static ROSE_BUSH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "rose_bush", "rose_bush", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static ROTTEN_FLESH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "rotten_flesh", false, true, []);
+     static ROTTEN_FLESH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "rotten_flesh", false, true, []);
 
     /**
      * @readonly
      */
-     static SADDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "saddle", false, true, []);
+     static SADDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "saddle", false, true, []);
 
     /**
      * @readonly
      */
-     static SALMON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon", false, true, []);
+     static SALMON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon", false, true, []);
 
     /**
      * @readonly
      */
-     static SALMON_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon_bucket", false, true, []);
+     static SALMON_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static SALMON_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon_spawn_egg", false, true, []);
+     static SALMON_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sand", "sand", true, true, ["sand_type"]);
+     static SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sand", "sand", true, true, ["sand_type"]);
 
     /**
      * @readonly
      */
-     static SANDSTONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone", "sandstone", true, true, ["sand_stone_type"]);
+     static SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone", "sandstone", true, true, ["sand_stone_type"]);
 
     /**
      * @readonly
      */
-     static SANDSTONE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_slab", "sandstone_slab", true, true, ["minecraft:vertical_half"]);
+     static SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_slab", "sandstone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static SANDSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_stairs", "sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static SANDSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_stairs", "sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sapling", false, true, []);
+     static SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sapling", false, true, []);
 
     /**
      * @readonly
      */
-     static SCAFFOLDING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "scaffolding", "scaffolding", true, true, ["stability", "stability_check"]);
+     static SCAFFOLDING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "scaffolding", "scaffolding", true, true, ["stability", "stability_check"]);
 
     /**
      * @readonly
      */
-     static SCRAPE_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "scrape_pottery_sherd", false, true, []);
+     static SCRAPE_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "scrape_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static SCULK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sculk", "sculk", true, true, []);
+     static SCULK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sculk", "sculk", true, true, []);
 
     /**
      * @readonly
      */
-     static SCULK_CATALYST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_catalyst", "sculk_catalyst", true, true, ["bloom"]);
+     static SCULK_CATALYST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_catalyst", "sculk_catalyst", true, true, ["bloom"]);
 
     /**
      * @readonly
      */
-     static SCULK_SENSOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_sensor", "sculk_sensor", true, true, ["sculk_sensor_phase"]);
+     static SCULK_SENSOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_sensor", "sculk_sensor", true, true, ["sculk_sensor_phase"]);
 
     /**
      * @readonly
      */
-     static SCULK_SHRIEKER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_shrieker", "sculk_shrieker", true, true, ["active", "can_summon"]);
+     static SCULK_SHRIEKER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_shrieker", "sculk_shrieker", true, true, ["active", "can_summon"]);
 
     /**
      * @readonly
      */
-     static SCULK_VEIN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_vein", "sculk_vein", true, true, ["multi_face_direction_bits"]);
+     static SCULK_VEIN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sculk_vein", "sculk_vein", true, true, ["multi_face_direction_bits"]);
 
     /**
      * @readonly
      */
-     static SEA_LANTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sea_lantern", "sea_lantern", true, true, []);
+     static SEA_LANTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sea_lantern", "sea_lantern", true, true, []);
 
     /**
      * @readonly
      */
-     static SEA_PICKLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sea_pickle", "sea_pickle", true, true, ["cluster_count", "dead_bit"]);
+     static SEA_PICKLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sea_pickle", "sea_pickle", true, true, ["cluster_count", "dead_bit"]);
 
     /**
      * @readonly
      */
-     static SEAGRASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "seagrass", "seagrass", true, true, ["sea_grass_type"]);
+     static SEAGRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "seagrass", "seagrass", true, true, ["sea_grass_type"]);
 
     /**
      * @readonly
      */
-     static SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sentry_armor_trim_smithing_template", false, true, []);
+     static SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sentry_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shaper_armor_trim_smithing_template", false, true, []);
+     static SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shaper_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static SHEAF_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sheaf_pottery_sherd", false, true, []);
+     static SHEAF_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sheaf_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static SHEARS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shears", false, true, []);
+     static SHEARS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shears", false, true, []);
 
     /**
      * @readonly
      */
-     static SHEEP_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sheep_spawn_egg", false, true, []);
+     static SHEEP_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sheep_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SHELTER_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shelter_pottery_sherd", false, true, []);
+     static SHELTER_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shelter_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static SHIELD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shield", false, true, []);
+     static SHIELD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shield", false, true, []);
 
     /**
      * @readonly
      */
-     static SHORT_GRASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "short_grass", "short_grass", true, true, []);
+     static SHORT_GRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "short_grass", "short_grass", true, true, []);
 
     /**
      * @readonly
      */
-     static SHROOMLIGHT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "shroomlight", "shroomlight", true, true, []);
+     static SHROOMLIGHT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "shroomlight", "shroomlight", true, true, []);
 
     /**
      * @readonly
      */
-     static SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_box", false, true, []);
+     static SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_box", false, true, []);
 
     /**
      * @readonly
      */
-     static SHULKER_SHELL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_shell", false, true, []);
+     static SHULKER_SHELL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_shell", false, true, []);
 
     /**
      * @readonly
      */
-     static SHULKER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_spawn_egg", false, true, []);
+     static SHULKER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "shulker_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "silence_armor_trim_smithing_template", false, true, []);
+     static SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "silence_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static SILVER_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "silver_glazed_terracotta", "silver_glazed_terracotta", true, true, ["facing_direction"]);
+     static SILVER_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "silver_glazed_terracotta", "silver_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static SILVERFISH_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "silverfish_spawn_egg", false, true, []);
+     static SILVERFISH_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "silverfish_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SKELETON_HORSE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "skeleton_horse_spawn_egg", false, true, []);
+     static SKELETON_HORSE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "skeleton_horse_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SKELETON_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "skeleton_spawn_egg", false, true, []);
+     static SKELETON_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "skeleton_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SKULL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "skull", "skull", true, true, ["facing_direction"]);
+     static SKULL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "skull", "skull", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static SKULL_BANNER_PATTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "skull_banner_pattern", false, true, []);
+     static SKULL_BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "skull_banner_pattern", false, true, []);
 
     /**
      * @readonly
      */
-     static SKULL_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "skull_pottery_sherd", false, true, []);
+     static SKULL_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "skull_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static SLIME = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "slime", "slime", true, true, []);
+     static SLIME = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "slime", "slime", true, true, []);
 
     /**
      * @readonly
      */
-     static SLIME_BALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "slime_ball", false, true, []);
+     static SLIME_BALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "slime_ball", false, true, []);
 
     /**
      * @readonly
      */
-     static SLIME_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "slime_spawn_egg", false, true, []);
+     static SLIME_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "slime_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SMALL_AMETHYST_BUD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "small_amethyst_bud", "small_amethyst_bud", true, true, ["minecraft:block_face"]);
+     static SMALL_AMETHYST_BUD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "small_amethyst_bud", "small_amethyst_bud", true, true, ["minecraft:block_face"]);
 
     /**
      * @readonly
      */
-     static SMALL_DRIPLEAF_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "small_dripleaf_block", "small_dripleaf_block", true, true, ["minecraft:cardinal_direction", "upper_block_bit"]);
+     static SMALL_DRIPLEAF_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "small_dripleaf_block", "small_dripleaf_block", true, true, ["minecraft:cardinal_direction", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static SMITHING_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smithing_table", "smithing_table", true, true, []);
+     static SMITHING_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smithing_table", "smithing_table", true, true, []);
 
     /**
      * @readonly
      */
-     static SMOKER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smoker", "smoker", true, true, ["minecraft:cardinal_direction"]);
+     static SMOKER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smoker", "smoker", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static SMOOTH_BASALT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_basalt", "smooth_basalt", true, true, []);
+     static SMOOTH_BASALT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_basalt", "smooth_basalt", true, true, []);
 
     /**
      * @readonly
      */
-     static SMOOTH_QUARTZ_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_quartz_stairs", "smooth_quartz_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static SMOOTH_QUARTZ_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_quartz_stairs", "smooth_quartz_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static SMOOTH_RED_SANDSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_red_sandstone_stairs", "smooth_red_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static SMOOTH_RED_SANDSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_red_sandstone_stairs", "smooth_red_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static SMOOTH_SANDSTONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_sandstone_stairs", "smooth_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static SMOOTH_SANDSTONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_sandstone_stairs", "smooth_sandstone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static SMOOTH_STONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_stone", "smooth_stone", true, true, []);
+     static SMOOTH_STONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_stone", "smooth_stone", true, true, []);
 
     /**
      * @readonly
      */
-     static SMOOTH_STONE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_stone_slab", "smooth_stone_slab", true, true, ["minecraft:vertical_half"]);
+     static SMOOTH_STONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_stone_slab", "smooth_stone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static SNIFFER_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sniffer_egg", "sniffer_egg", true, true, ["cracked_state"]);
+     static SNIFFER_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sniffer_egg", "sniffer_egg", true, true, ["cracked_state"]);
 
     /**
      * @readonly
      */
-     static SNIFFER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sniffer_spawn_egg", false, true, []);
+     static SNIFFER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sniffer_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SNORT_POTTERY_SHERD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "snort_pottery_sherd", false, true, []);
+     static SNORT_POTTERY_SHERD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "snort_pottery_sherd", false, true, []);
 
     /**
      * @readonly
      */
-     static SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "snout_armor_trim_smithing_template", false, true, []);
+     static SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "snout_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static SNOW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "snow", "snow", true, true, []);
+     static SNOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "snow", "snow", true, true, []);
 
     /**
      * @readonly
      */
-     static SNOW_GOLEM_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "snow_golem_spawn_egg", false, true, []);
+     static SNOW_GOLEM_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "snow_golem_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SNOW_LAYER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "snow_layer", "snow_layer", true, true, ["covered_bit", "height"]);
+     static SNOW_LAYER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "snow_layer", "snow_layer", true, true, ["covered_bit", "height"]);
 
     /**
      * @readonly
      */
-     static SNOWBALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "snowball", false, true, []);
+     static SNOWBALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "snowball", false, true, []);
 
     /**
      * @readonly
      */
-     static SOUL_CAMPFIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_campfire", "soul_campfire", true, true, ["extinguished", "minecraft:cardinal_direction"]);
+     static SOUL_CAMPFIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_campfire", "soul_campfire", true, true, ["extinguished", "minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static SOUL_LANTERN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_lantern", "soul_lantern", true, true, ["hanging"]);
+     static SOUL_LANTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_lantern", "soul_lantern", true, true, ["hanging"]);
 
     /**
      * @readonly
      */
-     static SOUL_SAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_sand", "soul_sand", true, true, []);
+     static SOUL_SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_sand", "soul_sand", true, true, []);
 
     /**
      * @readonly
      */
-     static SOUL_SOIL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_soil", "soul_soil", true, true, []);
+     static SOUL_SOIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_soil", "soul_soil", true, true, []);
 
     /**
      * @readonly
      */
-     static SOUL_TORCH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_torch", "soul_torch", true, true, ["torch_facing_direction"]);
+     static SOUL_TORCH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_torch", "soul_torch", true, true, ["torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, []);
+     static SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SPIDER_EYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spider_eye", false, true, []);
+     static SPIDER_EYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spider_eye", false, true, []);
 
     /**
      * @readonly
      */
-     static SPIDER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spider_spawn_egg", false, true, []);
+     static SPIDER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spider_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spire_armor_trim_smithing_template", false, true, []);
+     static SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spire_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static SPLASH_POTION = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "splash_potion", false, true, []);
+     static SPLASH_POTION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "splash_potion", false, true, []);
 
     /**
      * @readonly
      */
-     static SPONGE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sponge", "sponge", true, true, ["sponge_type"]);
+     static SPONGE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sponge", "sponge", true, true, ["sponge_type"]);
 
     /**
      * @readonly
      */
-     static SPORE_BLOSSOM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spore_blossom", "spore_blossom", true, true, []);
+     static SPORE_BLOSSOM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spore_blossom", "spore_blossom", true, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_boat", false, true, []);
+     static SPRUCE_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_button", "spruce_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static SPRUCE_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_button", "spruce_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_CHEST_BOAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_chest_boat", false, true, []);
+     static SPRUCE_CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_chest_boat", false, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_door", "spruce_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static SPRUCE_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_door", "spruce_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_fence", "spruce_fence", true, true, []);
+     static SPRUCE_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_fence", "spruce_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_fence_gate", "spruce_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static SPRUCE_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_fence_gate", "spruce_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_hanging_sign", "spruce_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static SPRUCE_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_hanging_sign", "spruce_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_LEAVES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_leaves", "spruce_leaves", true, true, ["persistent_bit", "update_bit"]);
+     static SPRUCE_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_leaves", "spruce_leaves", true, true, ["persistent_bit", "update_bit"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_log", "spruce_log", true, true, ["pillar_axis"]);
+     static SPRUCE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_log", "spruce_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_planks", "spruce_planks", true, true, []);
+     static SPRUCE_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_planks", "spruce_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_pressure_plate", "spruce_pressure_plate", true, true, ["redstone_signal"]);
+     static SPRUCE_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_pressure_plate", "spruce_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_sapling", "spruce_sapling", true, true, ["age_bit"]);
+     static SPRUCE_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_sapling", "spruce_sapling", true, true, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_sign", false, true, []);
+     static SPRUCE_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spruce_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static SPRUCE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_slab", "spruce_slab", true, true, ["minecraft:vertical_half"]);
+     static SPRUCE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_slab", "spruce_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_stairs", "spruce_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static SPRUCE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_stairs", "spruce_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_trapdoor", "spruce_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static SPRUCE_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_trapdoor", "spruce_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_wood", "spruce_wood", true, true, ["pillar_axis"]);
+     static SPRUCE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_wood", "spruce_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static SPYGLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "spyglass", false, true, []);
+     static SPYGLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spyglass", false, true, []);
 
     /**
      * @readonly
      */
-     static SQUID_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "squid_spawn_egg", false, true, []);
+     static SQUID_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "squid_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass", false, true, []);
+     static STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass", false, true, []);
 
     /**
      * @readonly
      */
-     static STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass_pane", false, true, []);
+     static STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass_pane", false, true, []);
 
     /**
      * @readonly
      */
-     static STAINED_HARDENED_CLAY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_hardened_clay", false, true, []);
+     static STAINED_HARDENED_CLAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_hardened_clay", false, true, []);
 
     /**
      * @readonly
      */
-     static STICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stick", false, true, []);
+     static STICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stick", false, true, []);
 
     /**
      * @readonly
      */
-     static STICKY_PISTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sticky_piston", "sticky_piston", true, true, ["facing_direction"]);
+     static STICKY_PISTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sticky_piston", "sticky_piston", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static STONE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone", "stone", true, true, []);
+     static STONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone", "stone", true, true, []);
 
     /**
      * @readonly
      */
-     static STONE_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_axe", false, true, []);
+     static STONE_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_block_slab", false, true, []);
+     static STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_block_slab", false, true, []);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab2", "stone_block_slab2", true, true, ["minecraft:vertical_half", "stone_slab_type_2"]);
+     static STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab2", "stone_block_slab2", true, true, ["minecraft:vertical_half", "stone_slab_type_2"]);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB3 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab3", "stone_block_slab3", true, true, ["minecraft:vertical_half", "stone_slab_type_3"]);
+     static STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab3", "stone_block_slab3", true, true, ["minecraft:vertical_half", "stone_slab_type_3"]);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB4 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab4", "stone_block_slab4", true, true, ["minecraft:vertical_half", "stone_slab_type_4"]);
+     static STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab4", "stone_block_slab4", true, true, ["minecraft:vertical_half", "stone_slab_type_4"]);
 
     /**
      * @readonly
      */
-     static STONE_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_slab", "stone_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static STONE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_slab", "stone_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static STONE_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_stairs", "stone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static STONE_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_stairs", "stone_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static STONE_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_button", "stone_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static STONE_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_button", "stone_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static STONE_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_hoe", false, true, []);
+     static STONE_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static STONE_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_pickaxe", false, true, []);
+     static STONE_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static STONE_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_pressure_plate", "stone_pressure_plate", true, true, ["redstone_signal"]);
+     static STONE_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_pressure_plate", "stone_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static STONE_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_shovel", false, true, []);
+     static STONE_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static STONE_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stone_stairs", "stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static STONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_stairs", "stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static STONE_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_sword", false, true, []);
+     static STONE_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static STONEBRICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stonebrick", "stonebrick", true, true, ["stone_brick_type"]);
+     static STONEBRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonebrick", "stonebrick", true, true, ["stone_brick_type"]);
 
     /**
      * @readonly
      */
-     static STONECUTTER_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter_block", "stonecutter_block", true, true, ["minecraft:cardinal_direction"]);
+     static STONECUTTER_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter_block", "stonecutter_block", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static STRAY_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "stray_spawn_egg", false, true, []);
+     static STRAY_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stray_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static STRIDER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "strider_spawn_egg", false, true, []);
+     static STRIDER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "strider_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static STRING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "string", false, true, []);
+     static STRING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "string", false, true, []);
 
     /**
      * @readonly
      */
-     static STRIPPED_ACACIA_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_acacia_log", "stripped_acacia_log", true, true, ["pillar_axis"]);
+     static STRIPPED_ACACIA_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_acacia_log", "stripped_acacia_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_ACACIA_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_acacia_wood", "stripped_acacia_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_ACACIA_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_acacia_wood", "stripped_acacia_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_BAMBOO_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_bamboo_block", "stripped_bamboo_block", true, true, ["pillar_axis"]);
+     static STRIPPED_BAMBOO_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_bamboo_block", "stripped_bamboo_block", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_BIRCH_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_birch_log", "stripped_birch_log", true, true, ["pillar_axis"]);
+     static STRIPPED_BIRCH_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_birch_log", "stripped_birch_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_BIRCH_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_birch_wood", "stripped_birch_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_BIRCH_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_birch_wood", "stripped_birch_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_CHERRY_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_cherry_log", "stripped_cherry_log", true, true, ["pillar_axis"]);
+     static STRIPPED_CHERRY_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_cherry_log", "stripped_cherry_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_CHERRY_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_cherry_wood", "stripped_cherry_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_CHERRY_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_cherry_wood", "stripped_cherry_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_CRIMSON_HYPHAE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_crimson_hyphae", "stripped_crimson_hyphae", true, true, ["pillar_axis"]);
+     static STRIPPED_CRIMSON_HYPHAE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_crimson_hyphae", "stripped_crimson_hyphae", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_CRIMSON_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_crimson_stem", "stripped_crimson_stem", true, true, ["pillar_axis"]);
+     static STRIPPED_CRIMSON_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_crimson_stem", "stripped_crimson_stem", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_DARK_OAK_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_dark_oak_log", "stripped_dark_oak_log", true, true, ["pillar_axis"]);
+     static STRIPPED_DARK_OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_dark_oak_log", "stripped_dark_oak_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_DARK_OAK_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_dark_oak_wood", "stripped_dark_oak_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_DARK_OAK_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_dark_oak_wood", "stripped_dark_oak_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_JUNGLE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_jungle_log", "stripped_jungle_log", true, true, ["pillar_axis"]);
+     static STRIPPED_JUNGLE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_jungle_log", "stripped_jungle_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_JUNGLE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_jungle_wood", "stripped_jungle_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_JUNGLE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_jungle_wood", "stripped_jungle_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_MANGROVE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_mangrove_log", "stripped_mangrove_log", true, true, ["pillar_axis"]);
+     static STRIPPED_MANGROVE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_mangrove_log", "stripped_mangrove_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_MANGROVE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_mangrove_wood", "stripped_mangrove_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_MANGROVE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_mangrove_wood", "stripped_mangrove_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_OAK_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_oak_log", "stripped_oak_log", true, true, ["pillar_axis"]);
+     static STRIPPED_OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_oak_log", "stripped_oak_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_OAK_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_oak_wood", "stripped_oak_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_OAK_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_oak_wood", "stripped_oak_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_SPRUCE_LOG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_spruce_log", "stripped_spruce_log", true, true, ["pillar_axis"]);
+     static STRIPPED_SPRUCE_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_spruce_log", "stripped_spruce_log", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_SPRUCE_WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_spruce_wood", "stripped_spruce_wood", true, true, ["pillar_axis"]);
+     static STRIPPED_SPRUCE_WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_spruce_wood", "stripped_spruce_wood", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_WARPED_HYPHAE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_warped_hyphae", "stripped_warped_hyphae", true, true, ["pillar_axis"]);
+     static STRIPPED_WARPED_HYPHAE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_warped_hyphae", "stripped_warped_hyphae", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRIPPED_WARPED_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_warped_stem", "stripped_warped_stem", true, true, ["pillar_axis"]);
+     static STRIPPED_WARPED_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_warped_stem", "stripped_warped_stem", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static STRUCTURE_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "structure_block", "structure_block", true, true, ["structure_block_type"]);
+     static STRUCTURE_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "structure_block", "structure_block", true, true, ["structure_block_type"]);
 
     /**
      * @readonly
      */
-     static STRUCTURE_VOID = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "structure_void", "structure_void", true, true, ["structure_void_type"]);
+     static STRUCTURE_VOID = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "structure_void", "structure_void", true, true, ["structure_void_type"]);
 
     /**
      * @readonly
      */
-     static SUGAR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sugar", false, true, []);
+     static SUGAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sugar", false, true, []);
 
     /**
      * @readonly
      */
-     static SUGAR_CANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "sugar_cane", false, true, []);
+     static SUGAR_CANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sugar_cane", false, true, []);
 
     /**
      * @readonly
      */
-     static SUNFLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sunflower", "sunflower", true, true, ["upper_block_bit"]);
+     static SUNFLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sunflower", "sunflower", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static SUSPICIOUS_GRAVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "suspicious_gravel", "suspicious_gravel", true, true, ["brushed_progress", "hanging"]);
+     static SUSPICIOUS_GRAVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "suspicious_gravel", "suspicious_gravel", true, true, ["brushed_progress", "hanging"]);
 
     /**
      * @readonly
      */
-     static SUSPICIOUS_SAND = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "suspicious_sand", "suspicious_sand", true, true, ["brushed_progress", "hanging"]);
+     static SUSPICIOUS_SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "suspicious_sand", "suspicious_sand", true, true, ["brushed_progress", "hanging"]);
 
     /**
      * @readonly
      */
-     static SUSPICIOUS_STEW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "suspicious_stew", false, true, []);
+     static SUSPICIOUS_STEW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "suspicious_stew", false, true, []);
 
     /**
      * @readonly
      */
-     static SWEET_BERRY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sweet_berry_bush", "sweet_berries", true, true, ["growth"]);
+     static SWEET_BERRY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sweet_berry_bush", "sweet_berries", true, true, ["growth"]);
 
     /**
      * @readonly
      */
-     static TADPOLE_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tadpole_bucket", false, true, []);
+     static TADPOLE_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tadpole_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static TADPOLE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tadpole_spawn_egg", false, true, []);
+     static TADPOLE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tadpole_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static TALL_GRASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tall_grass", "tall_grass", true, true, ["upper_block_bit"]);
+     static TALL_GRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tall_grass", "tall_grass", true, true, ["upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static TALLGRASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tallgrass", false, true, []);
+     static TALLGRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tallgrass", false, true, []);
 
     /**
      * @readonly
      */
-     static TARGET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "target", "target", true, true, []);
+     static TARGET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "target", "target", true, true, []);
 
     /**
      * @readonly
      */
-     static TIDE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tide_armor_trim_smithing_template", false, true, []);
+     static TIDE_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tide_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static TINTED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tinted_glass", "tinted_glass", true, true, []);
+     static TINTED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tinted_glass", "tinted_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static TNT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tnt", "tnt", true, true, ["allow_underwater_bit", "explode_bit"]);
+     static TNT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tnt", "tnt", true, true, ["allow_underwater_bit", "explode_bit"]);
 
     /**
      * @readonly
      */
-     static TNT_MINECART = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tnt_minecart", false, true, []);
+     static TNT_MINECART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tnt_minecart", false, true, []);
 
     /**
      * @readonly
      */
-     static TORCH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "torch", "torch", true, true, ["torch_facing_direction"]);
+     static TORCH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "torch", "torch", true, true, ["torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static TORCHFLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "torchflower", "torchflower", true, true, []);
+     static TORCHFLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "torchflower", "torchflower", true, true, []);
 
     /**
      * @readonly
      */
-     static TORCHFLOWER_SEEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "torchflower_seeds", false, true, []);
+     static TORCHFLOWER_SEEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "torchflower_seeds", false, true, []);
 
     /**
      * @readonly
      */
-     static TOTEM_OF_UNDYING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "totem_of_undying", false, true, []);
+     static TOTEM_OF_UNDYING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "totem_of_undying", false, true, []);
 
     /**
      * @readonly
      */
-     static TRADER_LLAMA_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "trader_llama_spawn_egg", false, true, []);
+     static TRADER_LLAMA_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "trader_llama_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "trapdoor", "trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "trapdoor", "trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static TRAPPED_CHEST = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "trapped_chest", "trapped_chest", true, true, ["minecraft:cardinal_direction"]);
+     static TRAPPED_CHEST = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "trapped_chest", "trapped_chest", true, true, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static TRIAL_KEY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "trial_key", false, true, []);
+     static TRIAL_KEY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "trial_key", false, true, []);
 
     /**
      * @readonly
      */
-     static TRIAL_SPAWNER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "trial_spawner", "trial_spawner", true, true, ["ominous", "trial_spawner_state"]);
+     static TRIAL_SPAWNER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "trial_spawner", "trial_spawner", true, true, ["ominous", "trial_spawner_state"]);
 
     /**
      * @readonly
      */
-     static TRIDENT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "trident", false, true, []);
+     static TRIDENT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "trident", false, true, []);
 
     /**
      * @readonly
      */
-     static TRIPWIRE_HOOK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tripwire_hook", "tripwire_hook", true, true, ["attached_bit", "direction", "powered_bit"]);
+     static TRIPWIRE_HOOK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tripwire_hook", "tripwire_hook", true, true, ["attached_bit", "direction", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static TROPICAL_FISH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish", false, true, []);
+     static TROPICAL_FISH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish", false, true, []);
 
     /**
      * @readonly
      */
-     static TROPICAL_FISH_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish_bucket", false, true, []);
+     static TROPICAL_FISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static TROPICAL_FISH_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish_spawn_egg", false, true, []);
+     static TROPICAL_FISH_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static TUBE_CORAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral", "tube_coral", true, true, []);
+     static TUBE_CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral", "tube_coral", true, true, []);
 
     /**
      * @readonly
      */
-     static TUBE_CORAL_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral_block", "tube_coral_block", true, true, []);
+     static TUBE_CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral_block", "tube_coral_block", true, true, []);
 
     /**
      * @readonly
      */
-     static TUBE_CORAL_FAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral_fan", "tube_coral_fan", true, true, ["coral_fan_direction"]);
+     static TUBE_CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral_fan", "tube_coral_fan", true, true, ["coral_fan_direction"]);
 
     /**
      * @readonly
      */
-     static TUFF = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff", "tuff", true, true, []);
+     static TUFF = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff", "tuff", true, true, []);
 
     /**
      * @readonly
      */
-     static TUFF_BRICK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_slab", "tuff_brick_slab", true, true, ["minecraft:vertical_half"]);
+     static TUFF_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_slab", "tuff_brick_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static TUFF_BRICK_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_stairs", "tuff_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static TUFF_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_stairs", "tuff_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static TUFF_BRICK_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_wall", "tuff_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static TUFF_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_wall", "tuff_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static TUFF_BRICKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_bricks", "tuff_bricks", true, true, []);
+     static TUFF_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_bricks", "tuff_bricks", true, true, []);
 
     /**
      * @readonly
      */
-     static TUFF_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_slab", "tuff_slab", true, true, ["minecraft:vertical_half"]);
+     static TUFF_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_slab", "tuff_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static TUFF_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_stairs", "tuff_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static TUFF_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_stairs", "tuff_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static TUFF_WALL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_wall", "tuff_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+     static TUFF_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_wall", "tuff_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
 
     /**
      * @readonly
      */
-     static TURTLE_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "turtle_egg", "turtle_egg", true, true, ["cracked_state", "turtle_egg_count"]);
+     static TURTLE_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "turtle_egg", "turtle_egg", true, true, ["cracked_state", "turtle_egg_count"]);
 
     /**
      * @readonly
      */
-     static TURTLE_HELMET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_helmet", false, true, []);
+     static TURTLE_HELMET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_helmet", false, true, []);
 
     /**
      * @readonly
      */
-     static TURTLE_SCUTE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_scute", false, true, []);
+     static TURTLE_SCUTE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_scute", false, true, []);
 
     /**
      * @readonly
      */
-     static TURTLE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_spawn_egg", false, true, []);
+     static TURTLE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "turtle_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static TWISTING_VINES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "twisting_vines", "twisting_vines", true, true, ["twisting_vines_age"]);
+     static TWISTING_VINES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "twisting_vines", "twisting_vines", true, true, ["twisting_vines_age"]);
 
     /**
      * @readonly
      */
-     static UNDYED_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "undyed_shulker_box", "undyed_shulker_box", true, true, []);
+     static UNDYED_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "undyed_shulker_box", "undyed_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static VAULT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "vault", "vault", true, true, ["minecraft:cardinal_direction", "ominous", "vault_state"]);
+     static VAULT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "vault", "vault", true, true, ["minecraft:cardinal_direction", "ominous", "vault_state"]);
 
     /**
      * @readonly
      */
-     static VERDANT_FROGLIGHT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "verdant_froglight", "verdant_froglight", true, true, ["pillar_axis"]);
+     static VERDANT_FROGLIGHT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "verdant_froglight", "verdant_froglight", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static VEX_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "vex_armor_trim_smithing_template", false, true, []);
+     static VEX_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "vex_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static VEX_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "vex_spawn_egg", false, true, []);
+     static VEX_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "vex_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static VILLAGER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "villager_spawn_egg", false, true, []);
+     static VILLAGER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "villager_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static VINDICATOR_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "vindicator_spawn_egg", false, true, []);
+     static VINDICATOR_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "vindicator_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static VINE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "vine", "vine", true, true, ["vine_direction_bits"]);
+     static VINE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "vine", "vine", true, true, ["vine_direction_bits"]);
 
     /**
      * @readonly
      */
-     static WANDERING_TRADER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wandering_trader_spawn_egg", false, true, []);
+     static WANDERING_TRADER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wandering_trader_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WARD_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "ward_armor_trim_smithing_template", false, true, []);
+     static WARD_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "ward_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static WARDEN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "warden_spawn_egg", false, true, []);
+     static WARDEN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "warden_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_button", "warped_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static WARPED_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_button", "warped_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static WARPED_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_door", "warped_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WARPED_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_door", "warped_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WARPED_FENCE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fence", "warped_fence", true, true, []);
+     static WARPED_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fence", "warped_fence", true, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_FENCE_GATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fence_gate", "warped_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static WARPED_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fence_gate", "warped_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
      */
-     static WARPED_FUNGUS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fungus", "warped_fungus", true, true, []);
+     static WARPED_FUNGUS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_fungus", "warped_fungus", true, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_FUNGUS_ON_A_STICK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "warped_fungus_on_a_stick", false, true, []);
+     static WARPED_FUNGUS_ON_A_STICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "warped_fungus_on_a_stick", false, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_HANGING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_hanging_sign", "warped_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+     static WARPED_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_hanging_sign", "warped_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
 
     /**
      * @readonly
      */
-     static WARPED_HYPHAE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_hyphae", "warped_hyphae", true, true, ["pillar_axis"]);
+     static WARPED_HYPHAE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_hyphae", "warped_hyphae", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static WARPED_NYLIUM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_nylium", "warped_nylium", true, true, []);
+     static WARPED_NYLIUM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_nylium", "warped_nylium", true, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_PLANKS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_planks", "warped_planks", true, true, []);
+     static WARPED_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_planks", "warped_planks", true, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_pressure_plate", "warped_pressure_plate", true, true, ["redstone_signal"]);
+     static WARPED_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_pressure_plate", "warped_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static WARPED_ROOTS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_roots", "warped_roots", true, true, []);
+     static WARPED_ROOTS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_roots", "warped_roots", true, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "warped_sign", false, true, []);
+     static WARPED_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "warped_sign", false, true, []);
 
     /**
      * @readonly
      */
-     static WARPED_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_slab", "warped_slab", true, true, ["minecraft:vertical_half"]);
+     static WARPED_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_slab", "warped_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WARPED_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_stairs", "warped_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WARPED_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_stairs", "warped_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WARPED_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_stem", "warped_stem", true, true, ["pillar_axis"]);
+     static WARPED_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_stem", "warped_stem", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
      */
-     static WARPED_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_trapdoor", "warped_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WARPED_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_trapdoor", "warped_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WARPED_WART_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_wart_block", "warped_wart_block", true, true, []);
+     static WARPED_WART_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_wart_block", "warped_wart_block", true, true, []);
 
     /**
      * @readonly
      */
-     static WATER_BUCKET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "water_bucket", false, true, []);
+     static WATER_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "water_bucket", false, true, []);
 
     /**
      * @readonly
      */
-     static WATERLILY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waterlily", "waterlily", true, true, []);
+     static WATERLILY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waterlily", "waterlily", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_chiseled_copper", "waxed_chiseled_copper", true, true, []);
+     static WAXED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_chiseled_copper", "waxed_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper", "waxed_copper", true, true, []);
+     static WAXED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper", "waxed_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_bulb", "waxed_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static WAXED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_bulb", "waxed_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_door", "waxed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WAXED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_door", "waxed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_grate", "waxed_copper_grate", true, true, []);
+     static WAXED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_grate", "waxed_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_trapdoor", "waxed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WAXED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_copper_trapdoor", "waxed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper", "waxed_cut_copper", true, true, []);
+     static WAXED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper", "waxed_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper_slab", "waxed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static WAXED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper_slab", "waxed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper_stairs", "waxed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WAXED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_cut_copper_stairs", "waxed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_chiseled_copper", "waxed_exposed_chiseled_copper", true, true, []);
+     static WAXED_EXPOSED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_chiseled_copper", "waxed_exposed_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper", "waxed_exposed_copper", true, true, []);
+     static WAXED_EXPOSED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper", "waxed_exposed_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_bulb", "waxed_exposed_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static WAXED_EXPOSED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_bulb", "waxed_exposed_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_door", "waxed_exposed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WAXED_EXPOSED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_door", "waxed_exposed_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_grate", "waxed_exposed_copper_grate", true, true, []);
+     static WAXED_EXPOSED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_grate", "waxed_exposed_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_trapdoor", "waxed_exposed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WAXED_EXPOSED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_copper_trapdoor", "waxed_exposed_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper", "waxed_exposed_cut_copper", true, true, []);
+     static WAXED_EXPOSED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper", "waxed_exposed_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper_slab", "waxed_exposed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static WAXED_EXPOSED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper_slab", "waxed_exposed_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper_stairs", "waxed_exposed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WAXED_EXPOSED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_cut_copper_stairs", "waxed_exposed_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_chiseled_copper", "waxed_oxidized_chiseled_copper", true, true, []);
+     static WAXED_OXIDIZED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_chiseled_copper", "waxed_oxidized_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper", "waxed_oxidized_copper", true, true, []);
+     static WAXED_OXIDIZED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper", "waxed_oxidized_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_bulb", "waxed_oxidized_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static WAXED_OXIDIZED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_bulb", "waxed_oxidized_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_door", "waxed_oxidized_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WAXED_OXIDIZED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_door", "waxed_oxidized_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_grate", "waxed_oxidized_copper_grate", true, true, []);
+     static WAXED_OXIDIZED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_grate", "waxed_oxidized_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_trapdoor", "waxed_oxidized_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WAXED_OXIDIZED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_copper_trapdoor", "waxed_oxidized_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper", "waxed_oxidized_cut_copper", true, true, []);
+     static WAXED_OXIDIZED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper", "waxed_oxidized_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper_slab", "waxed_oxidized_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static WAXED_OXIDIZED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper_slab", "waxed_oxidized_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper_stairs", "waxed_oxidized_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WAXED_OXIDIZED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_cut_copper_stairs", "waxed_oxidized_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_chiseled_copper", "waxed_weathered_chiseled_copper", true, true, []);
+     static WAXED_WEATHERED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_chiseled_copper", "waxed_weathered_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper", "waxed_weathered_copper", true, true, []);
+     static WAXED_WEATHERED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper", "waxed_weathered_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_bulb", "waxed_weathered_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static WAXED_WEATHERED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_bulb", "waxed_weathered_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_door", "waxed_weathered_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WAXED_WEATHERED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_door", "waxed_weathered_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_grate", "waxed_weathered_copper_grate", true, true, []);
+     static WAXED_WEATHERED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_grate", "waxed_weathered_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_trapdoor", "waxed_weathered_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WAXED_WEATHERED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_copper_trapdoor", "waxed_weathered_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper", "waxed_weathered_cut_copper", true, true, []);
+     static WAXED_WEATHERED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper", "waxed_weathered_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper_slab", "waxed_weathered_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static WAXED_WEATHERED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper_slab", "waxed_weathered_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper_stairs", "waxed_weathered_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WAXED_WEATHERED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_cut_copper_stairs", "waxed_weathered_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wayfinder_armor_trim_smithing_template", false, true, []);
+     static WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wayfinder_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static WEATHERED_CHISELED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_chiseled_copper", "weathered_chiseled_copper", true, true, []);
+     static WEATHERED_CHISELED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_chiseled_copper", "weathered_chiseled_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WEATHERED_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper", "weathered_copper", true, true, []);
+     static WEATHERED_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper", "weathered_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WEATHERED_COPPER_BULB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_bulb", "weathered_copper_bulb", true, true, ["lit", "powered_bit"]);
+     static WEATHERED_COPPER_BULB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_bulb", "weathered_copper_bulb", true, true, ["lit", "powered_bit"]);
 
     /**
      * @readonly
      */
-     static WEATHERED_COPPER_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_door", "weathered_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WEATHERED_COPPER_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_door", "weathered_copper_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WEATHERED_COPPER_GRATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_grate", "weathered_copper_grate", true, true, []);
+     static WEATHERED_COPPER_GRATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_grate", "weathered_copper_grate", true, true, []);
 
     /**
      * @readonly
      */
-     static WEATHERED_COPPER_TRAPDOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_trapdoor", "weathered_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+     static WEATHERED_COPPER_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_copper_trapdoor", "weathered_copper_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
 
     /**
      * @readonly
      */
-     static WEATHERED_CUT_COPPER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper", "weathered_cut_copper", true, true, []);
+     static WEATHERED_CUT_COPPER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper", "weathered_cut_copper", true, true, []);
 
     /**
      * @readonly
      */
-     static WEATHERED_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper_slab", "weathered_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
+     static WEATHERED_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper_slab", "weathered_cut_copper_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WEATHERED_CUT_COPPER_STAIRS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper_stairs", "weathered_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static WEATHERED_CUT_COPPER_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_cut_copper_stairs", "weathered_cut_copper_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
      */
-     static WEB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "web", "web", true, true, []);
+     static WEB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "web", "web", true, true, []);
 
     /**
      * @readonly
      */
-     static WEEPING_VINES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weeping_vines", "weeping_vines", true, true, ["weeping_vines_age"]);
+     static WEEPING_VINES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weeping_vines", "weeping_vines", true, true, ["weeping_vines_age"]);
 
     /**
      * @readonly
      */
-     static WHEAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wheat", "wheat", true, true, ["growth"]);
+     static WHEAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wheat", "wheat", true, true, ["growth"]);
 
     /**
      * @readonly
      */
-     static WHEAT_SEEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wheat_seeds", false, true, []);
+     static WHEAT_SEEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wheat_seeds", false, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_candle", "white_candle", true, true, ["candles", "lit"]);
+     static WHITE_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_candle", "white_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static WHITE_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_carpet", "white_carpet", true, true, []);
+     static WHITE_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_carpet", "white_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_concrete", "white_concrete", true, true, []);
+     static WHITE_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_concrete", "white_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_concrete_powder", "white_concrete_powder", true, true, []);
+     static WHITE_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_concrete_powder", "white_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "white_dye", false, true, []);
+     static WHITE_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "white_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_glazed_terracotta", "white_glazed_terracotta", true, true, ["facing_direction"]);
+     static WHITE_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_glazed_terracotta", "white_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static WHITE_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_shulker_box", "white_shulker_box", true, true, []);
+     static WHITE_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_shulker_box", "white_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_stained_glass", "white_stained_glass", true, true, []);
+     static WHITE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_stained_glass", "white_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_stained_glass_pane", "white_stained_glass_pane", true, true, []);
+     static WHITE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_stained_glass_pane", "white_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_terracotta", "white_terracotta", true, true, []);
+     static WHITE_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_terracotta", "white_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_TULIP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_tulip", "white_tulip", true, true, []);
+     static WHITE_TULIP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_tulip", "white_tulip", true, true, []);
 
     /**
      * @readonly
      */
-     static WHITE_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_wool", "white_wool", true, true, []);
+     static WHITE_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_wool", "white_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static WILD_ARMOR_TRIM_SMITHING_TEMPLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wild_armor_trim_smithing_template", false, true, []);
+     static WILD_ARMOR_TRIM_SMITHING_TEMPLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wild_armor_trim_smithing_template", false, true, []);
 
     /**
      * @readonly
      */
-     static WIND_CHARGE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wind_charge", false, true, []);
+     static WIND_CHARGE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wind_charge", false, true, []);
 
     /**
      * @readonly
      */
-     static WITCH_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "witch_spawn_egg", false, true, []);
+     static WITCH_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "witch_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WITHER_ROSE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wither_rose", "wither_rose", true, true, []);
+     static WITHER_ROSE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wither_rose", "wither_rose", true, true, []);
 
     /**
      * @readonly
      */
-     static WITHER_SKELETON_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wither_skeleton_spawn_egg", false, true, []);
+     static WITHER_SKELETON_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wither_skeleton_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WITHER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wither_spawn_egg", false, true, []);
+     static WITHER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wither_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WOLF_ARMOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wolf_armor", false, true, []);
+     static WOLF_ARMOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wolf_armor", false, true, []);
 
     /**
      * @readonly
      */
-     static WOLF_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wolf_spawn_egg", false, true, []);
+     static WOLF_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wolf_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static WOOD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wood", false, true, []);
+     static WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wood", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_AXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_axe", false, true, []);
+     static WOODEN_AXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_axe", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_BUTTON = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_button", "wooden_button", true, true, ["button_pressed_bit", "facing_direction"]);
+     static WOODEN_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_button", "wooden_button", true, true, ["button_pressed_bit", "facing_direction"]);
 
     /**
      * @readonly
      */
-     static WOODEN_DOOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_door", "wooden_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+     static WOODEN_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_door", "wooden_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static WOODEN_HOE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_hoe", false, true, []);
+     static WOODEN_HOE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_hoe", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_PICKAXE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_pickaxe", false, true, []);
+     static WOODEN_PICKAXE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_pickaxe", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_PRESSURE_PLATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_pressure_plate", "wooden_pressure_plate", true, true, ["redstone_signal"]);
+     static WOODEN_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wooden_pressure_plate", "wooden_pressure_plate", true, true, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static WOODEN_SHOVEL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_shovel", false, true, []);
+     static WOODEN_SHOVEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_shovel", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_slab", false, true, []);
+     static WOODEN_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_slab", false, true, []);
 
     /**
      * @readonly
      */
-     static WOODEN_SWORD = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_sword", false, true, []);
+     static WOODEN_SWORD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_sword", false, true, []);
 
     /**
      * @readonly
      */
-     static WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "wool", false, true, []);
+     static WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wool", false, true, []);
 
     /**
      * @readonly
      */
-     static WRITABLE_BOOK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "writable_book", false, true, []);
+     static WRITABLE_BOOK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "writable_book", false, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_CANDLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_candle", "yellow_candle", true, true, ["candles", "lit"]);
+     static YELLOW_CANDLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_candle", "yellow_candle", true, true, ["candles", "lit"]);
 
     /**
      * @readonly
      */
-     static YELLOW_CARPET = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_carpet", "yellow_carpet", true, true, []);
+     static YELLOW_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_carpet", "yellow_carpet", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_CONCRETE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_concrete", "yellow_concrete", true, true, []);
+     static YELLOW_CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_concrete", "yellow_concrete", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_CONCRETE_POWDER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_concrete_powder", "yellow_concrete_powder", true, true, []);
+     static YELLOW_CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_concrete_powder", "yellow_concrete_powder", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_DYE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "yellow_dye", false, true, []);
+     static YELLOW_DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "yellow_dye", false, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_FLOWER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_flower", "yellow_flower", true, true, []);
+     static YELLOW_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_flower", "yellow_flower", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_GLAZED_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_glazed_terracotta", "yellow_glazed_terracotta", true, true, ["facing_direction"]);
+     static YELLOW_GLAZED_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_glazed_terracotta", "yellow_glazed_terracotta", true, true, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static YELLOW_SHULKER_BOX = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_shulker_box", "yellow_shulker_box", true, true, []);
+     static YELLOW_SHULKER_BOX = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_shulker_box", "yellow_shulker_box", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_stained_glass", "yellow_stained_glass", true, true, []);
+     static YELLOW_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_stained_glass", "yellow_stained_glass", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_stained_glass_pane", "yellow_stained_glass_pane", true, true, []);
+     static YELLOW_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_stained_glass_pane", "yellow_stained_glass_pane", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_TERRACOTTA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_terracotta", "yellow_terracotta", true, true, []);
+     static YELLOW_TERRACOTTA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_terracotta", "yellow_terracotta", true, true, []);
 
     /**
      * @readonly
      */
-     static YELLOW_WOOL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_wool", "yellow_wool", true, true, []);
+     static YELLOW_WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_wool", "yellow_wool", true, true, []);
 
     /**
      * @readonly
      */
-     static ZOGLIN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "zoglin_spawn_egg", false, true, []);
+     static ZOGLIN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "zoglin_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ZOMBIE_HORSE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_horse_spawn_egg", false, true, []);
+     static ZOMBIE_HORSE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_horse_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ZOMBIE_PIGMAN_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_pigman_spawn_egg", false, true, []);
+     static ZOMBIE_PIGMAN_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_pigman_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ZOMBIE_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_spawn_egg", false, true, []);
+     static ZOMBIE_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ZOMBIE_VILLAGER_SPAWN_EGG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_villager_spawn_egg", false, true, []);
+     static ZOMBIE_VILLAGER_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "zombie_villager_spawn_egg", false, true, []);
 
     /**
      * @readonly
      */
-     static ACACIA_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static ACACIA_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static ACACIA_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static ACACIA_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static ACACIA_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_wall_sign", null, true, false, ["facing_direction"]);
+     static ACACIA_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "acacia_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static BAMBOO_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_MOSAIC_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static BAMBOO_MOSAIC_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_mosaic_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_SAPLING = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_sapling", null, true, false, ["age_bit"]);
+     static BAMBOO_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_sapling", null, true, false, ["age_bit"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static BAMBOO_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static BAMBOO_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_wall_sign", null, true, false, ["facing_direction"]);
+     static BAMBOO_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bamboo_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BIRCH_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static BIRCH_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BIRCH_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static BIRCH_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static BIRCH_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "birch_wall_sign", null, true, false, ["facing_direction"]);
+     static BIRCH_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "birch_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static BLACK_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "black_candle_cake", null, true, false, ["lit"]);
+     static BLACK_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "black_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static BLACKSTONE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static BLACKSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blackstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static BLUE_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "blue_candle_cake", null, true, false, ["lit"]);
+     static BLUE_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "blue_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static BROWN_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "brown_candle_cake", null, true, false, ["lit"]);
+     static BROWN_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brown_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static BUBBLE_COLUMN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_column", null, true, false, ["drag_down"]);
+     static BUBBLE_COLUMN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_column", null, true, false, ["drag_down"]);
 
     /**
      * @readonly
      */
-     static CAMERA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "camera", null, true, false, []);
+     static CAMERA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "camera", null, true, false, []);
 
     /**
      * @readonly
      */
-     static CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "candle_cake", null, true, false, ["lit"]);
+     static CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static CAVE_VINES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines", null, true, false, ["growing_plant_age"]);
+     static CAVE_VINES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines", null, true, false, ["growing_plant_age"]);
 
     /**
      * @readonly
      */
-     static CAVE_VINES_BODY_WITH_BERRIES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines_body_with_berries", null, true, false, ["growing_plant_age"]);
+     static CAVE_VINES_BODY_WITH_BERRIES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines_body_with_berries", null, true, false, ["growing_plant_age"]);
 
     /**
      * @readonly
      */
-     static CAVE_VINES_HEAD_WITH_BERRIES = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines_head_with_berries", null, true, false, ["growing_plant_age"]);
+     static CAVE_VINES_HEAD_WITH_BERRIES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cave_vines_head_with_berries", null, true, false, ["growing_plant_age"]);
 
     /**
      * @readonly
      */
-     static CHEMICAL_HEAT = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chemical_heat", null, true, false, []);
+     static CHEMICAL_HEAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chemical_heat", null, true, false, []);
 
     /**
      * @readonly
      */
-     static CHEMISTRY_TABLE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "chemistry_table", null, true, false, ["chemistry_table_type", "direction"]);
+     static CHEMISTRY_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chemistry_table", null, true, false, ["chemistry_table_type", "direction"]);
 
     /**
      * @readonly
      */
-     static CHERRY_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static CHERRY_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static CHERRY_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static CHERRY_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static CHERRY_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_wall_sign", null, true, false, ["facing_direction"]);
+     static CHERRY_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cherry_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static CLIENT_REQUEST_PLACEHOLDER_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "client_request_placeholder_block", null, true, false, []);
+     static CLIENT_REQUEST_PLACEHOLDER_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "client_request_placeholder_block", null, true, false, []);
 
     /**
      * @readonly
      */
-     static COBBLED_DEEPSLATE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static COBBLED_DEEPSLATE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobbled_deepslate_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static COCOA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cocoa", null, true, false, ["age", "direction"]);
+     static COCOA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cocoa", null, true, false, ["age", "direction"]);
 
     /**
      * @readonly
      */
-     static COLORED_TORCH_BP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_bp", null, true, false, ["color_bit", "torch_facing_direction"]);
+     static COLORED_TORCH_BP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_bp", null, true, false, ["color_bit", "torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static COLORED_TORCH_RG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_rg", null, true, false, ["color_bit", "torch_facing_direction"]);
+     static COLORED_TORCH_RG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_rg", null, true, false, ["color_bit", "torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_HANG = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+     static CORAL_FAN_HANG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_HANG2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang2", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+     static CORAL_FAN_HANG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang2", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_HANG3 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang3", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+     static CORAL_FAN_HANG3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang3", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static CRIMSON_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static CRIMSON_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static CRIMSON_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_wall_sign", null, true, false, ["facing_direction"]);
+     static CRIMSON_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crimson_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static CYAN_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_candle_cake", null, true, false, ["lit"]);
+     static CYAN_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cyan_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static DARK_OAK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static DARK_OAK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_oak_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DARKOAK_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "darkoak_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static DARKOAK_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "darkoak_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static DARKOAK_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "darkoak_wall_sign", null, true, false, ["facing_direction"]);
+     static DARKOAK_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "darkoak_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static DAYLIGHT_DETECTOR_INVERTED = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "daylight_detector_inverted", null, true, false, ["redstone_signal"]);
+     static DAYLIGHT_DETECTOR_INVERTED = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "daylight_detector_inverted", null, true, false, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_BRICK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static DEEPSLATE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DEEPSLATE_TILE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static DEEPSLATE_TILE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deepslate_tile_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab", null, true, false, ["minecraft:vertical_half", "stone_slab_type"]);
+     static DOUBLE_STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab", null, true, false, ["minecraft:vertical_half", "stone_slab_type"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab2", null, true, false, ["minecraft:vertical_half", "stone_slab_type_2"]);
+     static DOUBLE_STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab2", null, true, false, ["minecraft:vertical_half", "stone_slab_type_2"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB3 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab3", null, true, false, ["minecraft:vertical_half", "stone_slab_type_3"]);
+     static DOUBLE_STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab3", null, true, false, ["minecraft:vertical_half", "stone_slab_type_3"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB4 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab4", null, true, false, ["minecraft:vertical_half", "stone_slab_type_4"]);
+     static DOUBLE_STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab4", null, true, false, ["minecraft:vertical_half", "stone_slab_type_4"]);
 
     /**
      * @readonly
      */
-     static ELEMENT_0 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_0", null, true, false, []);
+     static ELEMENT_0 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_0", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_1 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_1", null, true, false, []);
+     static ELEMENT_1 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_1", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_10 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_10", null, true, false, []);
+     static ELEMENT_10 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_10", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_100 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_100", null, true, false, []);
+     static ELEMENT_100 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_100", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_101 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_101", null, true, false, []);
+     static ELEMENT_101 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_101", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_102 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_102", null, true, false, []);
+     static ELEMENT_102 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_102", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_103 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_103", null, true, false, []);
+     static ELEMENT_103 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_103", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_104 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_104", null, true, false, []);
+     static ELEMENT_104 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_104", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_105 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_105", null, true, false, []);
+     static ELEMENT_105 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_105", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_106 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_106", null, true, false, []);
+     static ELEMENT_106 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_106", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_107 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_107", null, true, false, []);
+     static ELEMENT_107 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_107", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_108 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_108", null, true, false, []);
+     static ELEMENT_108 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_108", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_109 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_109", null, true, false, []);
+     static ELEMENT_109 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_109", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_11 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_11", null, true, false, []);
+     static ELEMENT_11 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_11", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_110 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_110", null, true, false, []);
+     static ELEMENT_110 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_110", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_111 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_111", null, true, false, []);
+     static ELEMENT_111 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_111", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_112 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_112", null, true, false, []);
+     static ELEMENT_112 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_112", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_113 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_113", null, true, false, []);
+     static ELEMENT_113 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_113", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_114 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_114", null, true, false, []);
+     static ELEMENT_114 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_114", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_115 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_115", null, true, false, []);
+     static ELEMENT_115 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_115", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_116 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_116", null, true, false, []);
+     static ELEMENT_116 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_116", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_117 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_117", null, true, false, []);
+     static ELEMENT_117 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_117", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_118 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_118", null, true, false, []);
+     static ELEMENT_118 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_118", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_12 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_12", null, true, false, []);
+     static ELEMENT_12 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_12", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_13 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_13", null, true, false, []);
+     static ELEMENT_13 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_13", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_14 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_14", null, true, false, []);
+     static ELEMENT_14 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_14", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_15 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_15", null, true, false, []);
+     static ELEMENT_15 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_15", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_16 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_16", null, true, false, []);
+     static ELEMENT_16 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_16", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_17 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_17", null, true, false, []);
+     static ELEMENT_17 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_17", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_18 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_18", null, true, false, []);
+     static ELEMENT_18 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_18", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_19 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_19", null, true, false, []);
+     static ELEMENT_19 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_19", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_2", null, true, false, []);
+     static ELEMENT_2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_2", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_20 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_20", null, true, false, []);
+     static ELEMENT_20 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_20", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_21 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_21", null, true, false, []);
+     static ELEMENT_21 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_21", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_22 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_22", null, true, false, []);
+     static ELEMENT_22 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_22", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_23 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_23", null, true, false, []);
+     static ELEMENT_23 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_23", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_24 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_24", null, true, false, []);
+     static ELEMENT_24 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_24", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_25 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_25", null, true, false, []);
+     static ELEMENT_25 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_25", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_26 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_26", null, true, false, []);
+     static ELEMENT_26 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_26", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_27 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_27", null, true, false, []);
+     static ELEMENT_27 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_27", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_28 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_28", null, true, false, []);
+     static ELEMENT_28 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_28", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_29 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_29", null, true, false, []);
+     static ELEMENT_29 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_29", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_3 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_3", null, true, false, []);
+     static ELEMENT_3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_3", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_30 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_30", null, true, false, []);
+     static ELEMENT_30 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_30", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_31 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_31", null, true, false, []);
+     static ELEMENT_31 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_31", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_32 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_32", null, true, false, []);
+     static ELEMENT_32 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_32", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_33 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_33", null, true, false, []);
+     static ELEMENT_33 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_33", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_34 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_34", null, true, false, []);
+     static ELEMENT_34 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_34", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_35 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_35", null, true, false, []);
+     static ELEMENT_35 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_35", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_36 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_36", null, true, false, []);
+     static ELEMENT_36 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_36", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_37 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_37", null, true, false, []);
+     static ELEMENT_37 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_37", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_38 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_38", null, true, false, []);
+     static ELEMENT_38 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_38", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_39 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_39", null, true, false, []);
+     static ELEMENT_39 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_39", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_4 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_4", null, true, false, []);
+     static ELEMENT_4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_4", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_40 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_40", null, true, false, []);
+     static ELEMENT_40 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_40", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_41 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_41", null, true, false, []);
+     static ELEMENT_41 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_41", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_42 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_42", null, true, false, []);
+     static ELEMENT_42 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_42", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_43 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_43", null, true, false, []);
+     static ELEMENT_43 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_43", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_44 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_44", null, true, false, []);
+     static ELEMENT_44 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_44", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_45 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_45", null, true, false, []);
+     static ELEMENT_45 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_45", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_46 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_46", null, true, false, []);
+     static ELEMENT_46 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_46", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_47 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_47", null, true, false, []);
+     static ELEMENT_47 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_47", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_48 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_48", null, true, false, []);
+     static ELEMENT_48 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_48", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_49 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_49", null, true, false, []);
+     static ELEMENT_49 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_49", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_5 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_5", null, true, false, []);
+     static ELEMENT_5 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_5", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_50 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_50", null, true, false, []);
+     static ELEMENT_50 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_50", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_51 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_51", null, true, false, []);
+     static ELEMENT_51 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_51", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_52 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_52", null, true, false, []);
+     static ELEMENT_52 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_52", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_53 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_53", null, true, false, []);
+     static ELEMENT_53 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_53", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_54 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_54", null, true, false, []);
+     static ELEMENT_54 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_54", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_55 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_55", null, true, false, []);
+     static ELEMENT_55 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_55", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_56 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_56", null, true, false, []);
+     static ELEMENT_56 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_56", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_57 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_57", null, true, false, []);
+     static ELEMENT_57 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_57", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_58 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_58", null, true, false, []);
+     static ELEMENT_58 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_58", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_59 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_59", null, true, false, []);
+     static ELEMENT_59 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_59", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_6 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_6", null, true, false, []);
+     static ELEMENT_6 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_6", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_60 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_60", null, true, false, []);
+     static ELEMENT_60 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_60", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_61 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_61", null, true, false, []);
+     static ELEMENT_61 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_61", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_62 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_62", null, true, false, []);
+     static ELEMENT_62 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_62", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_63 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_63", null, true, false, []);
+     static ELEMENT_63 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_63", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_64 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_64", null, true, false, []);
+     static ELEMENT_64 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_64", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_65 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_65", null, true, false, []);
+     static ELEMENT_65 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_65", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_66 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_66", null, true, false, []);
+     static ELEMENT_66 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_66", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_67 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_67", null, true, false, []);
+     static ELEMENT_67 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_67", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_68 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_68", null, true, false, []);
+     static ELEMENT_68 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_68", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_69 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_69", null, true, false, []);
+     static ELEMENT_69 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_69", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_7 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_7", null, true, false, []);
+     static ELEMENT_7 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_7", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_70 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_70", null, true, false, []);
+     static ELEMENT_70 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_70", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_71 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_71", null, true, false, []);
+     static ELEMENT_71 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_71", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_72 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_72", null, true, false, []);
+     static ELEMENT_72 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_72", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_73 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_73", null, true, false, []);
+     static ELEMENT_73 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_73", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_74 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_74", null, true, false, []);
+     static ELEMENT_74 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_74", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_75 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_75", null, true, false, []);
+     static ELEMENT_75 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_75", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_76 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_76", null, true, false, []);
+     static ELEMENT_76 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_76", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_77 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_77", null, true, false, []);
+     static ELEMENT_77 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_77", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_78 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_78", null, true, false, []);
+     static ELEMENT_78 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_78", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_79 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_79", null, true, false, []);
+     static ELEMENT_79 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_79", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_8 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_8", null, true, false, []);
+     static ELEMENT_8 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_8", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_80 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_80", null, true, false, []);
+     static ELEMENT_80 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_80", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_81 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_81", null, true, false, []);
+     static ELEMENT_81 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_81", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_82 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_82", null, true, false, []);
+     static ELEMENT_82 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_82", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_83 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_83", null, true, false, []);
+     static ELEMENT_83 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_83", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_84 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_84", null, true, false, []);
+     static ELEMENT_84 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_84", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_85 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_85", null, true, false, []);
+     static ELEMENT_85 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_85", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_86 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_86", null, true, false, []);
+     static ELEMENT_86 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_86", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_87 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_87", null, true, false, []);
+     static ELEMENT_87 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_87", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_88 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_88", null, true, false, []);
+     static ELEMENT_88 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_88", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_89 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_89", null, true, false, []);
+     static ELEMENT_89 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_89", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_9 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_9", null, true, false, []);
+     static ELEMENT_9 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_9", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_90 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_90", null, true, false, []);
+     static ELEMENT_90 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_90", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_91 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_91", null, true, false, []);
+     static ELEMENT_91 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_91", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_92 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_92", null, true, false, []);
+     static ELEMENT_92 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_92", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_93 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_93", null, true, false, []);
+     static ELEMENT_93 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_93", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_94 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_94", null, true, false, []);
+     static ELEMENT_94 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_94", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_95 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_95", null, true, false, []);
+     static ELEMENT_95 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_95", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_96 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_96", null, true, false, []);
+     static ELEMENT_96 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_96", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_97 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_97", null, true, false, []);
+     static ELEMENT_97 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_97", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_98 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_98", null, true, false, []);
+     static ELEMENT_98 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_98", null, true, false, []);
 
     /**
      * @readonly
      */
-     static ELEMENT_99 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "element_99", null, true, false, []);
+     static ELEMENT_99 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_99", null, true, false, []);
 
     /**
      * @readonly
      */
-     static END_GATEWAY = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_gateway", null, true, false, []);
+     static END_GATEWAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_gateway", null, true, false, []);
 
     /**
      * @readonly
      */
-     static END_PORTAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "end_portal", null, true, false, []);
+     static END_PORTAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_portal", null, true, false, []);
 
     /**
      * @readonly
      */
-     static EXPOSED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static EXPOSED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "exposed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static FIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "fire", null, true, false, ["age"]);
+     static FIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire", null, true, false, ["age"]);
 
     /**
      * @readonly
      */
-     static FLOWING_LAVA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_lava", null, true, false, ["liquid_depth"]);
+     static FLOWING_LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_lava", null, true, false, ["liquid_depth"]);
 
     /**
      * @readonly
      */
-     static FLOWING_WATER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", null, true, false, ["liquid_depth"]);
+     static FLOWING_WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", null, true, false, ["liquid_depth"]);
 
     /**
      * @readonly
      */
-     static GLOWINGOBSIDIAN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "glowingobsidian", null, true, false, []);
+     static GLOWINGOBSIDIAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "glowingobsidian", null, true, false, []);
 
     /**
      * @readonly
      */
-     static GRAY_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "gray_candle_cake", null, true, false, ["lit"]);
+     static GRAY_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "gray_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static GREEN_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "green_candle_cake", null, true, false, ["lit"]);
+     static GREEN_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "green_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static HARD_BLACK_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_black_stained_glass", null, true, false, []);
+     static HARD_BLACK_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_black_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_BLACK_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_black_stained_glass_pane", null, true, false, []);
+     static HARD_BLACK_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_black_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_BLUE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_blue_stained_glass", null, true, false, []);
+     static HARD_BLUE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_blue_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_BLUE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_blue_stained_glass_pane", null, true, false, []);
+     static HARD_BLUE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_blue_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_BROWN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_brown_stained_glass", null, true, false, []);
+     static HARD_BROWN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_brown_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_BROWN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_brown_stained_glass_pane", null, true, false, []);
+     static HARD_BROWN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_brown_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_CYAN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_cyan_stained_glass", null, true, false, []);
+     static HARD_CYAN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_cyan_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_CYAN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_cyan_stained_glass_pane", null, true, false, []);
+     static HARD_CYAN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_cyan_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_glass", null, true, false, []);
+     static HARD_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_glass_pane", null, true, false, []);
+     static HARD_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GRAY_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_gray_stained_glass", null, true, false, []);
+     static HARD_GRAY_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_gray_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GRAY_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_gray_stained_glass_pane", null, true, false, []);
+     static HARD_GRAY_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_gray_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GREEN_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_green_stained_glass", null, true, false, []);
+     static HARD_GREEN_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_green_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_GREEN_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_green_stained_glass_pane", null, true, false, []);
+     static HARD_GREEN_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_green_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIGHT_BLUE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_blue_stained_glass", null, true, false, []);
+     static HARD_LIGHT_BLUE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_blue_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIGHT_BLUE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_blue_stained_glass_pane", null, true, false, []);
+     static HARD_LIGHT_BLUE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_blue_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIGHT_GRAY_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_gray_stained_glass", null, true, false, []);
+     static HARD_LIGHT_GRAY_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_gray_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIGHT_GRAY_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_gray_stained_glass_pane", null, true, false, []);
+     static HARD_LIGHT_GRAY_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_light_gray_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIME_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_lime_stained_glass", null, true, false, []);
+     static HARD_LIME_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_lime_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_LIME_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_lime_stained_glass_pane", null, true, false, []);
+     static HARD_LIME_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_lime_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_MAGENTA_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_magenta_stained_glass", null, true, false, []);
+     static HARD_MAGENTA_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_magenta_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_MAGENTA_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_magenta_stained_glass_pane", null, true, false, []);
+     static HARD_MAGENTA_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_magenta_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_ORANGE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_orange_stained_glass", null, true, false, []);
+     static HARD_ORANGE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_orange_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_ORANGE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_orange_stained_glass_pane", null, true, false, []);
+     static HARD_ORANGE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_orange_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_PINK_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_pink_stained_glass", null, true, false, []);
+     static HARD_PINK_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_pink_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_PINK_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_pink_stained_glass_pane", null, true, false, []);
+     static HARD_PINK_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_pink_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_PURPLE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_purple_stained_glass", null, true, false, []);
+     static HARD_PURPLE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_purple_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_PURPLE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_purple_stained_glass_pane", null, true, false, []);
+     static HARD_PURPLE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_purple_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_RED_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_red_stained_glass", null, true, false, []);
+     static HARD_RED_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_red_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_RED_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_red_stained_glass_pane", null, true, false, []);
+     static HARD_RED_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_red_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_WHITE_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_white_stained_glass", null, true, false, []);
+     static HARD_WHITE_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_white_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_WHITE_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_white_stained_glass_pane", null, true, false, []);
+     static HARD_WHITE_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_white_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_YELLOW_STAINED_GLASS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_yellow_stained_glass", null, true, false, []);
+     static HARD_YELLOW_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_yellow_stained_glass", null, true, false, []);
 
     /**
      * @readonly
      */
-     static HARD_YELLOW_STAINED_GLASS_PANE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "hard_yellow_stained_glass_pane", null, true, false, []);
+     static HARD_YELLOW_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "hard_yellow_stained_glass_pane", null, true, false, []);
 
     /**
      * @readonly
      */
-     static INFO_UPDATE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "info_update", null, true, false, []);
+     static INFO_UPDATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "info_update", null, true, false, []);
 
     /**
      * @readonly
      */
-     static INFO_UPDATE2 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "info_update2", null, true, false, []);
+     static INFO_UPDATE2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "info_update2", null, true, false, []);
 
     /**
      * @readonly
      */
-     static INVISIBLE_BEDROCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "invisible_bedrock", null, true, false, []);
+     static INVISIBLE_BEDROCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "invisible_bedrock", null, true, false, []);
 
     /**
      * @readonly
      */
-     static JUNGLE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static JUNGLE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static JUNGLE_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static JUNGLE_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_wall_sign", null, true, false, ["facing_direction"]);
+     static JUNGLE_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "jungle_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static LAVA = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, false, ["liquid_depth"]);
+     static LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, false, ["liquid_depth"]);
 
     /**
      * @readonly
      */
-     static LIGHT_BLUE_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_candle_cake", null, true, false, ["lit"]);
+     static LIGHT_BLUE_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_blue_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static LIGHT_GRAY_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_candle_cake", null, true, false, ["lit"]);
+     static LIGHT_GRAY_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_gray_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static LIME_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lime_candle_cake", null, true, false, ["lit"]);
+     static LIME_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lime_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static LIT_BLAST_FURNACE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_blast_furnace", null, true, false, ["minecraft:cardinal_direction"]);
+     static LIT_BLAST_FURNACE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_blast_furnace", null, true, false, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static LIT_DEEPSLATE_REDSTONE_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_deepslate_redstone_ore", null, true, false, []);
+     static LIT_DEEPSLATE_REDSTONE_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_deepslate_redstone_ore", null, true, false, []);
 
     /**
      * @readonly
      */
-     static LIT_FURNACE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_furnace", null, true, false, ["minecraft:cardinal_direction"]);
+     static LIT_FURNACE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_furnace", null, true, false, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static LIT_REDSTONE_LAMP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_redstone_lamp", null, true, false, []);
+     static LIT_REDSTONE_LAMP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_redstone_lamp", null, true, false, []);
 
     /**
      * @readonly
      */
-     static LIT_REDSTONE_ORE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_redstone_ore", null, true, false, []);
+     static LIT_REDSTONE_ORE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_redstone_ore", null, true, false, []);
 
     /**
      * @readonly
      */
-     static LIT_SMOKER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "lit_smoker", null, true, false, ["minecraft:cardinal_direction"]);
+     static LIT_SMOKER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lit_smoker", null, true, false, ["minecraft:cardinal_direction"]);
 
     /**
      * @readonly
      */
-     static MAGENTA_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_candle_cake", null, true, false, ["lit"]);
+     static MAGENTA_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "magenta_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static MANGROVE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static MANGROVE_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static MANGROVE_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_wall_sign", null, true, false, ["facing_direction"]);
+     static MANGROVE_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mangrove_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static MELON_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "melon_stem", null, true, false, ["facing_direction", "growth"]);
+     static MELON_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "melon_stem", null, true, false, ["facing_direction", "growth"]);
 
     /**
      * @readonly
      */
-     static MOVING_BLOCK = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "moving_block", null, true, false, []);
+     static MOVING_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "moving_block", null, true, false, []);
 
     /**
      * @readonly
      */
-     static MUD_BRICK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static MUD_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mud_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static NETHERREACTOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "netherreactor", null, true, false, []);
+     static NETHERREACTOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "netherreactor", null, true, false, []);
 
     /**
      * @readonly
      */
-     static OAK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oak_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static OAK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oak_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static ORANGE_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "orange_candle_cake", null, true, false, ["lit"]);
+     static ORANGE_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "orange_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static OXIDIZED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static OXIDIZED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "oxidized_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static PINK_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pink_candle_cake", null, true, false, ["lit"]);
+     static PINK_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pink_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static PISTON_ARM_COLLISION = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "piston_arm_collision", null, true, false, ["facing_direction"]);
+     static PISTON_ARM_COLLISION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "piston_arm_collision", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static PITCHER_CROP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pitcher_crop", null, true, false, ["growth", "upper_block_bit"]);
+     static PITCHER_CROP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pitcher_crop", null, true, false, ["growth", "upper_block_bit"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_BRICK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static POLISHED_BLACKSTONE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_BLACKSTONE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static POLISHED_BLACKSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_blackstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_DEEPSLATE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static POLISHED_DEEPSLATE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_deepslate_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static POLISHED_TUFF_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static POLISHED_TUFF_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_tuff_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static PORTAL = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "portal", null, true, false, ["portal_axis"]);
+     static PORTAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "portal", null, true, false, ["portal_axis"]);
 
     /**
      * @readonly
      */
-     static POWDER_SNOW = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "powder_snow", null, true, false, []);
+     static POWDER_SNOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "powder_snow", null, true, false, []);
 
     /**
      * @readonly
      */
-     static POWERED_COMPARATOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "powered_comparator", null, true, false, ["minecraft:cardinal_direction", "output_lit_bit", "output_subtract_bit"]);
+     static POWERED_COMPARATOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "powered_comparator", null, true, false, ["minecraft:cardinal_direction", "output_lit_bit", "output_subtract_bit"]);
 
     /**
      * @readonly
      */
-     static POWERED_REPEATER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "powered_repeater", null, true, false, ["minecraft:cardinal_direction", "repeater_delay"]);
+     static POWERED_REPEATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "powered_repeater", null, true, false, ["minecraft:cardinal_direction", "repeater_delay"]);
 
     /**
      * @readonly
      */
-     static PUMPKIN_STEM = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "pumpkin_stem", null, true, false, ["facing_direction", "growth"]);
+     static PUMPKIN_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pumpkin_stem", null, true, false, ["facing_direction", "growth"]);
 
     /**
      * @readonly
      */
-     static PURPLE_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "purple_candle_cake", null, true, false, ["lit"]);
+     static PURPLE_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purple_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static RED_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "red_candle_cake", null, true, false, ["lit"]);
+     static RED_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static REDSTONE_WIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_wire", null, true, false, ["redstone_signal"]);
+     static REDSTONE_WIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "redstone_wire", null, true, false, ["redstone_signal"]);
 
     /**
      * @readonly
      */
-     static REEDS = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "reeds", null, true, false, ["age"]);
+     static REEDS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "reeds", null, true, false, ["age"]);
 
     /**
      * @readonly
      */
-     static RESERVED6 = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "reserved6", null, true, false, []);
+     static RESERVED6 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "reserved6", null, true, false, []);
 
     /**
      * @readonly
      */
-     static SOUL_FIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "soul_fire", null, true, false, ["age"]);
+     static SOUL_FIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "soul_fire", null, true, false, ["age"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static SPRUCE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static SPRUCE_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static SPRUCE_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_wall_sign", null, true, false, ["facing_direction"]);
+     static SPRUCE_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "spruce_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static STANDING_BANNER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "standing_banner", null, true, false, ["ground_sign_direction"]);
+     static STANDING_BANNER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "standing_banner", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "standing_sign", null, true, false, ["ground_sign_direction"]);
+     static STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static STICKY_PISTON_ARM_COLLISION = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "sticky_piston_arm_collision", null, true, false, ["facing_direction"]);
+     static STICKY_PISTON_ARM_COLLISION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sticky_piston_arm_collision", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static STONECUTTER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter", null, true, false, []);
+     static STONECUTTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter", null, true, false, []);
 
     /**
      * @readonly
      */
-     static TORCHFLOWER_CROP = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "torchflower_crop", null, true, false, ["growth"]);
+     static TORCHFLOWER_CROP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "torchflower_crop", null, true, false, ["growth"]);
 
     /**
      * @readonly
      */
-     static TRIP_WIRE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "trip_wire", null, true, false, ["attached_bit", "disarmed_bit", "powered_bit", "suspended_bit"]);
+     static TRIP_WIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "trip_wire", null, true, false, ["attached_bit", "disarmed_bit", "powered_bit", "suspended_bit"]);
 
     /**
      * @readonly
      */
-     static TUFF_BRICK_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static TUFF_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static TUFF_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static TUFF_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tuff_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static UNDERWATER_TORCH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "underwater_torch", null, true, false, ["torch_facing_direction"]);
+     static UNDERWATER_TORCH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "underwater_torch", null, true, false, ["torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static UNKNOWN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "unknown", null, true, false, []);
+     static UNKNOWN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "unknown", null, true, false, []);
 
     /**
      * @readonly
      */
-     static UNLIT_REDSTONE_TORCH = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "unlit_redstone_torch", null, true, false, ["torch_facing_direction"]);
+     static UNLIT_REDSTONE_TORCH = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "unlit_redstone_torch", null, true, false, ["torch_facing_direction"]);
 
     /**
      * @readonly
      */
-     static UNPOWERED_COMPARATOR = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "unpowered_comparator", null, true, false, ["minecraft:cardinal_direction", "output_lit_bit", "output_subtract_bit"]);
+     static UNPOWERED_COMPARATOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "unpowered_comparator", null, true, false, ["minecraft:cardinal_direction", "output_lit_bit", "output_subtract_bit"]);
 
     /**
      * @readonly
      */
-     static UNPOWERED_REPEATER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "unpowered_repeater", null, true, false, ["minecraft:cardinal_direction", "repeater_delay"]);
+     static UNPOWERED_REPEATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "unpowered_repeater", null, true, false, ["minecraft:cardinal_direction", "repeater_delay"]);
 
     /**
      * @readonly
      */
-     static WALL_BANNER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wall_banner", null, true, false, ["facing_direction"]);
+     static WALL_BANNER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wall_banner", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "wall_sign", null, true, false, ["facing_direction"]);
+     static WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static WARPED_DOUBLE_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_double_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WARPED_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WARPED_STANDING_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_standing_sign", null, true, false, ["ground_sign_direction"]);
+     static WARPED_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_standing_sign", null, true, false, ["ground_sign_direction"]);
 
     /**
      * @readonly
      */
-     static WARPED_WALL_SIGN = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "warped_wall_sign", null, true, false, ["facing_direction"]);
+     static WARPED_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "warped_wall_sign", null, true, false, ["facing_direction"]);
 
     /**
      * @readonly
      */
-     static WATER = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "water", null, true, false, ["liquid_depth"]);
+     static WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "water", null, true, false, ["liquid_depth"]);
 
     /**
      * @readonly
      */
-     static WAXED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WAXED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_EXPOSED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WAXED_EXPOSED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_exposed_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_OXIDIZED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WAXED_OXIDIZED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_oxidized_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WAXED_WEATHERED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WAXED_WEATHERED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "waxed_weathered_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WEATHERED_DOUBLE_CUT_COPPER_SLAB = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
+     static WEATHERED_DOUBLE_CUT_COPPER_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "weathered_double_cut_copper_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static WHITE_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "white_candle_cake", null, true, false, ["lit"]);
+     static WHITE_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "white_candle_cake", null, true, false, ["lit"]);
 
     /**
      * @readonly
      */
-     static YELLOW_CANDLE_CAKE = new this(Material.#PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_candle_cake", null, true, false, ["lit"]);
+     static YELLOW_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_candle_cake", null, true, false, ["lit"]);
 
 }
 
@@ -9928,7 +9929,6 @@ const bukkitOut = {
         "deepslate_brick_slab",
         "deepslate_tile_slab",
         "scaffolding",
-        "redstone",
         "redstone_torch",
         "redstone_block",
         "repeater",
@@ -10030,125 +10030,7 @@ const bukkitOut = {
         "detector_rail",
         "rail",
         "activator_rail",
-        "saddle",
-        "minecart",
-        "chest_minecart",
-        "furnace_minecart",
-        "tnt_minecart",
-        "hopper_minecart",
-        "carrot_on_a_stick",
-        "warped_fungus_on_a_stick",
-        "elytra",
-        "oak_boat",
-        "oak_chest_boat",
-        "spruce_boat",
-        "spruce_chest_boat",
-        "birch_boat",
-        "birch_chest_boat",
-        "jungle_boat",
-        "jungle_chest_boat",
-        "acacia_boat",
-        "acacia_chest_boat",
-        "cherry_boat",
-        "cherry_chest_boat",
-        "dark_oak_boat",
-        "dark_oak_chest_boat",
-        "mangrove_boat",
-        "mangrove_chest_boat",
-        "bamboo_raft",
-        "bamboo_chest_raft",
-        "turtle_helmet",
-        "turtle_scute",
-        "armadillo_scute",
-        "wolf_armor",
-        "flint_and_steel",
-        "bowl",
-        "apple",
-        "bow",
-        "arrow",
-        "coal",
-        "charcoal",
-        "diamond",
-        "emerald",
-        "lapis_lazuli",
-        "quartz",
-        "amethyst_shard",
-        "raw_iron",
-        "iron_ingot",
-        "raw_copper",
-        "copper_ingot",
-        "raw_gold",
-        "gold_ingot",
-        "netherite_ingot",
-        "netherite_scrap",
-        "wooden_sword",
-        "wooden_shovel",
-        "wooden_pickaxe",
-        "wooden_axe",
-        "wooden_hoe",
-        "stone_sword",
-        "stone_shovel",
-        "stone_pickaxe",
-        "stone_axe",
-        "stone_hoe",
-        "golden_sword",
-        "golden_shovel",
-        "golden_pickaxe",
-        "golden_axe",
-        "golden_hoe",
-        "iron_sword",
-        "iron_shovel",
-        "iron_pickaxe",
-        "iron_axe",
-        "iron_hoe",
-        "diamond_sword",
-        "diamond_shovel",
-        "diamond_pickaxe",
-        "diamond_axe",
-        "diamond_hoe",
-        "netherite_sword",
-        "netherite_shovel",
-        "netherite_pickaxe",
-        "netherite_axe",
-        "netherite_hoe",
-        "stick",
-        "mushroom_stew",
-        "string",
-        "feather",
-        "gunpowder",
-        "wheat_seeds",
         "wheat",
-        "bread",
-        "leather_helmet",
-        "leather_chestplate",
-        "leather_leggings",
-        "leather_boots",
-        "chainmail_helmet",
-        "chainmail_chestplate",
-        "chainmail_leggings",
-        "chainmail_boots",
-        "iron_helmet",
-        "iron_chestplate",
-        "iron_leggings",
-        "iron_boots",
-        "diamond_helmet",
-        "diamond_chestplate",
-        "diamond_leggings",
-        "diamond_boots",
-        "golden_helmet",
-        "golden_chestplate",
-        "golden_leggings",
-        "golden_boots",
-        "netherite_helmet",
-        "netherite_chestplate",
-        "netherite_leggings",
-        "netherite_boots",
-        "flint",
-        "porkchop",
-        "cooked_porkchop",
-        "painting",
-        "golden_apple",
-        "enchanted_golden_apple",
         "oak_sign",
         "spruce_sign",
         "birch_sign",
@@ -10171,60 +10053,6 @@ const bukkitOut = {
         "bamboo_hanging_sign",
         "crimson_hanging_sign",
         "warped_hanging_sign",
-        "bucket",
-        "water_bucket",
-        "lava_bucket",
-        "powder_snow_bucket",
-        "snowball",
-        "leather",
-        "milk_bucket",
-        "pufferfish_bucket",
-        "salmon_bucket",
-        "cod_bucket",
-        "tropical_fish_bucket",
-        "axolotl_bucket",
-        "tadpole_bucket",
-        "brick",
-        "clay_ball",
-        "paper",
-        "book",
-        "slime_ball",
-        "egg",
-        "compass",
-        "recovery_compass",
-        "bundle",
-        "fishing_rod",
-        "clock",
-        "spyglass",
-        "glowstone_dust",
-        "cod",
-        "salmon",
-        "tropical_fish",
-        "pufferfish",
-        "cooked_cod",
-        "cooked_salmon",
-        "ink_sac",
-        "glow_ink_sac",
-        "cocoa_beans",
-        "white_dye",
-        "orange_dye",
-        "magenta_dye",
-        "light_blue_dye",
-        "yellow_dye",
-        "lime_dye",
-        "pink_dye",
-        "gray_dye",
-        "light_gray_dye",
-        "cyan_dye",
-        "purple_dye",
-        "blue_dye",
-        "brown_dye",
-        "green_dye",
-        "red_dye",
-        "black_dye",
-        "bone_meal",
-        "bone",
-        "sugar",
         "cake",
         "white_bed",
         "orange_bed",
@@ -10242,128 +10070,10 @@ const bukkitOut = {
         "green_bed",
         "red_bed",
         "black_bed",
-        "cookie",
-        "filled_map",
-        "shears",
-        "melon_slice",
-        "dried_kelp",
-        "pumpkin_seeds",
-        "melon_seeds",
-        "beef",
-        "cooked_beef",
-        "chicken",
-        "cooked_chicken",
-        "rotten_flesh",
-        "ender_pearl",
-        "blaze_rod",
-        "ghast_tear",
-        "gold_nugget",
         "nether_wart",
-        "potion",
-        "glass_bottle",
-        "spider_eye",
-        "fermented_spider_eye",
-        "blaze_powder",
-        "magma_cream",
         "brewing_stand",
         "cauldron",
-        "ender_eye",
-        "glistering_melon_slice",
-        "armadillo_spawn_egg",
-        "allay_spawn_egg",
-        "axolotl_spawn_egg",
-        "bat_spawn_egg",
-        "bee_spawn_egg",
-        "blaze_spawn_egg",
-        "bogged_spawn_egg",
-        "breeze_spawn_egg",
-        "cat_spawn_egg",
-        "camel_spawn_egg",
-        "cave_spider_spawn_egg",
-        "chicken_spawn_egg",
-        "cod_spawn_egg",
-        "cow_spawn_egg",
-        "creeper_spawn_egg",
-        "dolphin_spawn_egg",
-        "donkey_spawn_egg",
-        "drowned_spawn_egg",
-        "elder_guardian_spawn_egg",
-        "ender_dragon_spawn_egg",
-        "enderman_spawn_egg",
-        "endermite_spawn_egg",
-        "evoker_spawn_egg",
-        "fox_spawn_egg",
-        "frog_spawn_egg",
-        "ghast_spawn_egg",
-        "glow_squid_spawn_egg",
-        "goat_spawn_egg",
-        "guardian_spawn_egg",
-        "hoglin_spawn_egg",
-        "horse_spawn_egg",
-        "husk_spawn_egg",
-        "iron_golem_spawn_egg",
-        "llama_spawn_egg",
-        "magma_cube_spawn_egg",
-        "mooshroom_spawn_egg",
-        "mule_spawn_egg",
-        "ocelot_spawn_egg",
-        "panda_spawn_egg",
-        "parrot_spawn_egg",
-        "phantom_spawn_egg",
-        "pig_spawn_egg",
-        "piglin_spawn_egg",
-        "piglin_brute_spawn_egg",
-        "pillager_spawn_egg",
-        "polar_bear_spawn_egg",
-        "pufferfish_spawn_egg",
-        "rabbit_spawn_egg",
-        "ravager_spawn_egg",
-        "salmon_spawn_egg",
-        "sheep_spawn_egg",
-        "shulker_spawn_egg",
-        "silverfish_spawn_egg",
-        "skeleton_spawn_egg",
-        "skeleton_horse_spawn_egg",
-        "slime_spawn_egg",
-        "sniffer_spawn_egg",
-        "snow_golem_spawn_egg",
-        "spider_spawn_egg",
-        "squid_spawn_egg",
-        "stray_spawn_egg",
-        "strider_spawn_egg",
-        "tadpole_spawn_egg",
-        "trader_llama_spawn_egg",
-        "tropical_fish_spawn_egg",
-        "turtle_spawn_egg",
-        "vex_spawn_egg",
-        "villager_spawn_egg",
-        "vindicator_spawn_egg",
-        "wandering_trader_spawn_egg",
-        "warden_spawn_egg",
-        "witch_spawn_egg",
-        "wither_spawn_egg",
-        "wither_skeleton_spawn_egg",
-        "wolf_spawn_egg",
-        "zoglin_spawn_egg",
-        "zombie_spawn_egg",
-        "zombie_horse_spawn_egg",
-        "zombie_villager_spawn_egg",
-        "zombified_piglin_spawn_egg",
-        "experience_bottle",
-        "fire_charge",
-        "wind_charge",
-        "writable_book",
-        "written_book",
-        "mace",
-        "item_frame",
-        "glow_item_frame",
         "flower_pot",
-        "carrot",
-        "potato",
-        "baked_potato",
-        "poisonous_potato",
-        "map",
-        "golden_carrot",
         "skeleton_skull",
         "wither_skeleton_skull",
         "player_head",
@@ -10371,29 +10081,6 @@ const bukkitOut = {
         "creeper_head",
         "dragon_head",
         "piglin_head",
-        "nether_star",
-        "pumpkin_pie",
-        "firework_rocket",
-        "firework_star",
-        "enchanted_book",
-        "nether_brick",
-        "prismarine_shard",
-        "prismarine_crystals",
-        "rabbit",
-        "cooked_rabbit",
-        "rabbit_stew",
-        "rabbit_foot",
-        "rabbit_hide",
-        "armor_stand",
-        "iron_horse_armor",
-        "golden_horse_armor",
-        "diamond_horse_armor",
-        "leather_horse_armor",
-        "lead",
-        "name_tag",
-        "command_block_minecart",
-        "mutton",
-        "cooked_mutton",
         "white_banner",
         "orange_banner",
         "magenta_banner",
@@ -10410,72 +10097,14 @@ const bukkitOut = {
         "green_banner",
         "red_banner",
         "black_banner",
-        "end_crystal",
-        "chorus_fruit",
-        "popped_chorus_fruit",
-        "torchflower_seeds",
-        "pitcher_pod",
-        "beetroot",
-        "beetroot_seeds",
-        "beetroot_soup",
-        "dragon_breath",
-        "splash_potion",
-        "spectral_arrow",
-        "tipped_arrow",
-        "lingering_potion",
-        "shield",
-        "totem_of_undying",
-        "shulker_shell",
-        "iron_nugget",
-        "knowledge_book",
-        "debug_stick",
-        "music_disc_13",
-        "music_disc_cat",
-        "music_disc_blocks",
-        "music_disc_chirp",
-        "music_disc_creator",
-        "music_disc_creator_music_box",
-        "music_disc_far",
-        "music_disc_mall",
-        "music_disc_mellohi",
-        "music_disc_stal",
-        "music_disc_strad",
-        "music_disc_ward",
-        "music_disc_11",
-        "music_disc_wait",
-        "music_disc_otherside",
-        "music_disc_relic",
-        "music_disc_5",
-        "music_disc_pigstep",
-        "music_disc_precipice",
-        "disc_fragment_5",
-        "trident",
-        "phantom_membrane",
-        "nautilus_shell",
-        "heart_of_the_sea",
-        "crossbow",
-        "suspicious_stew",
-        "flower_banner_pattern",
-        "creeper_banner_pattern",
-        "skull_banner_pattern",
-        "mojang_banner_pattern",
-        "globe_banner_pattern",
-        "piglin_banner_pattern",
-        "flow_banner_pattern",
-        "guster_banner_pattern",
-        "goat_horn",
         "composter",
         "grindstone",
         "stonecutter",
         "bell",
         "lantern",
         "soul_lantern",
-        "sweet_berries",
-        "glow_berries",
         "campfire",
         "soul_campfire",
-        "honeycomb",
-        "honey_bottle",
         "blackstone_slab",
         "blackstone_stairs",
         "polished_blackstone_slab",
@@ -10505,50 +10134,6 @@ const bukkitOut = {
         "amethyst_cluster",
         "pointed_dripstone",
         "frogspawn",
-        "echo_shard",
-        "brush",
-        "netherite_upgrade_smithing_template",
-        "sentry_armor_trim_smithing_template",
-        "dune_armor_trim_smithing_template",
-        "coast_armor_trim_smithing_template",
-        "wild_armor_trim_smithing_template",
-        "ward_armor_trim_smithing_template",
-        "eye_armor_trim_smithing_template",
-        "vex_armor_trim_smithing_template",
-        "tide_armor_trim_smithing_template",
-        "snout_armor_trim_smithing_template",
-        "rib_armor_trim_smithing_template",
-        "spire_armor_trim_smithing_template",
-        "wayfinder_armor_trim_smithing_template",
-        "shaper_armor_trim_smithing_template",
-        "silence_armor_trim_smithing_template",
-        "raiser_armor_trim_smithing_template",
-        "host_armor_trim_smithing_template",
-        "flow_armor_trim_smithing_template",
-        "bolt_armor_trim_smithing_template",
-        "angler_pottery_sherd",
-        "archer_pottery_sherd",
-        "arms_up_pottery_sherd",
-        "blade_pottery_sherd",
-        "brewer_pottery_sherd",
-        "burn_pottery_sherd",
-        "danger_pottery_sherd",
-        "explorer_pottery_sherd",
-        "flow_pottery_sherd",
-        "friend_pottery_sherd",
-        "guster_pottery_sherd",
-        "heart_pottery_sherd",
-        "heartbreak_pottery_sherd",
-        "howl_pottery_sherd",
-        "miner_pottery_sherd",
-        "mourner_pottery_sherd",
-        "plenty_pottery_sherd",
-        "prize_pottery_sherd",
-        "scrape_pottery_sherd",
-        "sheaf_pottery_sherd",
-        "shelter_pottery_sherd",
-        "skull_pottery_sherd",
-        "snort_pottery_sherd",
         "copper_grate",
         "exposed_copper_grate",
         "weathered_copper_grate",
@@ -10565,10 +10150,6 @@ const bukkitOut = {
         "waxed_exposed_copper_bulb",
         "waxed_weathered_copper_bulb",
         "waxed_oxidized_copper_bulb",
-        "trial_key",
-        "ominous_trial_key",
-        "ominous_bottle",
-        "breeze_rod",
         "water",
         "lava",
         "tall_seagrass",
