@@ -70,6 +70,10 @@ Material.OBSERVER.getBlockPropertyNames() // "minecraft:facing_direction", "powe
 #### `values(): Material[]`
 全マテリアルの配列を返します
 
+#### `getMaterial(id: string): Material | undefined`
+ブロックIDあるいはアイテムIDを渡すと対応するMaterialが返ります
+<br>`ItemType`と`BlockType`の相互変換はこれを介して可能です
+
 ### MaterialTagクラス
 特定のマテリアルが持つ特性を表現します
 <br>以下によってのみ取得できます：
@@ -97,6 +101,7 @@ MaterialTag.MINEABLE_BY_HOE // クワが適正ツールのブロック
 MaterialTag.PLANKS // 木材
 MaterialTag.LOGS // 原木(丸太)
 MaterialTag.SLABS // ハーフブロック
+MaterialTag.DAMAGABLE_ITEMS // 耐久値を持つアイテム
 ```
 
 ### Samples
@@ -137,4 +142,4 @@ world.afterEvents.entityHitBlock.subscribe(event => {
 
 ## Author
 Discord: takenoko_4096
-Twitter/X: [@Takenoko_4096](x.com/Takenoko_4096)
+Twitter/X: [@Takenoko_4096](https://x.com/Takenoko_4096)

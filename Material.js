@@ -1,3 +1,7 @@
+/**
+ * @copyright @Takenoko-II 2024
+ */
+
 import { ItemType, BlockType, ItemTypes, BlockTypes } from "@minecraft/server";
 
 const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
@@ -5,15 +9,19 @@ const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
 /**
  * @type {MaterialTag[]}
  */
-const tags = [];
+const materialTags = [];
 
+/**
+ * # class {@link MaterialTag}
+ * {@link Material.hasTag()}などで使えます
+ */
 export class MaterialTag {
     /**
      * @readonly
      * @private
      * @type {string}
      */
-    keyName;
+    #keyName;
 
     /**
      * @private
@@ -29,13 +37,26 @@ export class MaterialTag {
             throw new TypeError();
         }
 
-        this.keyName = keyName;
+        this.#keyName = keyName;
         this.#name = name;
-        tags.push(this);
+        materialTags.push(this);
     }
 
+    /**
+     * マテリアルタグを文字列化します。
+     * @returns {string}
+     */
     toString() {
         return this.#name;
+    }
+
+    /**
+     * @private
+     * @returns {string}
+     */
+    getBukkitOutKey(key) {
+        if (key != PRIVATE_CONSTRUCTOR_SYMBOL) throw new TypeError();
+        return this.#keyName;
     }
 
     /**
@@ -147,10 +168,17 @@ export class MaterialTag {
     static SLABS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "slabs", "slabs");
 
     /**
+     * 耐久値を持つアイテム
+     * @readonly
+     */
+    static DAMAGABLE_ITEMS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "damagableItems", "damagable_items")
+
+    /**
+     * 全てのマテリアルタグを配列で返します。
      * @returns {MaterialTag[]}
      */
     static values() {
-        return [...tags];
+        return [...materialTags];
     }
 }
 
@@ -159,6 +187,10 @@ export class MaterialTag {
  */
 const materials = [];
 
+/**
+ * # class {@link Material}
+ * アイテムとブロックの重複する情報を排除したバニラデータ取得のためのクラス
+ */
 export class Material {
     /**
      * @type {string}
@@ -208,9 +240,9 @@ export class Material {
     }
 
     /**
-     * @minecraft/server.ItemTypeとして取得します。
+     * このマテリアルを@minecraft/server.ItemTypeとして取得します。
      * @returns {ItemType}
-     * @throws {TypeError}
+     * @throws {TypeError} プロパティ {@link Material.isItem} がtrueでない場合
      */
     getAsItemType() {
         if (!this.#isItem) {
@@ -221,9 +253,9 @@ export class Material {
     }
 
     /**
-     * @minecraft/server.BlockTypeとして取得します。
+     * このマテリアルを@minecraft/server.BlockTypeとして取得します。
      * @returns {BlockType}
-     * @throws {TypeError}
+     * @throws {TypeError} プロパティ {@link Material.isBlock} がtrueでない場合
      */
     getAsBlockType() {
         if (!this.#isBlock) {
@@ -234,7 +266,7 @@ export class Material {
     }
 
     /**
-     * ブロックとして存在できるならば真
+     * このマテリアルがブロックとして存在できるならば真
      * @readonly
      * @returns {boolean}
      */
@@ -247,7 +279,7 @@ export class Material {
     }
 
     /**
-     * アイテムとして存在できるならば真
+     * このマテリアルがアイテムとして存在できるならば真
      * @readonly
      * @returns {boolean}
      */
@@ -260,9 +292,9 @@ export class Material {
     }
 
     /**
-     * 保持するブロック状態名を全て取得します。
+     * このマテリアルが保持するブロック状態名を全て取得します。
      * @returns {string[]}
-     * @throws {TypeError}
+     * @throws {TypeError} プロパティ {@link Material.isBlock} がtrueでない場合
      */
     getBlockPropertyNames() {
         if (!this.#isBlock) {
@@ -279,13 +311,13 @@ export class Material {
      */
     hasTag(tag) {
         if (tag instanceof MaterialTag) {
-            return bukkitOut[tag.keyName].includes(this.#itemId) || bukkitOut[tag.keyName].includes(this.#blockId);
+            return bukkitOut[tag.getBukkitOutKey(PRIVATE_CONSTRUCTOR_SYMBOL)].includes(this.#itemId) || bukkitOut[tag.getBukkitOutKey(PRIVATE_CONSTRUCTOR_SYMBOL)].includes(this.#blockId);
         }
        else throw new TypeError("引数はMaterialTag型です");
     }
 
     /**
-     * 保持するマテリアルタグを全て取得します。
+     * このマテリアルが保持するマテリアルタグを全て取得します。
      * @returns {MaterialTag[]}
      */
     getTags() {
@@ -293,7 +325,7 @@ export class Material {
     }
 
     /**
-     * ブロックID・アイテムIDを基にマテリアルを取得します。    
+     * ブロックIDまたはアイテムIDを基にマテリアルを取得します。    
      * 存在しなければundefinedを返します。
      * @param {string} id
      * @returns {Material | undefined}
@@ -308,6 +340,7 @@ export class Material {
     }
 
     /**
+     * 全てのマテリアルを配列で返します。
      * @returns {Material[]}
      */
     static values() {
@@ -2997,12 +3030,12 @@ export class Material {
     /**
      * @readonly
      */
-     static HARD_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, []);
+    // static HARD_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, []);
 
     /**
      * @readonly
      */
-     static HARD_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, []);
+    // static HARD_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, []);
 
     /**
      * @readonly
@@ -5427,7 +5460,7 @@ export class Material {
     /**
      * @readonly
      */
-     static SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, []);
+    // static SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, []);
 
     /**
      * @readonly
@@ -7762,7 +7795,7 @@ export class Material {
     /**
      * @readonly
      */
-     static LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, true, ["liquid_depth"], true);
+     static LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, false, ["liquid_depth"], true);
 
     /**
      * @readonly
@@ -11284,5 +11317,75 @@ const bukkitOut = {
         "blackstone_slab",
         "polished_blackstone_slab",
         "polished_blackstone_brick_slab"
+    ],
+    "damagableItems": [
+        "bow",
+        "brush",
+        "carrot_on_a_stick",
+        "chainmail_boots",
+        "chainmail_chestplate",
+        "chainmail_helmet",
+        "chainmail_leggings",
+        "crossbow",
+        "diamond_axe",
+        "diamond_boots",
+        "diamond_chestplate",
+        "diamond_helmet",
+        "diamond_hoe",
+        "diamond_leggings",
+        "diamond_pickaxe",
+        "diamond_shovel",
+        "diamond_sword",
+        "elytra",
+        "fishing_rod",
+        "flint_and_steel",
+        "golden_axe",
+        "golden_boots",
+        "golden_chestplate",
+        "golden_helmet",
+        "golden_hoe",
+        "golden_leggings",
+        "golden_pickaxe",
+        "golden_shovel",
+        "golden_sword",
+        "iron_axe",
+        "iron_boots",
+        "iron_chestplate",
+        "iron_helmet",
+        "iron_hoe",
+        "iron_leggings",
+        "iron_pickaxe",
+        "iron_shovel",
+        "iron_sword",
+        "leather_boots",
+        "leather_chestplate",
+        "leather_helmet",
+        "leather_leggings",
+        "mace",
+        "netherite_axe",
+        "netherite_boots",
+        "netherite_chestplate",
+        "netherite_helmet",
+        "netherite_hoe",
+        "netherite_leggings",
+        "netherite_pickaxe",
+        "netherite_shovel",
+        "netherite_sword",
+        "shears",
+        "shield",
+        "stone_axe",
+        "stone_hoe",
+        "stone_pickaxe",
+        "stone_shovel",
+        "stone_sword",
+        "trident",
+        "turtle_helmet",
+        "warped_fungus_on_a_stick",
+        "wolf_armor",
+        "wooden_axe",
+        "wooden_hoe",
+        "wooden_pickaxe",
+        "wooden_shovel",
+        "wooden_sword"
     ]
 }
