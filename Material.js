@@ -10654,7 +10654,8 @@ const bukkitOut = {
         "netherite_shovel",
         "netherite_pickaxe",
         "netherite_axe",
-        "netherite_hoe"
+        "netherite_hoe",
+        "shears"
     ],
     "mineable.shovel": [
         "grass_block",
