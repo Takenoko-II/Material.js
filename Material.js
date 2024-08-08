@@ -188,7 +188,7 @@ export class Material {
     /**
      * @private
      */
-    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames) {
+    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames, isHighPriority) {
         if (key != PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
@@ -198,7 +198,13 @@ export class Material {
         this.#isBlock = isBlock;
         this.#isItem = isItem;
         this.#blockPropertyNames = blockPropertyNames;
-        materials.push(this);
+
+        if (isHighPriority) {
+            materials.unshift(this);
+        }
+        else {
+            materials.push(this);
+        }
     }
 
     /**
@@ -496,7 +502,7 @@ export class Material {
     /**
      * @readonly
      */
-     static AXOLOTL_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "axolotl_bucket", false, true, []);
+     static AXOLOTL_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "axolotl_bucket", true, true, []);
 
     /**
      * @readonly
@@ -1531,7 +1537,7 @@ export class Material {
     /**
      * @readonly
      */
-     static COD_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cod_bucket", false, true, []);
+     static COD_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "cod_bucket", true, true, []);
 
     /**
      * @readonly
@@ -2541,7 +2547,7 @@ export class Material {
     /**
      * @readonly
      */
-     static FIRE_CHARGE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fire_charge", false, true, []);
+     static FIRE_CHARGE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire", "fire_charge", true, true, []);
 
     /**
      * @readonly
@@ -2586,7 +2592,7 @@ export class Material {
     /**
      * @readonly
      */
-     static FLINT_AND_STEEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "flint_and_steel", false, true, []);
+     static FLINT_AND_STEEL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire", "flint_and_steel", true, true, []);
 
     /**
      * @readonly
@@ -3346,7 +3352,7 @@ export class Material {
     /**
      * @readonly
      */
-     static LAVA_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "lava_bucket", false, true, []);
+     static LAVA_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_lava", "lava_bucket", true, true, []);
 
     /**
      * @readonly
@@ -4706,7 +4712,7 @@ export class Material {
     /**
      * @readonly
      */
-     static POWDER_SNOW_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "powder_snow_bucket", false, true, []);
+     static POWDER_SNOW_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "powder_snow", "powder_snow_bucket", true, true, []);
 
     /**
      * @readonly
@@ -4746,7 +4752,7 @@ export class Material {
     /**
      * @readonly
      */
-     static PUFFERFISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pufferfish_bucket", false, true, []);
+     static PUFFERFISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "pufferfish_bucket", true, true, []);
 
     /**
      * @readonly
@@ -5106,7 +5112,7 @@ export class Material {
     /**
      * @readonly
      */
-     static SALMON_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "salmon_bucket", false, true, []);
+     static SALMON_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "salmon_bucket", true, true, []);
 
     /**
      * @readonly
@@ -5826,7 +5832,7 @@ export class Material {
     /**
      * @readonly
      */
-     static TADPOLE_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tadpole_bucket", false, true, []);
+     static TADPOLE_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "tadpole_bucket", true, true, []);
 
     /**
      * @readonly
@@ -5931,7 +5937,7 @@ export class Material {
     /**
      * @readonly
      */
-     static TROPICAL_FISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tropical_fish_bucket", false, true, []);
+     static TROPICAL_FISH_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "tropical_fish_bucket", true, true, []);
 
     /**
      * @readonly
@@ -6166,7 +6172,7 @@ export class Material {
     /**
      * @readonly
      */
-     static WATER_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "water_bucket", false, true, []);
+     static WATER_BUCKET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", "water_bucket", true, true, []);
 
     /**
      * @readonly
@@ -7526,17 +7532,17 @@ export class Material {
     /**
      * @readonly
      */
-     static FIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire", null, true, false, ["age"]);
+     static FIRE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire",  null, true, false, ["age"], true);
 
     /**
      * @readonly
      */
-     static FLOWING_LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_lava", null, true, false, ["liquid_depth"]);
+     static FLOWING_LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_lava", null, true, false, ["liquid_depth"], true);
 
     /**
      * @readonly
      */
-     static FLOWING_WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", null, true, false, ["liquid_depth"]);
+     static FLOWING_WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "flowing_water", null, true, false, ["liquid_depth"], true);
 
     /**
      * @readonly
@@ -7756,7 +7762,7 @@ export class Material {
     /**
      * @readonly
      */
-     static LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, false, ["liquid_depth"]);
+     static LAVA = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lava", null, true, true, ["liquid_depth"], true);
 
     /**
      * @readonly
@@ -8056,7 +8062,7 @@ export class Material {
     /**
      * @readonly
      */
-     static WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "water", null, true, false, ["liquid_depth"]);
+     static WATER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "water", null, true, false, ["liquid_depth"], true);
 
     /**
      * @readonly
