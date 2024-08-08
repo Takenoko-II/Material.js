@@ -72,11 +72,35 @@ Material.OBSERVER.getBlockPropertyNames() // "minecraft:facing_direction", "powe
 
 ### MaterialTagクラス
 特定のマテリアルが持つ特性を表現します
-<br>静的フィールドへのアクセスまたは`MaterialTag.values()`、`Material#getTags()`によってのみ取得可能です
-<br>詳細はMaterialクラスとjsdocを参照してください
+<br>以下によってのみ取得できます：
+- 静的フィールドへのアクセス
+- `MaterialTag.values()`
+- `Material#getTags()`
 
-### Sample
-ブロックたたくと勝手に右手に適正ツールが入ります(手抜き)
+#### タグリスト
+```js
+MaterialTag.COMPOSTABLE // コンポスターに入れられるアイテム
+MaterialTag.FOODS // 食べられるアイテム
+MaterialTag.SOLID_BlOCKS // 固体のブロック
+MaterialTag.RECORDS // レコード
+MaterialTag.ENCHANTABLE // エンチャント可能なアイテム
+MaterialTag.BURNABLE_BLOCKS // 可燃性を持つブロック
+MaterialTag.FUELS // 燃料になれるアイテム
+MaterialTag.LIGHT_PASSABLE_BLOCKS // 光を通すブロック
+MaterialTag.ARMORS // 装備
+MaterialTag.TOOLS // ツール
+MaterialTag.WEAPONS // 武器
+MaterialTag.MINEABLE_BY_PICKAXE // ピッケルが適正ツールのブロック
+MaterialTag.MINEABLE_BY_AXE // 斧が適正ツールのブロック
+MaterialTag.MINEABLE_BY_SHOVEL // シャベルが適正ツールのブロック
+MaterialTag.MINEABLE_BY_HOE // クワが適正ツールのブロック
+MaterialTag.PLANKS // 木材
+MaterialTag.LOGS // 原木(丸太)
+MaterialTag.SLABS // ハーフブロック
+```
+
+### Samples
+#### ブロックたたくと勝手に右手に適正ツールが入ります(手抜き)
 ```js
 import { world, Player } from "@minecraft/server";
 
