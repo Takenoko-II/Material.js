@@ -61,9 +61,9 @@ Material.OBSERVER.getBlockPropertyNames() // "minecraft:facing_direction", "powe
 > アイテムではない場合`TypeError`を投げるため、`isItem`を見てから使用してください
 
 #### `getAsBlockType(): BlockType`
-マテリアルがアイテムのとき、対応する`BlockType`を取得します
+マテリアルがブロックのとき、対応する`BlockType`を取得します
 > [!WARNING]
-> アイテムではない場合`TypeError`を投げるため、`isBlock`を見てから使用してください
+> ブロックではない場合`TypeError`を投げるため、`isBlock`を見てから使用してください
 
 ### 静的メソッド
 
