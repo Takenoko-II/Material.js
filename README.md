@@ -104,6 +104,10 @@ MaterialTag.SLABS // ハーフブロック
 MaterialTag.DAMAGABLE_ITEMS // 耐久値を持つアイテム
 ```
 
+MaterialTagは思いついたら増やします
+<br>なんかほしいのあったらissuesにでもどうぞ
+<br>~~そもそもこのライブラリ使う人そうそういないと思うけど~~
+
 ### Samples
 #### ブロックたたくと勝手に右手に適正ツールが入ります(手抜き)
 ```js
