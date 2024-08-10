@@ -1,5 +1,6 @@
 # Material.js
 アイテム・ブロックに関連するデータを格納した単一のクラス
+<br>MinecraftItemTypes, MinecraftBlockTypesのスーパーセット
 
 ## Usage
 Materialクラス, MaterialTagクラスをimportすることで使えます
@@ -55,6 +56,14 @@ Material.OAK_LOG.getTags() // {solid}, {fuels}, {burnable_blocks}, {mineable_by_
 Material.OBSERVER.getBlockPropertyNames() // "minecraft:facing_direction", "powered_bit"
 ```
 
+#### `getItemMaxStackSize(): number`
+マテリアルがアイテムのとき、そのアイテムの最大スタック数を取得します
+> [!WARNING]
+> アイテムではない場合`TypeError`を投げるため、`isItem`を見てから使用してください
+```js
+Material.ENDER_PEARL.getItemMaxStackSize() // 16
+```
+
 #### `getAsItemType(): ItemType`
 マテリアルがアイテムのとき、対応する`ItemType`を取得します
 > [!WARNING]
@@ -82,10 +91,11 @@ Material.OBSERVER.getBlockPropertyNames() // "minecraft:facing_direction", "powe
 - `Material#getTags()`
 
 #### タグリスト
+現在59のタグがあります
 ```js
 MaterialTag.COMPOSTABLE // コンポスターに入れられるアイテム
 MaterialTag.FOODS // 食べられるアイテム
-MaterialTag.SOLID_BlOCKS // 固体のブロック
+MaterialTag.SOLID_BLOCKS // 固体のブロック
 MaterialTag.RECORDS // レコード
 MaterialTag.ENCHANTABLE // エンチャント可能なアイテム
 MaterialTag.BURNABLE_BLOCKS // 可燃性を持つブロック
@@ -102,6 +112,65 @@ MaterialTag.PLANKS // 木材
 MaterialTag.LOGS // 原木(丸太)
 MaterialTag.SLABS // ハーフブロック
 MaterialTag.DAMAGABLE_ITEMS // 耐久値を持つアイテム
+MaterialTag.BASE_STONES_OVERWORLD // オーバーワールドを構成する主な石
+MaterialTag.STAIRS // 階段
+MaterialTag.ARMOR_TRIM_TEMPLATES // 鍛冶型
+MaterialTag.ARMOR_TRIM_MATERIALS // アーマートリムの色となる材料
+MaterialTag.LEAVES // 葉っぱ
+MaterialTag.PUMPKINS // カボチャ
+MaterialTag.BLOCKS_COPPER // 銅系ブロック
+MaterialTag.STAINED_GLASSES // 色付きガラス
+MaterialTag.STAINED_GLASS_PANES // 色付きガラス板
+MaterialTag.TORCHES // トーチ系
+MaterialTag.WOOLS // 羊毛
+MaterialTag.BEACON_BASE_BLOCKS // ビーコンの土台になれるブロック
+MaterialTag.BLOCKS_PURPUR // プルプァ系
+MaterialTag.TRAPDOORS // トラップドア
+MaterialTag.DOORS // ドア
+MaterialTag.FLOWERS // 花
+MaterialTag.FENCES // フェンス(ゲートは含まない)
+MaterialTag.FENCE_GATES // フェンスゲート
+MaterialTag.CONCRETE_POWDERS // コンクリートパウダー
+MaterialTag.CONCRETES // コンクリート
+MaterialTag.BLOCKS_FALL_DISTANCE_RESETTING // エンティティの落下距離をリセットするブロック
+MaterialTag.BOATS // ボート
+MaterialTag.BUCKETS // バケツ
+MaterialTag.CLIMBABLE_BLOCKS // はしごのように登れるブロック
+MaterialTag.BLOCKS_QUARTZ // クォーツ系
+MaterialTag.TRIMMABLE_ARMORS // アーマートリムを適用可能な防具アイテム
+MaterialTag.SPAWN_EGGS // スポーンエッグ
+MaterialTag.SAPLINGS // 苗木
+MaterialTag.GLAZED_TERRACOTTAS // 彩色テラコッタ
+MaterialTag.CROPS // 作物
+MaterialTag.BASE_STONES_NETHER // ネザーを構成する主な石
+MaterialTag.WALLS // 壁
+MaterialTag.SIGNS // 看板
+MaterialTag.RAILS // レール
+MaterialTag.PRESSURE_PLATES // 感圧版
+MaterialTag.BUTTONS // ボタン
+MaterialTag.ORES // 鉱石
+MaterialTag.TERRACOTTAS // テラコッタ
+MaterialTag.ICES // 氷
+MaterialTag.HELMETS // ヘルメット
+MaterialTag.CHESTPLATES // チェストプレート
+MaterialTag.LEGGINGS // レギンス
+MaterialTag.BOOTS // ブーツ
+MaterialTag.SWORDS // 剣
+MaterialTag.PICKAXES // ピッケル
+MaterialTag.AXES // 斧
+MaterialTag.SHOVELS // シャベル
+MaterialTag.HOES // クワ
+MaterialTag.WOODEN_TOOLS // 木ツール
+MaterialTag.STONE_TOOLS // 石ツール
+MaterialTag.IRON_TOOLS // 鉄ツール
+MaterialTag.GOLDEN_TOOLS // 金ツール
+MaterialTag.DIAMOND_TOOLS // ダイヤツール
+MaterialTag.NETHERITE_TOOLS // ネザライトツール
+MaterialTag.BLOCKS_INCORRECT_FOR_WOODEN_TOOLS // 木ツールで収集不可能なブロック
+MaterialTag.BLOCKS_INCORRECT_FOR_STONE_TOOLS // 石ツールで収集不可能なブロック
+MaterialTag.BLOCKS_INCORRECT_FOR_IRON_TOOLS // 鉄ツールで収集不可能なブロック
+MaterialTag.BLOCKS_INCORRECT_FOR_GOLDEN_TOOLS // 金ツールで収集不可能なブロック
+MaterialTag.CORALS // サンゴ(ブロック含む)
 ```
 
 MaterialTagは思いついたら増やします
