@@ -2,7 +2,7 @@
  * @copyright @Takenoko-II 2024
  */
 
-import { ItemType, BlockType, ItemTypes, BlockTypes } from "@minecraft/server";
+import { ItemType, BlockType, ItemTypes, BlockTypes, ItemStack, Block } from "@minecraft/server";
 
 const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
 
@@ -354,7 +354,7 @@ export class MaterialTag {
      * 作物
      * @readonly
      */
-    static CROPS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crops", "crops");
+    static BLOCKS_CROP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "crops", "blocks_crop");
 
     /**
      * ネザーを構成する主な石
@@ -545,6 +545,11 @@ export class MaterialTag {
 const materials = [];
 
 /**
+ * @type {Material[]}
+ */
+const deprecatedMaterials = [];
+
+/**
  * # class {@link Material}
  * アイテムとブロックの重複する情報を排除したバニラデータ取得のためのクラス
  */
@@ -576,8 +581,16 @@ export class Material {
 
     /**
      * @private
+     * @param {symbol} key
+     * @param {string} blockId
+     * @param {string} itemId
+     * @param {boolean} isBlock
+     * @param {boolean} isItem
+     * @param {string[]} blockPropertyNames
+     * @param {boolean | undefined} isHighPriority
+     * @param {boolean | undefined} isDeprecated
      */
-    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames, isHighPriority) {
+    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames, isHighPriority, isDeprecated) {
         if (key != PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
@@ -588,11 +601,17 @@ export class Material {
         this.#isItem = isItem;
         this.#blockPropertyNames = blockPropertyNames;
 
-        if (isHighPriority) {
-            materials.unshift(this);
+        if (isDeprecated) {
+            deprecatedMaterials.push(this);
+            return this;
         }
         else {
-            materials.push(this);
+            if (isHighPriority) {
+                materials.unshift(this);
+            }
+            else {
+                materials.push(this);
+            }
         }
     }
 
@@ -695,17 +714,75 @@ export class Material {
     }
 
     /**
+     * @overload
      * ブロックIDまたはアイテムIDを基にマテリアルを取得します。    
      * 存在しなければundefinedを返します。
      * @param {string} id
      * @returns {Material | undefined}
      */
-    static getMaterial(id) {
-        const simpleId = id.replace("minecraft:", "");
-        for (const material of materials) {
-            if (material.#blockId === id || material.#itemId === id || material.#blockId === simpleId || material.#itemId === simpleId) {
-               return material;
+    /**
+     * @overload
+     * アイテムを基にマテリアルを取得します。
+     * @param {ItemStack} itemStack
+     * @returns {Material}
+     */
+    /**
+     * @overload
+     * ブロックを基にマテリアルを取得します。
+     * @param {Block} block
+     * @returns {Material}
+     */
+    /**
+     * @overload
+     * アイテムタイプを基にマテリアルを取得します。
+     * @param {ItemType} itemType
+     * @returns {Material}
+     */
+    /**
+     * @overload
+     * ブロックタイプを基にマテリアルを取得します。
+     * @param {BlockType} blockType
+     * @returns {Material}
+     */
+    static getMaterial(x) {
+        if (typeof x === "string") {
+            const simpleId = x.replace("minecraft:", "");
+            for (const material of materials) {
+                if (material.#blockId === x || material.#itemId === x || material.#blockId === simpleId || material.#itemId === simpleId) {
+                   return material;
+                }
             }
+        }
+        else if (x instanceof ItemStack) {
+            const material = this.getMaterial(x.type.id);
+            if (material === undefined) {
+                throw new TypeError("廃止されたアイテムタイプの可能性があります");
+            }
+            return material;
+        }
+        else if (x instanceof Block) {
+            const material = this.getMaterial(x.type.id);
+            if (material === undefined) {
+                throw new TypeError("廃止されたブロックタイプの可能性があります");
+            }
+            return material;
+        }
+        else if (x instanceof ItemType) {
+            const material = this.getMaterial(x.id);
+            if (material === undefined) {
+                throw new TypeError("廃止されたアイテムタイプの可能性があります");
+            }
+            return material;
+        }
+        else if (x instanceof BlockType) {
+            const material = this.getMaterial(x.id);
+            if (material === undefined) {
+                throw new TypeError("廃止されたブロックタイプの可能性があります");
+            }
+            return material;
+        }
+        else {
+            throw new TypeError("この関数の第一引数は string | ItemStack | Block | ItemType | BlockType です");
         }
     }
 
@@ -715,6 +792,26 @@ export class Material {
      */
     static values() {
         return [...materials];
+    }
+
+    /**
+     * 渡されたIDに対応する非推奨のマテリアルを返します。    
+     * 非推奨のマテリアルはこの関数とプロパティへの直接アクセス以外では取得できません。
+     * @param {string} id 
+     * @returns {Material | undefined}
+     * @deprecated
+     */
+    static getDeprecated(id) {
+        if (typeof id !== "string") {
+            throw new TypeError("この関数の第一引数は string です");
+        }
+
+        const simpleId = id.replace("minecraft:", "");
+        for (const material of deprecatedMaterials) {
+            if (material.#blockId === id || material.#itemId === id || material.#blockId === simpleId || material.#itemId === simpleId) {
+               return material;
+            }
+        }
     }
 
     /**
@@ -1034,8 +1131,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner_pattern", false, true, []);
+     static BANNER_PATTERN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "banner_pattern", false, true, [], false, true);
 
     /**
      * @readonly
@@ -1369,8 +1467,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "boat", false, true, []);
+     static BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "boat", false, true, [], false, true);
 
     /**
      * @readonly
@@ -1624,8 +1723,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "carpet", false, true, []);
+     static CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "carpet", false, true, [], false, true);
 
     /**
      * @readonly
@@ -1789,8 +1889,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_boat", false, true, []);
+     static CHEST_BOAT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "chest_boat", false, true, [], false, true);
 
     /**
      * @readonly
@@ -1974,13 +2075,15 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete", false, true, []);
+     static CONCRETE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete_powder", false, true, []);
+     static CONCRETE_POWDER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "concrete_powder", false, true, [], false, true);
 
     /**
      * @readonly
@@ -2064,23 +2167,27 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral", false, true, []);
+     static CORAL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_block", false, true, []);
+     static CORAL_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_block", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan", false, true, []);
+     static CORAL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static CORAL_FAN_DEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan_dead", false, true, []);
+     static CORAL_FAN_DEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "coral_fan_dead", false, true, [], false, true);
 
     /**
      * @readonly
@@ -2679,8 +2786,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static DOUBLE_PLANT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "double_plant", false, true, []);
+     static DOUBLE_PLANT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "double_plant", false, true, [], false, true);
 
     /**
      * @readonly
@@ -2724,8 +2832,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dye", false, true, []);
+     static DYE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "dye", false, true, [], false, true);
 
     /**
      * @readonly
@@ -2919,13 +3028,14 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fence", false, true, []);
+     static FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "fence", false, true, [], false, true);
 
     /**
      * @readonly
      */
-    // static FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fence_gate", "fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+     static FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fence_gate", "fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
 
     /**
      * @readonly
@@ -3399,13 +3509,15 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static HARD_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, []);
+     static HARD_STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static HARD_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, []);
+     static HARD_STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "hard_stained_glass_pane", false, true, [], false, true);
 
     /**
      * @readonly
@@ -3794,13 +3906,15 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves", false, true, []);
+     static LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static LEAVES2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves2", false, true, []);
+     static LEAVES2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "leaves2", false, true, [], false, true);
 
     /**
      * @readonly
@@ -4024,13 +4138,15 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log", false, true, []);
+     static LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static LOG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log2", false, true, []);
+     static LOG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "log2", false, true, [], false, true);
 
     /**
      * @readonly
@@ -4445,7 +4561,7 @@ export class Material {
     /**
      * @readonly
      */
-     static NETHER_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "netherbrick", "netherbrick", true, true, []);
+     static NETHER_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick", "nether_brick", true, true, []);
 
     /**
      * @readonly
@@ -4934,8 +5050,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "planks", false, true, []);
+     static PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "planks", false, true, [], false, true);
 
     /**
      * @readonly
@@ -5374,8 +5491,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static RED_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_flower", false, true, []);
+     static RED_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "red_flower", false, true, [], false, true);
 
     /**
      * @readonly
@@ -5544,8 +5662,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sapling", false, true, []);
+     static SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "sapling", false, true, [], false, true);
 
     /**
      * @readonly
@@ -5785,7 +5904,7 @@ export class Material {
     /**
      * @readonly
      */
-     static SNOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "snow_layer", "snow_layer", true, true, []);
+     static SNOW = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "snow", "snow", true, true, []);
 
     /**
      * @readonly
@@ -5829,8 +5948,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, []);
+     static SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "spawn_egg", false, true, [], false, true);
 
     /**
      * @readonly
@@ -5959,18 +6079,21 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass", false, true, []);
+     static STAINED_GLASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass_pane", false, true, []);
+     static STAINED_GLASS_PANE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_glass_pane", false, true, [], false, true);
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static STAINED_HARDENED_CLAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_hardened_clay", false, true, []);
+     static STAINED_HARDENED_CLAY = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stained_hardened_clay", false, true, [], false, true);
 
     /**
      * @readonly
@@ -5994,8 +6117,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_block_slab", false, true, []);
+     static STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "stone_block_slab", false, true, [], false, true);
 
     /**
      * @readonly
@@ -6050,7 +6174,7 @@ export class Material {
     /**
      * @readonly
      */
-     static STONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "normal_stone_stairs", "normal_stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+     static STONE_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_stairs", "stone_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
 
     /**
      * @readonly
@@ -6249,8 +6373,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static TALLGRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tallgrass", false, true, []);
+     static TALLGRASS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "tallgrass", false, true, [], false, true);
 
     /**
      * @readonly
@@ -6934,8 +7059,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wood", false, true, []);
+     static WOOD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wood", false, true, [], false, true);
 
     /**
      * @readonly
@@ -6974,8 +7100,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static WOODEN_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_slab", false, true, []);
+     static WOODEN_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wooden_slab", false, true, [], false, true);
 
     /**
      * @readonly
@@ -6984,8 +7111,9 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    // static WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wool", false, true, []);
+     static WOOL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "wool", false, true, [], false, true);
 
     /**
      * @readonly
@@ -8390,7 +8518,7 @@ export class Material {
     /**
      * @readonly
      */
-     static STONECUTTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter_block", null, true, false, []);
+    static STONECUTTER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonecutter", null, true, false, []);
 
     /**
      * @readonly
@@ -8971,7 +9099,7 @@ const bukkitOut = {
         "stone_brick_stairs",
         "mud_brick_stairs",
         "mycelium",
-        "nether_bricks",
+        "nether_brick",
         "cracked_nether_bricks",
         "chiseled_nether_bricks",
         "nether_brick_fence",
@@ -9199,6 +9327,7 @@ const bukkitOut = {
         "mossy_cobblestone_stairs",
         "end_brick_stairs",
         "normal_stone_stairs",
+        "stone_stairs",
         "smooth_sandstone_stairs",
         "smooth_quartz_stairs",
         "granite_stairs",
@@ -9301,7 +9430,7 @@ const bukkitOut = {
         "waxed_exposed_copper_trapdoor",
         "waxed_weathered_copper_trapdoor",
         "waxed_oxidized_copper_trapdoor",
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",
@@ -9763,7 +9892,7 @@ const bukkitOut = {
         "lectern",
         "target",
         "tnt",
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",
@@ -9948,7 +10077,7 @@ const bukkitOut = {
         "dark_oak_trapdoor",
         "mangrove_trapdoor",
         "bamboo_trapdoor",
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",
@@ -10331,6 +10460,7 @@ const bukkitOut = {
         "mossy_cobblestone_stairs",
         "end_brick_stairs",
         "normal_stone_stairs",
+        "stone_stairs",
         "smooth_sandstone_stairs",
         "smooth_quartz_stairs",
         "granite_stairs",
@@ -10446,7 +10576,7 @@ const bukkitOut = {
         "waxed_exposed_copper_trapdoor",
         "waxed_weathered_copper_trapdoor",
         "waxed_oxidized_copper_trapdoor",
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",
@@ -10918,7 +11048,7 @@ const bukkitOut = {
         "bamboo_trapdoor",
         "crimson_trapdoor",
         "warped_trapdoor",
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",
@@ -11348,7 +11478,7 @@ const bukkitOut = {
         "brick_stairs",
         "stone_brick_stairs",
         "mud_brick_stairs",
-        "nether_bricks",
+        "nether_brick",
         "cracked_nether_bricks",
         "chiseled_nether_bricks",
         "nether_brick_fence",
@@ -11498,6 +11628,7 @@ const bukkitOut = {
         "mossy_cobblestone_stairs",
         "end_brick_stairs",
         "normal_stone_stairs",
+        "stone_stairs",
         "smooth_sandstone_stairs",
         "smooth_quartz_stairs",
         "granite_stairs",
@@ -11833,6 +11964,7 @@ const bukkitOut = {
         "mossy_cobblestone_stairs",
         "diorite_stairs",
         "normal_stone_stairs",
+        "stone_stairs",
         "polished_deepslate_stairs",
         "crimson_stairs",
         "end_brick_stairs",
@@ -12161,7 +12293,7 @@ const bukkitOut = {
         "bedrock": 64,
         "potato": 64,
         "deepslate_lapis_ore": 64,
-        "nether_bricks": 64,
+        "nether_brick": 64,
         "poisonous_potato": 64,
         "brown_stained_glass": 64,
         "black_dye": 64,
@@ -12366,6 +12498,7 @@ const bukkitOut = {
         "warped_trapdoor": 64,
         "sculk_shrieker": 64,
         "normal_stone_stairs": 64,
+        "stone_stairs": 64,
         "red_terracotta": 64,
         "furnace_minecart": 1,
         "end_portal_frame": 64,
@@ -13186,7 +13319,7 @@ const bukkitOut = {
         "cornflower": 64,
         "shulker_shell": 64,
         "disc_fragment_5": 64,
-        "oak_fence_gate": 64,
+        "fence_gate": 64,
         "stripped_jungle_wood": 64,
         "prize_pottery_sherd": 64,
         "orange_shulker_box": 1,
@@ -13562,7 +13695,7 @@ const bukkitOut = {
         "coral_fan_hang3"
     ],
     "fence_gates": [
-        "oak_fence_gate",
+        "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
         "jungle_fence_gate",

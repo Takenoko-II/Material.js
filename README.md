@@ -18,7 +18,8 @@ const diamondBlock = Material.DIAMOND_BLOCK;
 
 // じゃがいものマテリアル
 // potatoes, minecraft:potatoなどでも可
-const potato =　Material.getMaterial("potato");
+const itemStack = new ItemStack("potato");
+const potato =　Material.getMaterial(itemStack);
 ```
 
 ### インスタンスプロパティ
@@ -79,9 +80,15 @@ Material.ENDER_PEARL.getItemMaxStackSize() // 16
 #### `values(): Material[]`
 全マテリアルの配列を返します
 
-#### `getMaterial(id: string): Material | undefined`
+#### `getMaterial(id: string | ItemStack | Block | ItemType | BlockType): Material | undefined`
 ブロックIDあるいはアイテムIDを渡すと対応するMaterialが返ります
 <br>`ItemType`と`BlockType`の相互変換はこれを介して可能です
+
+#### `getDeprecated(id: string): Material | undefined`
+ブロックIDあるいはアイテムIDを渡すと対応する非推奨のMaterialが返ります
+> [!NOTE]
+> 非推奨としてマークされているマテリアルは、この関数とプロパティへの直接的なアクセス以外では取得できないようにしています
+> minecraft:woolなども該当しますが、基本的には代替としてMaterialTag.WOOLSなどを使用することを推奨します
 
 ### MaterialTagクラス
 特定のマテリアルが持つ特性を表現します
@@ -141,7 +148,7 @@ MaterialTag.TRIMMABLE_ARMORS // アーマートリムを適用可能な防具ア
 MaterialTag.SPAWN_EGGS // スポーンエッグ
 MaterialTag.SAPLINGS // 苗木
 MaterialTag.GLAZED_TERRACOTTAS // 彩色テラコッタ
-MaterialTag.CROPS // 作物
+MaterialTag.BLOCKS_CROP // 作物
 MaterialTag.BASE_STONES_NETHER // ネザーを構成する主な石
 MaterialTag.WALLS // 壁
 MaterialTag.SIGNS // 看板
@@ -214,5 +221,5 @@ world.afterEvents.entityHitBlock.subscribe(event => {
 [MIT LICENSE](/LICENSE)
 
 ## Author
-Discord: takenoko_4096
-Twitter/X: [@Takenoko_4096](https://x.com/Takenoko_4096)
+Discord: たけのこII | takenoko_4096
+<br>Twitter/X: [@Takenoko_4096](https://x.com/Takenoko_4096)
