@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * @copyright @Takenoko-II 2024
  */
@@ -12,19 +13,16 @@ const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
 const materialTags = [];
 
 /**
+ * @type {Map<MaterialTag, string>}
+ */
+const bukkitOutIdMap = new Map();
+
+/**
  * # class {@link MaterialTag}
  * {@link Material.hasTag()}などで使えます
  */
 export class MaterialTag {
     /**
-     * @readonly
-     * @private
-     * @type {string}
-     */
-    #keyName;
-
-    /**
-     * @private
      * @type {string}
      */
     #name;
@@ -32,15 +30,15 @@ export class MaterialTag {
     /**
      * @private
      * @param {symbol} key 
-     * @param {keyof bukkitOut} keyName 
+     * @param {keyof bukkitOut} bukkitOutId 
      * @param {string} name 
      */
-    constructor(key, keyName, name) {
+    constructor(key, bukkitOutId, name) {
         if (key !== PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
 
-        this.#keyName = keyName;
+        bukkitOutIdMap.set(this, bukkitOutId);
         this.#name = name;
         materialTags.push(this);
     }
@@ -51,15 +49,6 @@ export class MaterialTag {
      */
     toString() {
         return this.#name;
-    }
-
-    /**
-     * @private
-     * @returns {string}
-     */
-    getBukkitOutKey(key) {
-        if (key != PRIVATE_CONSTRUCTOR_SYMBOL) throw new TypeError();
-        return this.#keyName;
     }
 
     /**
@@ -555,12 +544,12 @@ const deprecatedMaterials = [];
  */
 export class Material {
     /**
-     * @type {string}
+     * @type {string | null}
      */
     #blockId;
 
     /**
-     * @type {string}
+     * @type {string | null}
      */
     #itemId;
 
@@ -582,15 +571,15 @@ export class Material {
     /**
      * @private
      * @param {symbol} key
-     * @param {string} blockId
-     * @param {string} itemId
+     * @param {string | null} blockId
+     * @param {string | null} itemId
      * @param {boolean} isBlock
      * @param {boolean} isItem
      * @param {string[]} blockPropertyNames
      * @param {boolean | undefined} isHighPriority
      * @param {boolean | undefined} isDeprecated
      */
-    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames, isHighPriority, isDeprecated) {
+    constructor(key, blockId, itemId, isBlock, isItem, blockPropertyNames, isHighPriority = false, isDeprecated = false) {
         if (key != PRIVATE_CONSTRUCTOR_SYMBOL) {
             throw new TypeError();
         }
@@ -621,11 +610,17 @@ export class Material {
      * @throws {TypeError} プロパティ {@link Material.isItem} がtrueでない場合
      */
     getAsItemType() {
-        if (!this.#isItem) {
+        if (!this.#isItem || this.#itemId === null) {
             throw new TypeError("このマテリアルはアイテムではありません");
         }
 
-        return ItemTypes.get(this.#itemId);
+        const itemType = ItemTypes.get(this.#itemId);
+
+        if (itemType === undefined) {
+            throw new TypeError("アイテムタイプの取得に失敗しました");
+        }
+
+        return itemType;
     }
 
     /**
@@ -634,11 +629,17 @@ export class Material {
      * @throws {TypeError} プロパティ {@link Material.isBlock} がtrueでない場合
      */
     getAsBlockType() {
-        if (!this.#isBlock) {
+        if (!this.#isBlock || this.#blockId === null) {
             throw new TypeError("このマテリアルはブロックではありません");
         }
 
-        return BlockTypes.get(this.#blockId);
+        const blockType = BlockTypes.get(this.#blockId);
+
+        if (blockType === undefined) {
+            throw new TypeError("ブロックタイプの取得に失敗しました");
+        }
+
+        return blockType;
     }
 
     /**
@@ -700,7 +701,7 @@ export class Material {
      */
     hasTag(tag) {
         if (tag instanceof MaterialTag) {
-            return bukkitOut[tag.getBukkitOutKey(PRIVATE_CONSTRUCTOR_SYMBOL)].includes(this.#itemId) || bukkitOut[tag.getBukkitOutKey(PRIVATE_CONSTRUCTOR_SYMBOL)].includes(this.#blockId);
+            return bukkitOut[bukkitOutIdMap.get(tag)].includes(this.#itemId) || bukkitOut[bukkitOutIdMap.get(tag)].includes(this.#blockId);
         }
        else throw new TypeError("引数はMaterialTag型です");
     }
@@ -962,7 +963,23 @@ export class Material {
     /**
      * @readonly
      */
-     static ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "anvil", "anvil", true, true, ["damage", "minecraft:cardinal_direction"]);
+    static ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "anvil", "anvil", true, true, ["damage", "minecraft:cardinal_direction"]);
+
+    /**
+     * @readonly
+     */
+    static CHIPPED_ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chipped_anvil", "chipped_anvil", true, true, ["minecraft:cardinal_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DAMAGED_ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "damaged_anvil", "damaged_anvil", true, true, ["minecraft:cardinal_direction"]);
+
+    /**
+     * @deprecated
+     * @readonly
+     */
+    static DEPRECATED_ANVIL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "deprecated_anvil", null, true, false, ["minecraft:cardinal_direction"], false, true);
 
     /**
      * @readonly
@@ -2757,7 +2774,12 @@ export class Material {
     /**
      * @readonly
      */
-     static DIRT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dirt", "dirt", true, true, ["dirt_type"]);
+    static DIRT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dirt", "dirt", true, true, ["dirt_type"]);
+
+    /**
+     * @readonly
+     */
+    static COARSE_DIRT = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coarse_dirt", "coarse_dirt", true, true, []);
 
     /**
      * @readonly
@@ -4365,8 +4387,39 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static MONSTER_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "monster_egg", "monster_egg", true, true, ["monster_egg_stone_type"]);
+     static MONSTER_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "monster_egg", "monster_egg", true, true, ["monster_egg_stone_type"], false, true);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_STONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_stone", "infested_stone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_COBBLESTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_cobblestone", "infested_cobblestone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_stone_bricks", "infested_stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_MOSSY_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_mossy_stone_bricks", "infested_mossy_stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_CRACKED_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_cracked_stone_bricks", "infested_cracked_stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static INFESTED_CHISELED_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "infested_chiseled_stone_bricks", "infested_chiseled_stone_bricks", true, true, []);
 
     /**
      * @readonly
@@ -5237,7 +5290,17 @@ export class Material {
     /**
      * @readonly
      */
-     static PRISMARINE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine", "prismarine", true, true, ["prismarine_block_type"]);
+    static PRISMARINE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine", "prismarine", true, true, ["prismarine_block_type"]);
+
+    /**
+     * @readonly
+     */
+    static DARK_PRISMARINE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_prismarine", "dark_prismarine", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_bricks", "prismarine_bricks", true, true, []);
 
     /**
      * @readonly
@@ -5367,7 +5430,22 @@ export class Material {
     /**
      * @readonly
      */
-     static QUARTZ_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_block", "quartz_block", true, true, ["chisel_type", "pillar_axis"]);
+    static QUARTZ_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_block", "quartz_block", true, true, ["chisel_type", "pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static CHISELED_QUARTZ_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_quartz_block", "chiseled_quartz_block", true, true, ["pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static QUARTZ_PILLAR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_pillar", "quartz_pillar", true, true, ["pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_QUARTZ = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_quartz", "smooth_quartz", true, true, ["pillar_axis"]);
 
     /**
      * @readonly
@@ -5523,7 +5601,22 @@ export class Material {
     /**
      * @readonly
      */
-     static RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone", "red_sandstone", true, true, ["sand_stone_type"]);
+    static RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone", "red_sandstone", true, true, ["sand_stone_type"]);
+
+    /**
+     * @readonly
+     */
+    static CHISELED_RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_red_sandstone", "chiseled_red_sandstone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static CUT_RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_red_sandstone", "cut_red_sandstone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_RED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_red_sandstone", "smooth_red_sandstone", true, true, []);
 
     /**
      * @readonly
@@ -5643,12 +5736,32 @@ export class Material {
     /**
      * @readonly
      */
-     static SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sand", "sand", true, true, ["sand_type"]);
+    static SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sand", "sand", true, true, ["sand_type"]);
 
     /**
      * @readonly
      */
-     static SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone", "sandstone", true, true, ["sand_stone_type"]);
+    static RED_SAND = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sand", "red_sand", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone", "sandstone", true, true, ["sand_stone_type"]);
+
+    /**
+     * @readonly
+     */
+    static CHISELED_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_sandstone", "chiseled_sandstone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static CUT_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_sandstone", "cut_sandstone", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_SANDSTONE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_sandstone", "smooth_sandstone", true, true, []);
 
     /**
      * @readonly
@@ -6123,18 +6236,126 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab2", "stone_block_slab2", true, true, ["minecraft:vertical_half", "stone_slab_type_2"]);
+     static STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab2", "stone_block_slab2", true, true, ["minecraft:vertical_half", "stone_slab_type_2"], false, true);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab3", "stone_block_slab3", true, true, ["minecraft:vertical_half", "stone_slab_type_3"]);
+    static RED_SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone_slab", "red_sandstone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab4", "stone_block_slab4", true, true, ["minecraft:vertical_half", "stone_slab_type_4"]);
+    static PURPUR_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_slab", "purpur_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_slab", "prismarine_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static DARK_PRISMARINE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_prismarine_slab", "dark_prismarine_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_brick_slab", "prismarine_brick_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_COBBLESTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone_slab", "mossy_cobblestone_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_sandstone_slab", "smooth_sandstone_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static RED_NETHER_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick_slab", "red_nether_brick_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab3", "stone_block_slab3", true, true, ["minecraft:vertical_half", "stone_slab_type_3"], false, true);
+
+    /**
+     * @readonly
+     */
+    static END_STONE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_stone_brick_slab", "end_stone_brick_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_RED_SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_red_sandstone_slab", "smooth_red_sandstone_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_ANDESITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite_slab", "polished_andesite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static ANDESITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "andesite_slab", "andesite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static DIORITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diorite_slab", "diorite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_DIORITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite_slab", "polished_diorite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static GRANITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "granite_slab", "granite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_GRANITE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite_slab", "polished_granite_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_block_slab4", "stone_block_slab4", true, true, ["minecraft:vertical_half", "stone_slab_type_4"], false, true);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_STONE_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_brick_slab", "mossy_stone_brick_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_QUARTZ_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_quartz_slab", "smooth_quartz_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static NORMAL_STONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "normal_stone_slab", "normal_stone_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static CUT_SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_sandstone_slab", "cut_sandstone_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static CUT_RED_SANDSTONE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_red_sandstone_slab", "cut_red_sandstone_slab", true, true, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
@@ -6183,8 +6404,29 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static STONEBRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonebrick", "stonebrick", true, true, ["stone_brick_type"]);
+     static STONEBRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stonebrick", "stonebrick", true, true, ["stone_brick_type"], false, true);
+
+    /**
+     * @readonly
+     */
+    static STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_bricks", "stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_bricks", "mossy_stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static CRACKED_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cracked_stone_bricks", "cracked_stone_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static CHISELED_STONE_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_stone_bricks", "chiseled_stone_bricks", true, true, []);
 
     /**
      * @readonly
@@ -7147,8 +7389,14 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static YELLOW_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_flower", "yellow_flower", true, true, []);
+     static YELLOW_FLOWER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_flower", "yellow_flower", true, true, [], false, true);
+
+    /**
+     * @readonly
+     */
+    static DANDELION = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dandelion", "dandelion", true, true, []);
 
     /**
      * @readonly
@@ -7362,18 +7610,71 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static CORAL_FAN_HANG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+     static CORAL_FAN_HANG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"], false, true);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_HANG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang2", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+    static TUBE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "tube_coral_wall_fan", null, true, false, ["coral_direction"]);
 
     /**
      * @readonly
      */
-     static CORAL_FAN_HANG3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang3", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"]);
+    static BRAIN_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brain_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DEAD_TUBE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_tube_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DEAD_BRAIN_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_brain_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static CORAL_FAN_HANG2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang2", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"], false, true);
+
+    /**
+     * @readonly
+     */
+    static BUBBLE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "bubble_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static FIRE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "fire_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DEAD_BUBBLE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_bubble_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DEAD_FIRE_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_fire_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static CORAL_FAN_HANG3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "coral_fan_hang3", null, true, false, ["coral_direction", "coral_hang_type_bit", "dead_bit"], false, true);
+
+    /**
+     * @readonly
+     */
+    static HORN_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "horn_coral_wall_fan", null, true, false, ["coral_direction"]);
+
+    /**
+     * @readonly
+     */
+    static DEAD_HORN_CORAL_WALL_FAN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dead_horn_coral_wall_fan", null, true, false, ["coral_direction"]);
 
     /**
      * @readonly
@@ -7432,23 +7733,167 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-     static DOUBLE_STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab", null, true, false, ["minecraft:vertical_half", "stone_slab_type"]);
+     static DOUBLE_STONE_BLOCK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab", null, true, false, ["minecraft:vertical_half", "stone_slab_type"], false, true);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab2", null, true, false, ["minecraft:vertical_half", "stone_slab_type_2"]);
+    static SMOOTH_STONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_stone_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab3", null, true, false, ["minecraft:vertical_half", "stone_slab_type_3"]);
+    static SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
      */
-     static DOUBLE_STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab4", null, true, false, ["minecraft:vertical_half", "stone_slab_type_4"]);
+    static COBBLESTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cobblestone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static STONE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static QUARTZ_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "quartz_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static NETHER_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static DOUBLE_STONE_BLOCK_SLAB2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab2", null, true, false, ["minecraft:vertical_half", "stone_slab_type_2"], false, true);
+
+    /**
+     * @readonly
+     */
+    static RED_SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PURPUR_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "purpur_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static DARK_PRISMARINE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "dark_prismarine_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_COBBLESTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static RED_NETHER_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static DOUBLE_STONE_BLOCK_SLAB3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab3", null, true, false, ["minecraft:vertical_half", "stone_slab_type_3"], false, true);
+
+    /**
+     * @readonly
+     */
+    static END_STONE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_stone_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_RED_SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_red_sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_ANDESITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_andesite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static ANDESITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "andesite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static DIORITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diorite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_DIORITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_diorite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static GRANITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "granite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static POLISHED_GRANITE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "polished_granite_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+     static DOUBLE_STONE_BLOCK_SLAB4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "double_stone_block_slab4", null, true, false, ["minecraft:vertical_half", "stone_slab_type_4"], false, true);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_STONE_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static SMOOTH_QUARTZ_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "smooth_quartz_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static NORMAL_STONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "normal_stone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static CUT_SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static CUT_RED_SANDSTONE_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "cut_red_sandstone_double_slab", null, true, false, ["minecraft:vertical_half"]);
 
     /**
      * @readonly
@@ -8664,6 +9109,7 @@ const bukkitOut = {
         "seagrass",
         "sea_pickle",
         "yellow_flower",
+        "dandelion",
         "poppy",
         "blue_orchid",
         "allium",
@@ -9003,10 +9449,45 @@ const bukkitOut = {
         "crimson_slab",
         "warped_slab",
         "smooth_stone_slab",
+        "double_stone_block_slab",
+        "smooth_stone_double_slab",
+        "sandstone_double_slab",
+        "oak_double_slab",
+        "cobblestone_double_slab",
+        "brick_double_slab",
+        "stone_brick_double_slab",
+        "quartz_double_slab",
+        "nether_brick_double_slab",
+        "double_stone_block_slab2",
+        "red_sandstone_double_slab",
+        "purpur_double_slab",
+        "prismarine_double_slab",
+        "dark_prismarine_double_slab",
+        "prismarine_brick_double_slab",
+        "mossy_cobblestone_double_slab",
+        "smooth_sandstone_double_slab",
+        "red_nether_brick_double_slab",
+        "double_stone_block_slab3",
+        "end_stone_brick_double_slab",
+        "smooth_red_sandstone_double_slab",
+        "polished_andesite_double_slab",
+        "andesite_double_slab",
+        "diorite_double_slab",
+        "polished_diorite_double_slab",
+        "granite_double_slab",
+        "polished_granite_double_slab",
+        "double_stone_block_slab4",
+        "mossy_stone_brick_double_slab",
+        "smooth_quartz_double_slab",
+        "normal_stone_double_slab",
+        "cut_sandstone_double_slab",
+        "cut_red_sandstone_double_slab",
+        "stone_block_slab",
         "stone_block_slab2",
         "stone_block_slab3",
         "stone_block_slab4",
         "stone_slab",
+        "normal_stone_slab",
         "smooth_stone_slab",
         "sandstone_slab",
         "cut_sandstone_slab",
@@ -9077,6 +9558,7 @@ const bukkitOut = {
         "monster_egg",
         "infested_deepslate",
         "stonebrick",
+        "stone_bricks",
         "mossy_stone_bricks",
         "cracked_stone_bricks",
         "chiseled_stone_bricks",
@@ -9813,6 +10295,7 @@ const bukkitOut = {
         "red_wool",
         "black_wool",
         "yellow_flower",
+        "dandelion",
         "poppy",
         "blue_orchid",
         "allium",
@@ -10219,6 +10702,7 @@ const bukkitOut = {
         "seagrass",
         "sea_pickle",
         "yellow_flower",
+        "dandelion",
         "poppy",
         "blue_orchid",
         "allium",
@@ -10264,10 +10748,45 @@ const bukkitOut = {
         "crimson_slab",
         "warped_slab",
         "smooth_stone_slab",
+        "double_stone_block_slab",
+        "smooth_stone_double_slab",
+        "sandstone_double_slab",
+        "oak_double_slab",
+        "cobblestone_double_slab",
+        "brick_double_slab",
+        "stone_brick_double_slab",
+        "quartz_double_slab",
+        "nether_brick_double_slab",
+        "double_stone_block_slab2",
+        "red_sandstone_double_slab",
+        "purpur_double_slab",
+        "prismarine_double_slab",
+        "dark_prismarine_double_slab",
+        "prismarine_brick_double_slab",
+        "mossy_cobblestone_double_slab",
+        "smooth_sandstone_double_slab",
+        "red_nether_brick_double_slab",
+        "double_stone_block_slab3",
+        "end_stone_brick_double_slab",
+        "smooth_red_sandstone_double_slab",
+        "polished_andesite_double_slab",
+        "andesite_double_slab",
+        "diorite_double_slab",
+        "polished_diorite_double_slab",
+        "granite_double_slab",
+        "polished_granite_double_slab",
+        "double_stone_block_slab4",
+        "mossy_stone_brick_double_slab",
+        "smooth_quartz_double_slab",
+        "normal_stone_double_slab",
+        "cut_sandstone_double_slab",
+        "cut_red_sandstone_double_slab",
+        "stone_block_slab",
         "stone_block_slab2",
         "stone_block_slab3",
         "stone_block_slab4",
         "stone_slab",
+        "normal_stone_slab",
         "smooth_stone_slab",
         "sandstone_slab",
         "cut_sandstone_slab",
@@ -11416,10 +11935,45 @@ const bukkitOut = {
         "chiseled_sandstone",
         "cut_sandstone",
         "smooth_stone_slab",
+        "double_stone_block_slab",
+        "smooth_stone_double_slab",
+        "sandstone_double_slab",
+        "oak_double_slab",
+        "cobblestone_double_slab",
+        "brick_double_slab",
+        "stone_brick_double_slab",
+        "quartz_double_slab",
+        "nether_brick_double_slab",
+        "double_stone_block_slab2",
+        "red_sandstone_double_slab",
+        "purpur_double_slab",
+        "prismarine_double_slab",
+        "dark_prismarine_double_slab",
+        "prismarine_brick_double_slab",
+        "mossy_cobblestone_double_slab",
+        "smooth_sandstone_double_slab",
+        "red_nether_brick_double_slab",
+        "double_stone_block_slab3",
+        "end_stone_brick_double_slab",
+        "smooth_red_sandstone_double_slab",
+        "polished_andesite_double_slab",
+        "andesite_double_slab",
+        "diorite_double_slab",
+        "polished_diorite_double_slab",
+        "granite_double_slab",
+        "polished_granite_double_slab",
+        "double_stone_block_slab4",
+        "mossy_stone_brick_double_slab",
+        "smooth_quartz_double_slab",
+        "normal_stone_double_slab",
+        "cut_sandstone_double_slab",
+        "cut_red_sandstone_double_slab",
+        "stone_block_slab",
         "stone_block_slab2",
         "stone_block_slab3",
         "stone_block_slab4",
         "stone_slab",
+        "normal_stone_slab",
         "smooth_stone_slab",
         "sandstone_slab",
         "cut_sandstone_slab",
@@ -11463,6 +12017,7 @@ const bukkitOut = {
         "monster_egg",
         "infested_deepslate",
         "stonebrick",
+        "stone_bricks",
         "mossy_stone_bricks",
         "cracked_stone_bricks",
         "chiseled_stone_bricks",
@@ -11816,10 +12371,45 @@ const bukkitOut = {
         "crimson_slab",
         "warped_slab",
         "smooth_stone_slab",
+        "double_stone_block_slab",
+        "smooth_stone_double_slab",
+        "sandstone_double_slab",
+        "oak_double_slab",
+        "cobblestone_double_slab",
+        "brick_double_slab",
+        "stone_brick_double_slab",
+        "quartz_double_slab",
+        "nether_brick_double_slab",
+        "double_stone_block_slab2",
+        "red_sandstone_double_slab",
+        "purpur_double_slab",
+        "prismarine_double_slab",
+        "dark_prismarine_double_slab",
+        "prismarine_brick_double_slab",
+        "mossy_cobblestone_double_slab",
+        "smooth_sandstone_double_slab",
+        "red_nether_brick_double_slab",
+        "double_stone_block_slab3",
+        "end_stone_brick_double_slab",
+        "smooth_red_sandstone_double_slab",
+        "polished_andesite_double_slab",
+        "andesite_double_slab",
+        "diorite_double_slab",
+        "polished_diorite_double_slab",
+        "granite_double_slab",
+        "polished_granite_double_slab",
+        "double_stone_block_slab4",
+        "mossy_stone_brick_double_slab",
+        "smooth_quartz_double_slab",
+        "normal_stone_double_slab",
+        "cut_sandstone_double_slab",
+        "cut_red_sandstone_double_slab",
+        "stone_block_slab",
         "stone_block_slab2",
         "stone_block_slab3",
         "stone_block_slab4",
         "stone_slab",
+        "normal_stone_slab",
         "smooth_stone_slab",
         "sandstone_slab",
         "cut_sandstone_slab",
@@ -12373,6 +12963,7 @@ const bukkitOut = {
         "brewing_stand": 64,
         "lime_candle": 64,
         "stonebrick": 64,
+        "stone_bricks": 64,
         "stripped_oak_wood": 64,
         "bubble_coral_fan": 64,
         "wooden_pressure_plate": 64,
@@ -12619,7 +13210,6 @@ const bukkitOut = {
         "dead_bubble_coral_block": 64,
         "purple_concrete_powder": 64,
         "polished_diorite_slab": 64,
-        "smooth_stone_slab": 64,
         "raw_iron": 64,
         "golden_sword": 1,
         "prismarine": 64,
@@ -12797,13 +13387,15 @@ const bukkitOut = {
         "wither_spawn_egg": 64,
         "red_stained_glass": 64,
         "smooth_stone_slab": 64,
-
+        "stone_block_slab": 64,
         "stone_block_slab2": 64,
         "stone_block_slab3": 64,
         "stone_block_slab4": 64,
         "stone_slab": 64,
+        "normal_stone_slab": 64,
         "mangrove_roots": 64,
         "yellow_flower": 64,
+        "dandelion": 64,
         "bamboo_mosaic_stairs": 64,
         "waxed_oxidized_copper_trapdoor": 64,
         "pink_bed": 1,
@@ -13638,6 +14230,7 @@ const bukkitOut = {
         "allium",
         "peony",
         "yellow_flower",
+        "dandelion",
         "sunflower",
         "flowering_azalea",
         "rose_bush",

@@ -216,6 +216,7 @@ world.afterEvents.entityHitBlock.subscribe(event => {
 
 ## Versions
 - 1.21
+- 1.21.20
 
 ## License
 [MIT LICENSE](/LICENSE)
