@@ -3949,9 +3949,90 @@ export class Material {
      static LEVER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lever", "lever", true, true, ["lever_direction", "open_bit"]);
 
     /**
+     * なんかアイテムの方のlight_blockが廃止されてないからdeprecated付けようにも付けられないんだけど
      * @readonly
      */
-     static LIGHT_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block", "light_block", true, true, ["block_light_level"]);
+    static LIGHT_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block", "light_block", true, true, ["block_light_level"]);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_0 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_0", "light_block_0", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_1 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_1", "light_block_1", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_2 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_2", "light_block_2", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_3 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_3", "light_block_3", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_4 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_4", "light_block_4", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_5 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_5", "light_block_5", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_6 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_6", "light_block_6", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_7 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_7", "light_block_7", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_8 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_8", "light_block_8", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_9 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_9", "light_block_9", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_10 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_10", "light_block_10", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_11 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_11", "light_block_11", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_12 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_12", "light_block_12", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_13 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_13", "light_block_13", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_14 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_14", "light_block_14", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static LIGHT_BLOCK_15 = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "light_block_15", "light_block_15", true, true, []);
 
     /**
      * @readonly
@@ -10888,6 +10969,22 @@ const bukkitOut = {
         "quartz_stairs",
         "light",
         "light_block",
+        "light_block_0",
+        "light_block_1",
+        "light_block_2",
+        "light_block_3",
+        "light_block_4",
+        "light_block_5",
+        "light_block_6",
+        "light_block_7",
+        "light_block_8",
+        "light_block_9",
+        "light_block_10",
+        "light_block_11",
+        "light_block_12",
+        "light_block_13",
+        "light_block_14",
+        "light_block_15",
         "white_carpet",
         "orange_carpet",
         "magenta_carpet",
