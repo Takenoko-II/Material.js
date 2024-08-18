@@ -5,9 +5,9 @@
 
 import { ItemType, BlockType, ItemStack, Block } from "@minecraft/server";
 
-/*
+/**
  * # class {@link MaterialTag}
- * {@link Material.hasTag()}などで使えます
+ * {@link Material.hasTag}などで使えます
  */
 export class MaterialTag {
     private constructor();
@@ -422,13 +422,13 @@ export class Material {
 
     /**
      * このマテリアルを@minecraft/server.ItemTypeとして取得します。
-     * @throws {TypeError} プロパティ {@link Material.isItem} がtrueでない場合
+     * @throws {TypeError} プロパティ {@link isItem} がtrueでない場合
      */
     public getAsItemType(): ItemType;
 
     /**
      * このマテリアルを@minecraft/server.BlockTypeとして取得します。
-     * @throws {TypeError} プロパティ {@link Material.isBlock} がtrueでない場合
+     * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
      */
     public getAsBlockType(): BlockType;
 
@@ -444,13 +444,13 @@ export class Material {
 
     /**
      * このマテリアルが保持するブロック状態名を全て取得します。
-     * @throws {TypeError} プロパティ {@link Material.isBlock} がtrueでない場合
+     * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
      */
     public getBlockPropertyNames(): string[];
 
     /**
      * このマテリアルのアイテムとしての最大スタック数を取得します。
-     * @throws {TypeError} プロパティ {@link Material.isItem} がtrueでない場合
+     * @throws {TypeError} プロパティ {@link isItem} がtrueでない場合
      */
     public getItemMaxStackSize(): number;
 
@@ -3964,5 +3964,4 @@ export class Material {
     public static readonly WHITE_CANDLE_CAKE: Material;
 
     public static readonly YELLOW_CANDLE_CAKE: Material;
-
 }
