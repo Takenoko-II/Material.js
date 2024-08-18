@@ -214,6 +214,10 @@ world.afterEvents.entityHitBlock.subscribe(event => {
 // 多分これ常時視線先のブロック監視したほうがいいです()
 ```
 
+### Material.d.ts
+tsで使う用です
+<br>jsだけでもjsdocのおかげで型関連の補完は効くのでお好みでどうぞ
+
 ## Versions
 - 1.21
 - 1.21.20
