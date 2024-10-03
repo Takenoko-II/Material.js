@@ -1,6 +1,6 @@
 # Material.js
 アイテム・ブロックに関連するデータを格納した単一のクラス
-<br>MinecraftItemTypes, MinecraftBlockTypesのスーパーセット
+<br>MinecraftItemTypes, MinecraftBlockTypesの(自称)上位互換
 
 ## Usage
 Materialクラス, MaterialTagクラスをimportすることで使えます
@@ -221,6 +221,7 @@ tsで使う用です
 ## Versions
 - 1.21
 - 1.21.20
+- 1.21.30
 
 ## License
 [MIT LICENSE](/LICENSE)

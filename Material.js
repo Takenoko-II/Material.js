@@ -2048,6 +2048,71 @@ export class Material {
     /**
      * @readonly
      */
+    static MOSSY_COBBLESTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_cobblestone_wall", "mossy_cobblestone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static GRANITE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "granite_wall", "granite_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static DIORITE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "diorite_wall", "diorite_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static ANDESITE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "andesite_wall", "andesite_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static SANDSTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "sandstone_wall", "sandstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "brick_wall", "brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static STONE_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stone_brick_wall", "stone_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static MOSSY_STONE_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mossy_stone_brick_wall", "mossy_stone_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static NETHER_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "nether_brick_wall", "nether_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static END_STONE_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "end_stone_brick_wall", "end_stone_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PRISMARINE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "prismarine_wall", "prismarine_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static RED_SANDSTONE_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_sandstone_wall", "red_sandstone_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static RED_NETHER_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick_wall", "red_nether_brick_wall", true, true, ["wall_connection_type_east", "wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
     static COCOA_BEANS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "cocoa_beans", false, true, []);
 
     /**
@@ -7646,8 +7711,29 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    static CHEMISTRY_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chemistry_table", null, true, false, ["chemistry_table_type", "direction"]);
+    static CHEMISTRY_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chemistry_table", "chemistry_table", true, true, ["chemistry_table_type", "direction"], false, true);
+
+    /**
+     * @readonly
+     */
+    static COMPOUND_CREATOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "compound_creator", "compound_creator", true, false, ["direction"]);
+
+    /**
+     * @readonly
+     */
+    static MATERIAL_REDUCER = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "material_reducer", "material_reducer", true, false, ["direction"]);
+
+    /**
+     * @readonly
+     */
+    static ELEMENT_CONSTRUCTOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "element_constructor", "element_constructor", true, false, ["direction"]);
+
+    /**
+     * @readonly
+     */
+    static LAB_TABLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "lab_table", "lab_table", true, false, ["direction"]);
 
     /**
      * @readonly
@@ -7681,13 +7767,35 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    static COLORED_TORCH_BP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_bp", null, true, false, ["color_bit", "torch_facing_direction"]);
+    static COLORED_TORCH_BP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_bp", null, true, false, ["color_bit", "torch_facing_direction"], false, true);
 
     /**
      * @readonly
      */
-    static COLORED_TORCH_RG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_rg", null, true, false, ["color_bit", "torch_facing_direction"]);
+    static COLORED_TORCH_BLUE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_blue", null, true, false, ["torch_facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static COLORED_TORCH_PURPLE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_purple", null, true, false, ["torch_facing_direction"]);
+
+    /**
+     * @readonly
+     * @deprecated
+     */
+    static COLORED_TORCH_RG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_rg", null, true, false, ["color_bit", "torch_facing_direction"], false, true);
+
+    /**
+     * @readonly
+     */
+    static COLORED_TORCH_RED = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_red", null, true, false, ["torch_facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static COLORED_TORCH_GREEN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "colored_torch_green", null, true, false, ["torch_facing_direction"]);
 
     /**
      * @readonly
@@ -9313,6 +9421,10 @@ const bukkitOut = {
     "solids": [
         "border_block",
         "azalea_leaves_flowered",
+        "chemistry_table",
+        "compound_creator",
+        "material_reducer",
+        "element_constructor",
         "allow",
         "deny",
         "stone",
@@ -11107,6 +11219,12 @@ const bukkitOut = {
         "deepslate_tile_slab",
         "scaffolding",
         "redstone_torch",
+        "colored_torch_rg",
+        "colored_torch_bp",
+        "colored_torch_red",
+        "colored_torch_green",
+        "colored_torch_blue",
+        "colored_torch_purple",
         "redstone_block",
         "repeater",
         "comparator",
@@ -13688,6 +13806,12 @@ const bukkitOut = {
         "tuff_brick_wall": 64,
         "granite_wall": 64,
         "redstone_torch": 64,
+        "colored_torch_rg": 64,
+        "colored_torch_bp": 64,
+        "colored_torch_red": 64,
+        "colored_torch_green": 64,
+        "colored_torch_blue": 64,
+        "colored_torch_purple": 64,
         "sandstone_wall": 64,
         "polished_granite_stairs": 64,
         "glow_berries": 64,
@@ -14091,7 +14215,11 @@ const bukkitOut = {
         "pink_concrete": 64,
         "carrot": 64,
         "zombie_pigman_spawn_egg": 64,
-        "allow": 64
+        "allow": 64,
+        "chemistry_table": 64,
+        "compound_creator": 64,
+        "material_reducer": 64,
+        "element_constructor": 64
     },
     "pumpkins": [
         "pumpkin",
@@ -14225,6 +14353,12 @@ const bukkitOut = {
         "torch",
         "soul_torch",
         "redstone_torch",
+        "colored_torch_rg",
+        "colored_torch_bp",
+        "colored_torch_red",
+        "colored_torch_green",
+        "colored_torch_blue",
+        "colored_torch_purple",
         "wall_torch",
         "redstone_wall_torch",
         "soul_wall_torch"

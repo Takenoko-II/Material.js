@@ -1014,6 +1014,32 @@ export class Material {
 
     public static readonly COBBLESTONE_WALL: Material;
 
+    public static readonly MOSSY_COBBLESTONE_WALL: Material;
+
+    public static readonly GRANITE_WALL: Material;
+
+    public static readonly DIORITE_WALL: Material;
+
+    public static readonly ANDESITE_WALL: Material;
+
+    public static readonly SANDSTONE_WALL: Material;
+
+    public static readonly BRICK_WALL: Material;
+
+    public static readonly STONE_BRICK_WALL: Material;
+
+    public static readonly MOSSY_STONE_BRICK_WALL: Material;
+
+    public static readonly NETHER_BRICK_WALL: Material;
+
+    public static readonly END_STONE_BRICK_WALL: Material;
+
+    public static readonly PRISMARINE_WALL: Material;
+
+    public static readonly RED_SANDSTONE_WALL: Material;
+
+    public static readonly RED_NETHER_BRICK_WALL: Material;
+
     public static readonly COCOA_BEANS: Material;
 
     public static readonly COD: Material;
@@ -3356,9 +3382,23 @@ export class Material {
 
     public static readonly COCOA: Material;
 
+    /**
+     * @deprecated
+     */
     public static readonly COLORED_TORCH_BP: Material;
 
+    public static readonly COLORED_TORCH_BLUE: Material;
+
+    public static readonly COLORED_TORCH_PURPLE: Material;
+
+    /**
+     * @deprecated
+     */
     public static readonly COLORED_TORCH_RG: Material;
+
+    public static readonly COLORED_TORCH_RED: Material;
+
+    public static readonly COLORED_TORCH_GREEN: Material;
 
     /**
      * @deprecated
