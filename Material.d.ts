@@ -2537,6 +2537,8 @@ export class Material {
 
     public static readonly RED_MUSHROOM: Material;
 
+    public static readonly MUSHROOM_STEM: Material;
+
     public static readonly RED_MUSHROOM_BLOCK: Material;
 
     public static readonly RED_NETHER_BRICK: Material;
@@ -2672,7 +2674,22 @@ export class Material {
 
     public static readonly SKELETON_SPAWN_EGG: Material;
 
+    /**
+     * @deprecated
+     */
     public static readonly SKULL: Material;
+
+    public static readonly SKELETON_SKULL: Material;
+
+    public static readonly WITHER_SKELETON_SKULL: Material;
+
+    public static readonly ZOMBIE_HEAD: Material;
+
+    public static readonly PLAYER_HEAD: Material;
+
+    public static readonly CREEPER_HEAD: Material;
+
+    public static readonly PIGLIN_HEAD: Material;
 
     public static readonly SKULL_BANNER_PATTERN: Material;
 

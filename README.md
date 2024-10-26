@@ -222,6 +222,7 @@ tsで使う用です
 - 1.21
 - 1.21.20
 - 1.21.30
+- 1.21.41
 
 ## License
 [MIT LICENSE](/LICENSE)

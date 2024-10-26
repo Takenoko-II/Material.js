@@ -5737,6 +5737,11 @@ export class Material {
     /**
      * @readonly
      */
+    static MUSHROOM_STEM = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "mushroom_stem", "mushroom_stem", true, true, ["huge_mushroom_bits"]);
+
+    /**
+     * @readonly
+     */
     static RED_NETHER_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "red_nether_brick", "red_nether_brick", true, true, []);
 
     /**
@@ -6062,8 +6067,39 @@ export class Material {
 
     /**
      * @readonly
+     * @deprecated
      */
-    static SKULL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "skull", "skull", true, true, ["facing_direction"]);
+    static SKULL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "skull", "skull", true, true, ["facing_direction"], false, true);
+
+    /**
+     * @readonly
+     */
+    static SKELETON_SKULL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "skeleton_skull", "skeleton_skull", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static WITHER_SKELETON_SKULL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "wither_skeleton_skull", "wither_skeleton_skull", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static ZOMBIE_HEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "zombie_head", "zombie_head", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PLAYER_HEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "player_head", "player_head", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static CREEPER_HEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "creeper_head", "creeper_head", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PIGLIN_HEAD = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "piglin_head", "piglin_head", true, true, ["facing_direction"]);
 
     /**
      * @readonly
