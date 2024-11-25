@@ -3,7 +3,7 @@
  * @copyright @Takenoko-II 2024
  */
 
-import { ItemType, BlockType, ItemTypes, BlockTypes, ItemStack, Block } from "@minecraft/server";
+import { ItemType, BlockType, ItemTypes, BlockTypes, ItemStack, Block, BlockPermutation } from "@minecraft/server";
 
 const PRIVATE_CONSTRUCTOR_SYMBOL = Symbol();
 
@@ -666,6 +666,80 @@ export class Material {
 
     set isItem(_) {
         throw new TypeError();
+    }
+
+    /**
+     * このマテリアルに一致するアイテムスタックであれば真を返します。
+     * @overload
+     * @param {ItemStack} itemStack アイテムスタック
+     * @returns {boolean}
+     */
+    /**
+     * このマテリアルに一致するブロックであれば真を返します。
+     * @overload
+     * @param {Block} block ブロック
+     * @returns {boolean}
+     */
+    /**
+     * このマテリアルに一致するアイテムタイプであれば真を返します。
+     * @overload
+     * @param {ItemType} itemType アイテムタイプ
+     * @returns {boolean}
+     */
+    /**
+     * このマテリアルに一致するブロックタイプであれば真を返します。
+     * @overload
+     * @param {BlockType} blockType ブロックタイプ
+     * @returns {boolean}
+     */
+    /**
+     * @param {ItemStack | Block | ItemType | BlockType} value 値
+     * @returns {boolean}
+     */
+    matches(value) {
+        if (value instanceof ItemStack) {
+            if (this.#isItem) {
+                return value.type.id === "minecraft:" + this.#itemId;
+            }
+            else {
+                throw new TypeError("このマテリアルはアイテムではありません");
+            }
+        }
+        else if (value instanceof Block) {
+            if (this.#isBlock) {
+                return value.type.id === "minecraft:" + this.#blockId;
+            }
+            else {
+                throw new TypeError("このマテリアルはブロックではありません");
+            }
+        }
+        else if (value instanceof BlockPermutation) {
+            if (this.#isBlock) {
+                return value.type.id === "minecraft:" + this.#blockId;
+            }
+            else {
+                throw new TypeError("このマテリアルはブロックではありません");
+            }
+        }
+        else if (value instanceof ItemType) {
+            if (this.#isItem) {
+                return value.id === "minecraft:" + this.#itemId;
+            }
+            else {
+                throw new TypeError("このマテリアルはアイテムではありません");
+            }
+        }
+        else if (value instanceof BlockType) {
+            if (this.#isBlock) {
+                return value.id === "minecraft:" + this.#blockId;
+            }
+            else {
+                throw new TypeError("このマテリアルはブロックではありません");
+            }
+        }
+        else {
+            throw new TypeError("引数はItemStack又はBlock型です");
+        }
     }
 
     /**

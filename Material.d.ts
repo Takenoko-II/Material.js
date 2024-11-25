@@ -443,6 +443,41 @@ export class Material {
     public readonly isItem: boolean;
 
     /**
+     * このマテリアルに一致するアイテムスタックであれば真を返します。
+     * @throws {TypeError} プロパティ {@link isItem} がtrueでない場合
+     * @overload
+     */
+    public matches(itemStack: ItemStack): boolean;
+
+    /**
+     * このマテリアルに一致するブロックであれば真を返します。
+     * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
+     * @overload
+     */
+    public matches(block: Block): boolean;
+
+    /**
+     * このマテリアルに一致するブロック順列であれば真を返します。
+     * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
+     * @overload
+     */
+    public matches(block: Block): boolean;
+
+    /**
+     * このマテリアルに一致するアイテムタイプであれば真を返します。
+     * @throws {TypeError} プロパティ {@link isItem} がtrueでない場合
+     * @overload
+     */
+    public matches(itemType: ItemType): boolean;
+
+    /**
+     * このマテリアルに一致するブロックタイプであれば真を返します。
+     * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
+     * @overload
+     */
+    public matches(blockType: BlockType): boolean;
+
+    /**
      * このマテリアルが保持するブロック状態名を全て取得します。
      * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
      */
