@@ -3,7 +3,7 @@
  * @copyright @Takenoko-II 2024
  */
 
-import { ItemType, BlockType, ItemStack, Block } from "@minecraft/server";
+import { ItemType, BlockType, ItemStack, Block, BlockPermutation } from "@minecraft/server";
 
 /**
  * # class {@link MaterialTag}
@@ -461,7 +461,7 @@ export class Material {
      * @throws {TypeError} プロパティ {@link isBlock} がtrueでない場合
      * @overload
      */
-    public matches(block: Block): boolean;
+    public matches(blockPermutation: BlockPermutation): boolean;
 
     /**
      * このマテリアルに一致するアイテムタイプであれば真を返します。
@@ -517,6 +517,12 @@ export class Material {
      * ブロックを基にマテリアルを取得します。
      */
     public static getMaterial(block: Block): Material;
+
+    /**
+     * @overload
+     * ブロック順列を基にマテリアルを取得します。
+     */
+    public static getMaterial(blockPermutation: BlockPermutation): Material;
 
     /**
      * @overload

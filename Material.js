@@ -681,6 +681,12 @@ export class Material {
      * @returns {boolean}
      */
     /**
+     * このマテリアルに一致するブロック順列であれば真を返します。
+     * @overload
+     * @param {BlockPermutation} blockPermutation ブロック順列
+     * @returns {boolean}
+     */
+    /**
      * このマテリアルに一致するアイテムタイプであれば真を返します。
      * @overload
      * @param {ItemType} itemType アイテムタイプ
@@ -693,7 +699,7 @@ export class Material {
      * @returns {boolean}
      */
     /**
-     * @param {ItemStack | Block | ItemType | BlockType} value 値
+     * @param {ItemStack | Block | BlockPermutation | ItemType | BlockType} value 値
      * @returns {boolean}
      */
     matches(value) {
@@ -809,6 +815,12 @@ export class Material {
      */
     /**
      * @overload
+     * ブロック順列を基にマテリアルを取得します。
+     * @param {BlockPermutation} blockPermutation
+     * @returns {Material}
+     */
+    /**
+     * @overload
      * アイテムタイプを基にマテリアルを取得します。
      * @param {ItemType} itemType
      * @returns {Material}
@@ -818,6 +830,10 @@ export class Material {
      * ブロックタイプを基にマテリアルを取得します。
      * @param {BlockType} blockType
      * @returns {Material}
+     */
+    /**
+     * @param {string | ItemStack | Block | BlockPermutation | ItemType | BlockType} x
+     * @returns {Material | undefined}
      */
     static getMaterial(x) {
         if (typeof x === "string") {
@@ -842,6 +858,13 @@ export class Material {
             }
             return material;
         }
+        else if (x instanceof BlockPermutation) {
+            const material = this.getMaterial(x.type.id);
+            if (material === undefined) {
+                throw new TypeError("廃止されたブロックタイプの可能性があります");
+            }
+            return material;
+        }
         else if (x instanceof ItemType) {
             const material = this.getMaterial(x.id);
             if (material === undefined) {
@@ -857,7 +880,7 @@ export class Material {
             return material;
         }
         else {
-            throw new TypeError("この関数の第一引数は string | ItemStack | Block | ItemType | BlockType です");
+            throw new TypeError("この関数の第一引数は string | ItemStack | Block | BlockPermutation | ItemType | BlockType です");
         }
     }
 
