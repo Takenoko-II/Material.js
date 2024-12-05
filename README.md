@@ -75,12 +75,15 @@ Material.ENDER_PEARL.getItemMaxStackSize() // 16
 > [!WARNING]
 > ブロックではない場合`TypeError`を投げるため、`isBlock`を見てから使用してください
 
+#### `matches(value: ItemStack | Block | ItemType | BlockType | BlockPermutation): boolean`
+引数に渡されたオブジェクトがこのマテリアルに対応するかを確かめます
+
 ### 静的メソッド
 
 #### `values(): Material[]`
 全マテリアルの配列を返します
 
-#### `getMaterial(id: string | ItemStack | Block | ItemType | BlockType): Material | undefined`
+#### `getMaterial(id: string | ItemStack | Block | ItemType | BlockType | BlockPermutation): Material | undefined`
 ブロックIDあるいはアイテムIDを渡すと対応するMaterialが返ります
 <br>`ItemType`と`BlockType`の相互変換はこれを介して可能です
 

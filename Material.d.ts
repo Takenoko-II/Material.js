@@ -4062,4 +4062,74 @@ export class Material {
     public static readonly WHITE_CANDLE_CAKE: Material;
 
     public static readonly YELLOW_CANDLE_CAKE: Material;
+
+    // 1.21.50
+
+    public static readonly CREAKING_HEART: Material;
+
+    public static readonly EYEBLOSSOM_OPEN: Material;
+
+    public static readonly EYEBLOSSOM_CLOSED: Material;
+
+    public static readonly PALE_HANGING_MOSS: Material;
+
+    public static readonly PALE_MOSS_BLOCK: Material;
+
+    public static readonly PALE_MOSS_CARPET: Material;
+
+    public static readonly PALE_OAK_LEAVES: Material;
+
+    public static readonly PALE_OAK_LOG: Material;
+
+    public static readonly STRIPPED_PALE_OAK_LOG: Material;
+
+    public static readonly PALE_OAK_SAPLING: Material;
+
+    public static readonly PALE_OAK_PLANKS: Material;
+
+    public static readonly PALE_OAK_BUTTON: Material;
+
+    public static readonly PALE_OAK_DOOR: Material;
+
+    public static readonly PALE_OAK_FENCE: Material;
+
+    public static readonly PALE_OAK_FENCE_GATE: Material;
+
+    public static readonly PALE_OAK_PRESSURE_PLATE: Material;
+
+    public static readonly PALE_OAK_SIGN: Material;
+
+    public static readonly PALE_OAK_STANDING_SIGN: Material;
+
+    public static readonly PALE_OAK_WALL_SIGN: Material;
+
+    public static readonly PALE_OAK_HANGING_SIGN: Material;
+
+    public static readonly PALE_OAK_SLAB: Material;
+
+    public static readonly PALE_OAK_DOUBLE_SLAB: Material;
+
+    public static readonly PALE_OAK_STAIRS: Material;
+
+    public static readonly PALE_OAK_TRAPDOOR: Material;
+
+    public static readonly RESIN_CLUMP: Material;
+
+    public static readonly RESIN_BLOCK: Material;
+
+    public static readonly RESIN_BRICK: Material;
+
+    public static readonly RESIN_BRICKS: Material;
+
+    public static readonly CHISELED_RESIN_BRICKS: Material;
+
+    public static readonly RESIN_BRICK_SLAB: Material;
+
+    public static readonly RESIN_BRICK_DOUBLE_SLAB: Material;
+
+    public static readonly RESIN_BRICK_STAIRS: Material;
+
+    public static readonly RESIN_BRICK_WALL: Material;
+
+    public static readonly CREAKING_SPAWN_EGG: Material;
 }

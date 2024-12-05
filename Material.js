@@ -9397,6 +9397,177 @@ export class Material {
      */
     static YELLOW_CANDLE_CAKE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "yellow_candle_cake", null, true, false, ["lit"]);
 
+    // 1.21.50
+
+    /**
+     * @readonly
+     */
+    static CREAKING_HEART = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "creaking_heart", "creaking_heart", true, true, ["active", "natural", "pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static EYEBLOSSOM_OPEN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "open_eyeblossom", "open_eyeblossom", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static EYEBLOSSOM_CLOSED = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "closed_eyeblossom", "closed_eyeblossom", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static PALE_HANGING_MOSS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_hanging_moss", "pale_hanging_moss", true, true, ["tip"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_MOSS_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_moss_block", "pale_moss_block", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static PALE_MOSS_CARPET = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_moss_carpet", "pale_moss_carpet", true, true, ["pale_moss_carpet_side_north", "pale_moss_carpet_side_south", "pale_moss_carpet_side_east", "pale_moss_carpet_side_west", "upper_block_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_LEAVES = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_leaves", "pale_oak_leaves", true, true, ["persistent_bit", "update_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_log", "pale_oak_log", true, true, ["pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static STRIPPED_PALE_OAK_LOG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "stripped_pale_oak_log", "stripped_pale_oak_log", true, true, ["pillar_axis"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_SAPLING = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_sapling", "pale_oak_sapling", true, true, ["age_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_PLANKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_planks", "pale_oak_planks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_BUTTON = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_button", "pale_oak_button", true, true, ["button_pressed_bit", "facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_DOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_door", "pale_oak_door", true, true, ["direction", "door_hinge_bit", "open_bit", "upper_block_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_FENCE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_fence", "pale_oak_fence", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_FENCE_GATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_fence_gate", "pale_oak_fence_gate", true, true, ["direction", "in_wall_bit", "open_bit"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_PRESSURE_PLATE = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_pressure_plate", "pale_oak_pressure_plate", true, true, ["redstone_signal"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "pale_oak_sign", false, true, []);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_STANDING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_standing_sign", "pale_oak_sign", true, true, ["ground_sign_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_WALL_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_wall_sign", "pale_oak_sign", true, true, ["facing_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_HANGING_SIGN = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_hanging_sign", "pale_oak_hanging_sign", true, true, ["attached_bit", "facing_direction", "ground_sign_direction", "hanging"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_slab", "pale_oak_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_stairs", "pale_oak_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+
+    /**
+     * @readonly
+     */
+    static PALE_OAK_TRAPDOOR = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "pale_oak_trapdoor", "pale_oak_trapdoor", true, true, ["direction", "open_bit", "upside_down_bit"]);
+
+    /**
+     * @readonly
+     */
+    static RESIN_CLUMP = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_clump", "resin_clump", true, true, ["multi_face_direction_bits"]);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BLOCK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_block", "resin_block", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICK = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "resin_brick", false, true, []);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_bricks", "resin_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static CHISELED_RESIN_BRICKS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "chiseled_resin_bricks", "chiseled_resin_bricks", true, true, []);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICK_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_brick_slab", "resin_brick_slab", true, true, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICK_DOUBLE_SLAB = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_brick_double_slab", null, true, false, ["minecraft:vertical_half"]);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICK_STAIRS = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_brick_stairs", "resin_brick_stairs", true, true, ["upside_down_bit", "weirdo_direction"]);
+
+    /**
+     * @readonly
+     */
+    static RESIN_BRICK_WALL = new this(PRIVATE_CONSTRUCTOR_SYMBOL, "resin_brick_wall", "resin_brick_wall", true, true, ["wall_connection_type_north", "wall_connection_type_south", "wall_connection_type_east", "wall_connection_type_west", "wall_post_bit"]);
+
+    /**
+     * @readonly
+     */
+    static CREAKING_SPAWN_EGG = new this(PRIVATE_CONSTRUCTOR_SYMBOL, null, "creaking_spawn_egg", false, true, []);
 }
 
 /**
@@ -9404,6 +9575,13 @@ export class Material {
  */
 const bukkitOut = {
     "compostables": [
+        "pale_oak_sapling",
+        "pale_oak_leaves",
+        "pale_moss_carpet",
+        "pale_moss_block",
+        "pale_hanging_moss",
+        "open_eyeblossom",
+        "closed_eyeblossom",
         "azalea_leaves_flowered",
         "oak_sapling",
         "spruce_sapling",
@@ -9552,6 +9730,28 @@ const bukkitOut = {
         "ominous_bottle"
     ],
     "solids": [
+        "resin_clump",
+        "resin_block",
+        "resin_bricks",
+        "chiseled_resin_bricks",
+        "resin_brick_slab",
+        "resin_brick_double_slab",
+        "resin_brick_stairs",
+        "resin_brick_wall",
+        "pale_oak_slab",
+        "pale_oak_double_slab",
+        "pale_oak_stairs",
+        "pale_oak_trapdoor",
+        "pale_oak_hanging_sign",
+        "pale_oak_door",
+        "pale_oak_fence",
+        "pale_oak_fence_gate",
+        "pale_oak_planks",
+        "stripped_pale_oak_log",
+        "pale_oak_log",
+        "pale_oak_leaves",
+        "pale_moss_block",
+        "creaking_heart",
         "border_block",
         "azalea_leaves_flowered",
         "chemistry_table",
@@ -9913,7 +10113,6 @@ const bukkitOut = {
         "nether_brick_fence",
         "nether_brick_stairs",
         "sculk",
-        "sculk_vein",
         "sculk_catalyst",
         "sculk_shrieker",
         "enchanting_table",
@@ -10543,6 +10742,29 @@ const bukkitOut = {
         "brush"
     ],
     "burnableBlocks": [
+        "pale_oak_slab",
+        "pale_oak_double_slab",
+        "pale_oak_stairs",
+        "pale_oak_trapdoor",
+        "pale_oak_sign",
+        "pale_oak_standing_sign",
+        "pale_oak_wall_sign",
+        "pale_oak_hanging_sign",
+        "pale_oak_button",
+        "pale_oak_door",
+        "pale_oak_fence",
+        "pale_oak_fence_gate",
+        "pale_oak_pressure_plate",
+        "pale_oak_planks",
+        "pale_oak_sapling",
+        "stripped_pale_oak_log",
+        "pale_oak_log",
+        "pale_oak_leaves",
+        "pale_moss_carpet",
+        "pale_moss_block",
+        "pale_hanging_moss",
+        "open_eyeblossom",
+        "closed_eyeblossom",
         "oak_planks",
         "spruce_planks",
         "birch_planks",
@@ -10720,6 +10942,21 @@ const bukkitOut = {
         "big_dripleaf_stem"
     ],
     "fuels": [
+        "pale_oak_slab",
+        "pale_oak_double_slab",
+        "pale_oak_stairs",
+        "pale_oak_trapdoor",
+        "pale_oak_sign",
+        "pale_oak_hanging_sign",
+        "pale_oak_button",
+        "pale_oak_door",
+        "pale_oak_fence",
+        "pale_oak_fence_gate",
+        "pale_oak_pressure_plate",
+        "pale_oak_planks",
+        "pale_oak_sapling",
+        "stripped_pale_oak_log",
+        "pale_oak_log",
         "oak_planks",
         "spruce_planks",
         "birch_planks",
@@ -10971,6 +11208,27 @@ const bukkitOut = {
         "smithing_table"
     ],
     "lightPassables": [
+        "resin_clump",
+        "resin_brick_slab",
+        "resin_brick_stairs",
+        "resin_brick_wall",
+        "pale_oak_slab",
+        "pale_oak_stairs",
+        "pale_oak_trapdoor",
+        "pale_oak_standing_sign",
+        "pale_oak_wall_sign",
+        "pale_oak_hanging_sign",
+        "pale_oak_button",
+        "pale_oak_door",
+        "pale_oak_fence",
+        "pale_oak_fence_gate",
+        "pale_oak_pressure_plate",
+        "pale_oak_sapling",
+        "pale_oak_leaves",
+        "pale_moss_carpet",
+        "pale_hanging_moss",
+        "open_eyeblossom",
+        "closed_eyeblossom",
         "azalea_leaves_flowered",
         "air",
         "tuff_slab",
@@ -11731,6 +11989,23 @@ const bukkitOut = {
         "potted_flowering_azalea_bush"
     ],
     "mineable.axe": [
+        "pale_oak_slab",
+        "pale_oak_double_slab",
+        "pale_oak_stairs",
+        "pale_oak_trapdoor",
+        "pale_oak_sign",
+        "pale_oak_standing_sign",
+        "pale_oak_wall_sign",
+        "pale_oak_hanging_sign",
+        "pale_oak_button",
+        "pale_oak_door",
+        "pale_oak_fence",
+        "pale_oak_fence_gate",
+        "pale_oak_pressure_plate",
+        "pale_oak_planks",
+        "stripped_pale_oak_log",
+        "pale_oak_log",
+        "creaking_heart",
         "oak_planks",
         "spruce_planks",
         "birch_planks",
@@ -12124,6 +12399,7 @@ const bukkitOut = {
         "black_concrete_powder"
     ],
     "planks": [
+        "pale_oak_planks",
         "oak_planks",
         "spruce_planks",
         "birch_planks",
@@ -12137,6 +12413,9 @@ const bukkitOut = {
         "warped_planks"
     ],
     "mineable.hoe": [
+        "pale_oak_leaves",
+        "pale_moss_carpet",
+        "pale_moss_block",
         "azalea_leaves_flowered",
         "oak_leaves",
         "spruce_leaves",
@@ -12179,6 +12458,12 @@ const bukkitOut = {
         "crossbow"
     ],
     "mineable.pickaxe": [
+        "resin_bricks",
+        "chiseled_resin_bricks",
+        "resin_brick_slab",
+        "resin_brick_double_slab",
+        "resin_brick_stairs",
+        "resin_brick_wall",
         "stone",
         "granite",
         "polished_granite",
@@ -12653,6 +12938,8 @@ const bukkitOut = {
         "dead_horn_coral_wall_fan"
     ],
     "logs": [
+        "stripped_pale_oak_log",
+        "pale_oak_log",
         "oak_log",
         "spruce_log",
         "birch_log",
@@ -12695,6 +12982,10 @@ const bukkitOut = {
         "warped_hyphae"
     ],
     "slabs": [
+        "resin_brick_slab",
+        "resin_brick_double_slab",
+        "pale_oak_slab",
+        "pale_oak_double_slab",
         "tuff_slab",
         "polished_tuff_slab",
         "tuff_brick_slab",
@@ -12881,6 +13172,8 @@ const bukkitOut = {
         "respawn_anchor"
     ],
     "stairs": [
+        "resin_brick_stairs",
+        "pale_oak_stairs",
         "spruce_stairs",
         "red_nether_brick_stairs",
         "purpur_stairs",
@@ -12988,6 +13281,29 @@ const bukkitOut = {
         "dune_armor_trim_smithing_template"
     ],
     "max_stack_size_map": {
+        "creaking_spawn_egg": 64,
+        "resin_clump": 64,
+        "resin_block": 64,
+        "resin_brick": 64,
+        "resin_bricks": 64,
+        "chiseled_resin_bricks": 64,
+        "resin_brick_slab": 64,
+        "resin_brick_stairs": 64,
+        "resin_brick_wall": 64,
+        "pale_oak_slab": 64,
+        "pale_oak_stairs": 64,
+        "pale_oak_trapdoor": 64,
+        "pale_oak_sign": 64,
+        "pale_oak_hanging_sign": 64,
+        "pale_oak_sapling": 64,
+        "stripped_pale_oak_log": 64,
+        "pale_oak_log": 64,
+        "pale_moss_carpet": 64,
+        "pale_moss_block": 64,
+        "creaking_heart": 64,
+        "open_eyeblossom": 64,
+        "closed_eyeblossom": 64,
+        "pale_hanging_moss": 64,
         "frosted_ice": 64,
         "border_block": 64,
         "deny": 64,
@@ -14360,6 +14676,7 @@ const bukkitOut = {
         "lit_pumpkin"
     ],
     "leaves": [
+        "pale_oak_leaves",
         "spruce_leaves",
         "mangrove_leaves",
         "azalea_leaves",
@@ -14536,6 +14853,7 @@ const bukkitOut = {
         "purpur_stairs"
     ],
     "trapdoors": [
+        "pale_oak_trapdoor",
         "spruce_trapdoor",
         "dark_oak_trapdoor",
         "cherry_trapdoor",
@@ -14588,6 +14906,8 @@ const bukkitOut = {
         "iron_chestplate"
     ],
     "flowers": [
+        "open_eyeblossom",
+        "closed_eyeblossom",
         "pink_tulip",
         "orange_tulip",
         "wither_rose",
@@ -14652,6 +14972,7 @@ const bukkitOut = {
         "coral_fan_hang3"
     ],
     "fence_gates": [
+        "pale_oak_fence_gate",
         "fence_gate",
         "spruce_fence_gate",
         "birch_fence_gate",
@@ -14715,6 +15036,7 @@ const bukkitOut = {
         "quartz_pillar"
     ],
     "doors": [
+        "pale_oak_door",
         "acacia_door",
         "birch_door",
         "bamboo_door",
@@ -14755,6 +15077,7 @@ const bukkitOut = {
         "pink_concrete_powder"
     ],
     "fences": [
+        "pale_oak_fence",
         "bamboo_fence",
         "nether_brick_fence",
         "birch_fence",
@@ -14907,6 +15230,7 @@ const bukkitOut = {
         "netherite_pickaxe"
     ],
     "spawn_eggs": [
+        "creaking_spawn_egg",
         "armadillo_spawn_egg",
         "allay_spawn_egg",
         "axolotl_spawn_egg",
@@ -15003,6 +15327,7 @@ const bukkitOut = {
         "wooden_hoe"
     ],
     "saplings": [
+        "pale_oak_sapling",
         "acacia_sapling",
         "azalea",
         "cherry_sapling",
@@ -15056,6 +15381,7 @@ const bukkitOut = {
         "blackstone"
     ],
     "walls": [
+        "resin_brick_wall",
         "polished_blackstone_wall",
         "end_stone_brick_wall",
         "deepslate_tile_wall",
@@ -15083,6 +15409,10 @@ const bukkitOut = {
         "nether_brick_wall"
     ],
     "signs": [
+        "pale_oak_sign",
+        "pale_oak_standing_sign",
+        "pale_oak_wall_sign",
+        "pale_oak_hanging_sign",
         "mangrove_sign",
         "acacia_hanging_sign",
         "oak_wall_sign",
@@ -15143,6 +15473,7 @@ const bukkitOut = {
         "diamond_boots"
     ],
     "pressure_plates": [
+        "pale_oak_pressure_plate",
         "crimson_pressure_plate",
         "light_weighted_pressure_plate",
         "jungle_pressure_plate",
@@ -15196,6 +15527,7 @@ const bukkitOut = {
         "black_concrete"
     ],
     "buttons": [
+        "pale_oak_button",
         "jungle_button",
         "crimson_button",
         "bamboo_button",
